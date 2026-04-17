@@ -366,7 +366,7 @@
             location.reload();
         }
 
-        /* SEARCH */
+        /* SHOW FORM */
         function showForm(type){
             let title = "";
             if(type==="nid") title="এনআইডি সার্চ";
@@ -380,7 +380,7 @@
                 <button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button>
                 <h3>${title}</h3>
                 <input class="form-control" placeholder="অনুসন্ধানের তথ্য দিন">
-                <button class="btn" onclick="search()">সার্চ করুন</button>
+                <button class="btn" onclick="performSearch('${type}')">সার্চ করুন</button>
             `;
         }
 
@@ -389,16 +389,31 @@
             accessMessage.innerHTML = "";
         }
 
-        function search(){
+        /* UPDATED SEARCH FUNCTION - NID এর সব অপশনের জন্য এক মেসেজ, শুধু BRTA এর জন্য আলাদা মেসেজ */
+        function performSearch(type){
             showLoading("সার্চ হচ্ছে...");
             setTimeout(() => {
                 hideLoading();
-                accessMessage.innerHTML = `
-                    <div style="color: red; font-weight: bold; padding: 20px; border: 2px solid #f5c6cb; background: #f8d7da; border-radius: 10px;">
-                        দুঃখিত! আপনার পোর্টালে নির্বাচন কমিশনের এক্সেস যুক্ত নেই।<br>
-                        অনুগ্রহ করে পেমেন্ট সম্পূর্ণ করুন (৳৯৮০)।
-                    </div>
-                `;
+
+                let htmlMessage = "";
+
+                if(type === "brta"){
+                    htmlMessage = `
+                        <div style="color: red; font-weight: bold; padding: 20px; border: 2px solid #f5c6cb; background: #f8d7da; border-radius: 10px;">
+                            BRTA এক্সেস যুক্ত নেই অনুগ্রহ করে এক্সেস যুক্ত করে পোর্টাল ব্যবহার করন।
+                        </div>
+                    `;
+                } else {
+                    // NID, Mobile, Birth, Form No, Correction — সবার জন্য একই মেসেজ
+                    htmlMessage = `
+                        <div style="color: red; font-weight: bold; padding: 20px; border: 2px solid #f5c6cb; background: #f8d7da; border-radius: 10px;">
+                            দুঃখিত! আপনার পোর্টালে নির্বাচন কমিশনের এক্সেস যুক্ত নেই।<br>
+                            অনুগ্রহ করে পেমেন্ট সম্পূর্ণ করুন (৳৯৮০)।
+                        </div>
+                    `;
+                }
+
+                accessMessage.innerHTML = htmlMessage;
             }, 1200);
         }
     </script>
