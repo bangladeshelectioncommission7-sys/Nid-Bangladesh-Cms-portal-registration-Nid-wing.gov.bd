@@ -1,205 +1,334 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CMS - NID DATABASE PORTAL</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: Arial, Helvetica, sans-serif; background: #f4f6f9; min-height: 100vh; }
-        .header { background: #0b5ed7; color: white; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
-        .logo { width: 50px; margin-right: 10px; }
-        .container { display: flex; flex-direction: row; min-height: calc(100vh - 60px); }
-        .sidebar { width: 220px; background: #fff; border-right: 1px solid #ddd; }
-        .sidebar ul { list-style: none; }
-        .sidebar ul li a { display: block; padding: 12px; text-decoration: none; color: #000; cursor: pointer; }
-        .sidebar ul li a:hover { background: #f0f0f0; }
-        .content { flex: 1; padding: 20px; }
-        .box { background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
-        .form-control { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
-        .btn { padding: 10px 20px; background: #0b5ed7; border: none; color: white; cursor: pointer; border-radius: 5px; font-size: 16px; }
-        .btn:hover { background: #0949a5; }
-        #loginContainer, #otpContainer { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        #loginForm, #otpForm, #registerForm { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.15); width: 100%; max-width: 400px; text-align: center; }
-        #message, #otpMessage, #regMessage { margin-top: 15px; font-weight: bold; min-height: 22px; }
-        .success { color: green; }
-        .error { color: red; }
-        #dashboard { display: none; }
-        
-        #loadingOverlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6); z-index: 9999;
-            justify-content: center; align-items: center;
-        }
-        .spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #0b5ed7; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .loading-text { margin-top: 15px; color: white; font-size: 18px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMS - NID DATABASE PORTAL</title>
 
-        #accessMessage { color: red; font-weight: bold; margin-top: 20px; text-align: center; }
-        .back-btn { margin-bottom: 15px; width: auto; }
-        .result-box { margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; }
-    </style>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, Helvetica, sans-serif; background: #f4f6f9; min-height: 100vh; }
+
+.header {
+    background: #0b5ed7;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.logo { width: 50px; margin-right: 10px; }
+
+.container { display: flex; flex-direction: row; min-height: calc(100vh - 60px); }
+
+.sidebar { width: 220px; background: #fff; border-right: 1px solid #ddd; }
+
+.sidebar ul { list-style: none; }
+
+.sidebar ul li a {
+    display: block;
+    padding: 12px;
+    text-decoration: none;
+    color: #000;
+    cursor: pointer;
+}
+
+.sidebar ul li a:hover { background: #f0f0f0; }
+
+.content { flex: 1; padding: 20px; }
+
+.box { background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.btn {
+    padding: 10px 20px;
+    background: #0b5ed7;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.btn:hover { background: #0949a5; }
+
+#loginContainer, #otpContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+#loginForm, #otpForm, #registerForm {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.15);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+#message, #otpMessage, #regMessage {
+    margin-top: 15px;
+    font-weight: bold;
+    min-height: 22px;
+}
+
+.success-text { color: green; }
+.error-text { color: red; }
+
+#dashboard { display: none; }
+
+#loadingOverlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #0b5ed7;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    margin-top: 15px;
+    color: white;
+    font-size: 18px;
+}
+
+#accessMessage { color: red; font-weight: bold; margin-top: 20px; text-align: center; }
+
+.back-btn { margin-bottom: 15px; width: auto; }
+
+</style>
 </head>
+
 <body>
 
-    <!-- লগইন / রেজিস্টার -->
-    <div id="loginContainer">
-        <div>
-            <form id="loginForm">
-                <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg" alt="লোগো">
-                <h3>CMS - NID DATABASE পার্টনার পোর্টাল</h3>
-                <input type="text" id="userid" class="form-control" placeholder="ইউজার আইডি" required>
-                <input type="password" id="password" class="form-control" placeholder="পাসওয়ার্ড" required>
-                <button type="submit" class="btn">লগইন</button>
-                <p style="margin-top:15px;">অ্যাকাউন্ট নেই? <a href="#" id="showRegister">রেজিস্টার করুন</a></p>
-                <div id="message"></div>
-            </form>
-
-            <form id="registerForm" style="display:none;">
-                <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg" alt="লোগো">
-                <h3>রেজিস্ট্রেশন</h3>
-                <input type="text" id="regUserid" class="form-control" placeholder="ইউজার আইডি" required>
-                <input type="password" id="regPassword" class="form-control" placeholder="পাসওয়ার্ড" required>
-                <button type="submit" class="btn">রেজিস্টার</button>
-                <p style="margin-top:15px;"><a href="#" id="showLogin">লগইন পেজে ফিরুন</a></p>
-                <div id="regMessage"></div>
-            </form>
-        </div>
+<!-- LOADING -->
+<div id="loadingOverlay">
+    <div style="text-align:center;">
+        <div class="spinner"></div>
+        <div class="loading-text">লোড হচ্ছে...</div>
     </div>
+</div>
 
-    <!-- OTP -->
-    <div id="otpContainer" style="display:none;">
-        <form id="otpForm">
-            <h3>OTP যাচাই</h3>
-            <input type="tel" id="mobileNumber" class="form-control" placeholder="রেজিস্টারকৃত মোবাইল নাম্বার">
-            <button type="button" id="requestOtpBtn" class="btn">OTP পাঠান</button>
-            <input type="text" id="otp" class="form-control" placeholder="OTP দিন">
-            <button type="submit" class="btn">সাবমিট</button>
-            <div id="otpMessage"></div>
-        </form>
-    </div>
+<!-- LOGIN -->
+<div id="loginContainer">
+<div>
+<form id="loginForm">
+<img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg">
+<h3>CMS - NID DATABASE পার্টনার পোর্টাল</h3>
 
-    <!-- ড্যাশবোর্ড -->
-    <div id="dashboard">
-        <div class="header">
-            <div style="display: flex; align-items: center;">
-                <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg">
-                <span>CMS - NID DATABASE পার্টনার পোর্টাল</span>
-            </div>
-            <button class="btn" onclick="logout()">লগআউট</button>
-        </div>
+<input type="text" id="userid" class="form-control" placeholder="ইউজার আইডি" required>
+<input type="password" id="password" class="form-control" placeholder="পাসওয়ার্ড" required>
 
-        <div class="container">
-            <div class="sidebar">
-                <ul>
-                    <li><a onclick="showForm('nid')">এনআইডি সার্চ</a></li>
-                    <li><a onclick="showForm('mobile')">মোবাইল সার্চ</a></li>
-                    <li><a onclick="showForm('birth')">জন্ম নিবন্ধন সার্চ</a></li>
-                    <li><a onclick="showForm('formno')">ফর্ম নাম্বার</a></li>
-                    <li><a onclick="showForm('correction')">সংশোধন অনুমোদন</a></li>
+<button class="btn">লগইন</button>
 
-                    <!-- ✅ BRTA ADD -->
-                    <li><a onclick="showForm('brta')">BRTA সার্ভিস</a></li>
-                </ul>
-            </div>
+<div id="message"></div>
+</form>
+</div>
+</div>
 
-            <div class="content">
-                <div class="box" id="formArea">
-                    <h3>একটি অপশন নির্বাচন করুন</h3>
-                </div>
-                <div id="accessMessage"></div>
-            </div>
-        </div>
-    </div>
+<!-- OTP -->
+<div id="otpContainer" style="display:none;">
+<form id="otpForm">
+<h3>OTP যাচাই</h3>
+
+<input type="tel" id="mobileNumber" class="form-control" placeholder="মোবাইল নাম্বার">
+<button type="button" id="requestOtpBtn" class="btn">OTP পাঠান</button>
+
+<input type="text" id="otp" class="form-control" placeholder="OTP দিন">
+<button class="btn">সাবমিট</button>
+
+<div id="otpMessage"></div>
+</form>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+
+<div class="header">
+<div style="display:flex;align-items:center;">
+<img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg">
+<span>CMS - NID DATABASE পার্টনার পোর্টাল</span>
+</div>
+<button class="btn" onclick="logout()">লগআউট</button>
+</div>
+
+<div class="container">
+
+<div class="sidebar">
+<ul>
+<li><a onclick="showForm('nid')">এনআইডি সার্চ</a></li>
+<li><a onclick="showForm('mobile')">মোবাইল সার্চ</a></li>
+<li><a onclick="showForm('birth')">জন্ম নিবন্ধন</a></li>
+<li><a onclick="showForm('formno')">ফর্ম নাম্বার</a></li>
+<li><a onclick="showForm('correction')">সংশোধন</a></li>
+<li><a onclick="showForm('brta')">BRTA সার্ভিস</a></li>
+</ul>
+</div>
+
+<div class="content">
+<div class="box" id="formArea">
+<h3>একটি অপশন নির্বাচন করুন</h3>
+</div>
+
+<div id="accessMessage"></div>
+</div>
+
+</div>
+</div>
 
 <script>
 
-document.getElementById("showRegister").onclick=e=>{
-e.preventDefault();
-loginForm.style.display="none";
-registerForm.style.display="block";
-};
-
-document.getElementById("showLogin").onclick=e=>{
-e.preventDefault();
-loginForm.style.display="block";
-registerForm.style.display="none";
-};
-
-registerForm.onsubmit=e=>{
-e.preventDefault();
-localStorage.setItem("user",JSON.stringify({u:regUserid.value,p:regPassword.value}));
-regMessage.innerHTML="রেজিস্ট্রেশন সফল";
-};
-
-loginForm.onsubmit=e=>{
-e.preventDefault();
-let d=JSON.parse(localStorage.getItem("user"));
-if(!d||d.u!==userid.value||d.p!==password.value){
-message.innerHTML="ভুল তথ্য";
-return;
+function showLoading(text="লোড হচ্ছে..."){
+document.getElementById("loadingOverlay").style.display="flex";
+document.querySelector(".loading-text").innerText=text;
 }
-loginContainer.style.display="none";
-otpContainer.style.display="flex";
-};
 
-requestOtpBtn.onclick=()=>{
-otpMessage.innerHTML="OTP পাঠানো হয়েছে (1234)";
-window.gen="1234";
-};
+function hideLoading(){
+document.getElementById("loadingOverlay").style.display="none";
+}
 
-otpForm.onsubmit=e=>{
+/* LOGIN */
+document.getElementById("loginForm").onsubmit = function(e){
 e.preventDefault();
-if(otp.value===window.gen){
-otpContainer.style.display="none";
-dashboard.style.display="block";
+
+showLoading("লগইন হচ্ছে...");
+
+setTimeout(()=>{
+hideLoading();
+
+document.getElementById("loginContainer").style.display="none";
+document.getElementById("otpContainer").style.display="flex";
+
+},1200);
+};
+
+/* OTP SEND - REAL API */
+document.getElementById("requestOtpBtn").onclick = async function(){
+
+showLoading("OTP পাঠানো হচ্ছে...");
+
+try{
+
+let res = await fetch("/api/send-otp",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+mobile: document.getElementById("mobileNumber").value
+})
+});
+
+let data = await res.json();
+
+hideLoading();
+
+if(data.success){
+otpMessage.innerHTML="OTP পাঠানো হয়েছে ✔";
+otpMessage.className="success-text";
 }else{
-otpMessage.innerHTML="ভুল OTP";
+otpMessage.innerHTML="OTP পাঠানো যায়নি ✖";
+otpMessage.className="error-text";
+}
+
+}catch(err){
+hideLoading();
+otpMessage.innerHTML="সার্ভার সমস্যা ✖";
+otpMessage.className="error-text";
 }
 };
 
-function logout(){location.reload();}
+/* OTP VERIFY - REAL API */
+document.getElementById("otpForm").onsubmit = async function(e){
+e.preventDefault();
 
+showLoading("OTP যাচাই হচ্ছে...");
+
+try{
+
+let res = await fetch("/api/verify-otp",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+mobile: document.getElementById("mobileNumber").value,
+otp: document.getElementById("otp").value
+})
+});
+
+let data = await res.json();
+
+hideLoading();
+
+if(data.success){
+document.getElementById("otpContainer").style.display="none";
+document.getElementById("dashboard").style.display="block";
+}else{
+otpMessage.innerHTML="ভুল OTP ✖";
+otpMessage.className="error-text";
+}
+
+}catch(err){
+hideLoading();
+otpMessage.innerHTML="সার্ভার error ✖";
+otpMessage.className="error-text";
+}
+};
+
+/* LOGOUT */
+function logout(){
+location.reload();
+}
+
+/* SEARCH */
 function showForm(type){
 
-if(type==="brta"){
-formArea.innerHTML=`
-<button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button>
-<h3>BRTA সার্ভিস</h3>
-
-<button class="btn" style="width:100%;margin:5px 0;" onclick="showBrta('new')">নতুন লাইসেন্স আবেদন</button>
-<button class="btn" style="width:100%;margin:5px 0;" onclick="showBrta('renew')">লাইসেন্স নবায়ন</button>
-<button class="btn" style="width:100%;margin:5px 0;" onclick="showBrta('cancel')">আবেদন বাতিল</button>
-`;
-return;
-}
-
 let title="";
+
 if(type==="nid") title="এনআইডি সার্চ";
 else if(type==="mobile") title="মোবাইল সার্চ";
-else if(type==="birth") title="জন্ম নিবন্ধন সার্চ";
+else if(type==="birth") title="জন্ম নিবন্ধন";
 else if(type==="formno") title="ফর্ম নাম্বার";
-else if(type==="correction") title="সংশোধন অনুমোদন";
+else if(type==="correction") title="সংশোধন";
+else if(type==="brta") title="BRTA সার্ভিস";
 
 formArea.innerHTML=`
-<button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button>
+<button class="btn" onclick="backToDefault()">ফিরে যান</button>
 <h3>${title}</h3>
-<input type="text" class="form-control">
-<button class="btn" onclick="performSearch()">সার্চ করুন</button>
-`;
-}
-
-function showBrta(type){
-let t="";
-if(type==="new") t="নতুন লাইসেন্স আবেদন";
-if(type==="renew") t="লাইসেন্স নবায়ন";
-if(type==="cancel") t="আবেদন বাতিল";
-
-formArea.innerHTML=`
-<button class="btn back-btn" onclick="showForm('brta')">ফিরে যান</button>
-<h3>${t}</h3>
 <input class="form-control">
-<button class="btn" onclick="performSearch()">সাবমিট</button>
+<button class="btn" onclick="performSearch()">সার্চ করুন</button>
 `;
 }
 
@@ -208,7 +337,15 @@ formArea.innerHTML="<h3>একটি অপশন নির্বাচন ক�
 }
 
 function performSearch(){
-accessMessage.innerHTML="দুঃখিত আপনার পোর্টালে এক্সেস নেই। পেমেন্ট করুন।";
+
+showLoading("সার্চ হচ্ছে...");
+
+setTimeout(()=>{
+hideLoading();
+accessMessage.innerHTML="দুঃখিত আপনার এক্সেস নেই।";
+accessMessage.className="error-text";
+},1000);
+
 }
 
 </script>
