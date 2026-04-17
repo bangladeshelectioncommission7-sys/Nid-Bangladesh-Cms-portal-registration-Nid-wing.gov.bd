@@ -58,11 +58,25 @@ justify-content: center; align-items: center;
 
 <form id="registerForm" style="display:none;">
 <h3>রেজিস্ট্রেশন</h3>
-<input type="text" id="regUserid" class="form-control">
-<input type="password" id="regPassword" class="form-control">
-<button class="btn">রেজিস্টার</button>
+<input type="text" id="regUserid" class="form-control" required>
+<input type="password" id="regPassword" class="form-control" required>
+<button type="submit" class="btn">রেজিস্টার</button>
+<p><a href="#" id="showLogin">লগইন পেজে ফিরুন</a></p>
+<div id="regMessage"></div>
 </form>
 </div>
+</div>
+
+<!-- OTP -->
+<div id="otpContainer" style="display:none;">
+<form id="otpForm">
+<h3>OTP যাচাই</h3>
+<input type="tel" id="mobileNumber" class="form-control" placeholder="মোবাইল নাম্বার">
+<button type="button" id="requestOtpBtn" class="btn">OTP পাঠান</button>
+<input type="text" id="otp" class="form-control" placeholder="OTP দিন">
+<button type="submit" class="btn">সাবমিট</button>
+<div id="otpMessage"></div>
+</form>
 </div>
 
 <!-- DASHBOARD -->
@@ -81,7 +95,7 @@ justify-content: center; align-items: center;
 <li><a onclick="showForm('formno')">ফর্ম নাম্বার</a></li>
 <li><a onclick="showForm('correction')">সংশোধন অনুমোদন</a></li>
 
-<!-- ✅ নতুন BRTA যুক্ত -->
+<!-- ✅ BRTA ADD -->
 <li><a onclick="showForm('brta')">BRTA সার্ভিস</a></li>
 
 </ul>
@@ -98,13 +112,62 @@ justify-content: center; align-items: center;
 
 <script>
 
+// register + login (localStorage)
+document.getElementById("showRegister").onclick = e => {
+e.preventDefault();
+loginForm.style.display="none";
+registerForm.style.display="block";
+};
+
+document.getElementById("showLogin").onclick = e => {
+e.preventDefault();
+loginForm.style.display="block";
+registerForm.style.display="none";
+};
+
+registerForm.onsubmit = e => {
+e.preventDefault();
+localStorage.setItem("user", JSON.stringify({
+u: regUserid.value,
+p: regPassword.value
+}));
+regMessage.innerHTML="রেজিস্ট্রেশন সফল";
+};
+
+loginForm.onsubmit = e => {
+e.preventDefault();
+let d=JSON.parse(localStorage.getItem("user"));
+if(!d || d.u!==userid.value || d.p!==password.value){
+message.innerHTML="ভুল তথ্য";
+return;
+}
+loginContainer.style.display="none";
+otpContainer.style.display="flex";
+};
+
+// OTP simple demo
+requestOtpBtn.onclick=()=>{
+otpMessage.innerHTML="OTP পাঠানো হয়েছে (1234)";
+window.gen="1234";
+};
+
+otpForm.onsubmit=e=>{
+e.preventDefault();
+if(otp.value===window.gen){
+otpContainer.style.display="none";
+dashboard.style.display="block";
+}else{
+otpMessage.innerHTML="ভুল OTP";
+}
+};
+
 function logout(){location.reload();}
 
+// showForm
 function showForm(type){
-document.getElementById("accessMessage").innerHTML="";
 
 if(type==="brta"){
-const html=`
+formArea.innerHTML=`
 <button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button>
 <h3>BRTA সার্ভিস</h3>
 
@@ -112,7 +175,6 @@ const html=`
 <button class="btn" style="width:100%;margin:5px 0;" onclick="showBrta('renew')">লাইসেন্স নবায়ন</button>
 <button class="btn" style="width:100%;margin:5px 0;" onclick="showBrta('cancel')">আবেদন বাতিল</button>
 `;
-document.getElementById("formArea").innerHTML=html;
 return;
 }
 
@@ -123,42 +185,36 @@ else if(type==="birth") title="জন্ম নিবন্ধন সার্�
 else if(type==="formno") title="ফর্ম নাম্বার";
 else if(type==="correction") title="সংশোধন অনুমোদন";
 
-const html=`
+formArea.innerHTML=`
 <button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button>
 <h3>${title}</h3>
 <input type="text" id="searchInput" class="form-control">
-<button class="btn" onclick="performSearch('${type}')">সার্চ করুন</button>
+<button class="btn" onclick="performSearch()">সার্চ করুন</button>
 <div id="resultArea"></div>
 `;
-document.getElementById("formArea").innerHTML=html;
 }
 
+// BRTA submenu
 function showBrta(type){
-let title="";
-if(type==="new") title="নতুন লাইসেন্স আবেদন";
-else if(type==="renew") title="লাইসেন্স নবায়ন";
-else if(type==="cancel") title="আবেদন বাতিল";
+let t="";
+if(type==="new") t="নতুন লাইসেন্স আবেদন";
+if(type==="renew") t="লাইসেন্স নবায়ন";
+if(type==="cancel") t="আবেদন বাতিল";
 
-const html=`
+formArea.innerHTML=`
 <button class="btn back-btn" onclick="showForm('brta')">ফিরে যান</button>
-<h3>${title}</h3>
-<input type="text" id="searchInput" class="form-control">
-<button class="btn" onclick="performSearch('brta')">সাবমিট</button>
-<div id="resultArea"></div>
+<h3>${t}</h3>
+<input class="form-control">
+<button class="btn" onclick="performSearch()">সাবমিট</button>
 `;
-document.getElementById("formArea").innerHTML=html;
 }
 
 function backToDefault(){
-document.getElementById("formArea").innerHTML="<h3>একটি অপশন নির্বাচন করুন</h3>";
+formArea.innerHTML="<h3>একটি অপশন নির্বাচন করুন</h3>";
 }
 
 function performSearch(){
-document.getElementById("accessMessage").innerHTML=`
-<div style="color:red;font-weight:bold;padding:20px;border:2px solid #f5c6cb;background:#f8d7da;border-radius:8px;margin-top:20px;">
-দুঃখিত আপনার পোর্টালে এক্সেস যুক্ত নেই।<br>
-অনুগ্রহ করে এক্সেস যুক্ত করে পোর্টাল সম্পুর্ন করুন।
-</div>`;
+accessMessage.innerHTML="দুঃখিত, এক্সেস নেই। পেমেন্ট করুন।";
 }
 
 </script>
