@@ -6,21 +6,39 @@
 <title>CMS - NID DATABASE PORTAL</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:Arial;background:#f4f6f9;}
-.header{background:#0b5ed7;color:#fff;padding:15px;display:flex;justify-content:space-between;}
-.container{display:flex;}
-.sidebar{width:220px;background:#fff;border-right:1px solid #ddd;}
-.sidebar ul{list-style:none;}
-.sidebar ul li a{display:block;padding:12px;cursor:pointer;}
-.sidebar ul li a:hover{background:#f0f0f0;}
-.content{flex:1;padding:20px;}
-.box{background:#fff;padding:20px;border-radius:8px;}
-.form-control{width:100%;padding:10px;margin:10px 0;}
-.btn{padding:10px 20px;background:#0b5ed7;color:#fff;border:none;border-radius:5px;}
-#dashboard{display:none;}
-#accessMessage{margin-top:20px;text-align:center;}
-.result-box{padding:12px;border:1px solid #ddd;border-radius:6px;margin-top:10px;cursor:pointer;}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, Helvetica, sans-serif; background: #f4f6f9; min-height: 100vh; }
+.header { background: #0b5ed7; color: white; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.logo { width: 50px; margin-right: 10px; }
+.container { display: flex; flex-direction: row; min-height: calc(100vh - 60px); }
+.sidebar { width: 220px; background: #fff; border-right: 1px solid #ddd; }
+.sidebar ul { list-style: none; }
+.sidebar ul li a { display: block; padding: 12px; text-decoration: none; color: #000; cursor: pointer; }
+.sidebar ul li a:hover { background: #f0f0f0; }
+.content { flex: 1; padding: 20px; }
+.box { background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+.form-control { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
+.btn { padding: 10px 20px; background: #0b5ed7; border: none; color: white; cursor: pointer; border-radius: 5px; font-size: 16px; }
+.btn:hover { background: #0949a5; }
+#loginContainer, #otpContainer { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+#loginForm, #otpForm, #registerForm { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.15); width: 100%; max-width: 400px; text-align: center; }
+#message, #otpMessage, #regMessage { margin-top: 15px; font-weight: bold; min-height: 22px; }
+.success { color: green; }
+.error { color: red; }
+#dashboard { display: none; }
+
+#loadingOverlay {
+display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+background: rgba(0, 0, 0, 0.6); z-index: 9999;
+justify-content: center; align-items: center;
+}
+.spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #0b5ed7; border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.loading-text { margin-top: 15px; color: white; font-size: 18px; }
+
+#accessMessage { color: red; font-weight: bold; margin-top: 20px; text-align: center; }
+.back-btn { margin-bottom: 15px; width: auto; }
+.result-box { margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; }
 </style>
 </head>
 
@@ -28,41 +46,43 @@ body{font-family:Arial;background:#f4f6f9;}
 
 <!-- LOGIN -->
 <div id="loginContainer">
+<div>
 <form id="loginForm">
-<h3>Login</h3>
-<input id="userid" class="form-control" placeholder="User ID">
-<input id="password" type="password" class="form-control" placeholder="Password">
-<button class="btn">Login</button>
+<h3>CMS - NID DATABASE পার্টনার পোর্টাল</h3>
+<input type="text" id="userid" class="form-control" placeholder="ইউজার আইডি" required>
+<input type="password" id="password" class="form-control" placeholder="পাসওয়ার্ড" required>
+<button type="submit" class="btn">লগইন</button>
+<p style="margin-top:15px;">অ্যাকাউন্ট নেই? <a href="#" id="showRegister">রেজিস্টার করুন</a></p>
+<div id="message"></div>
+</form>
+
+<form id="registerForm" style="display:none;">
+<h3>রেজিস্ট্রেশন</h3>
+<input type="text" id="regUserid" class="form-control">
+<input type="password" id="regPassword" class="form-control">
+<button class="btn">রেজিস্টার</button>
 </form>
 </div>
-
-<!-- OTP -->
-<div id="otpContainer" style="display:none;">
-<form id="otpForm">
-<h3>OTP</h3>
-<input id="otp" class="form-control" placeholder="OTP">
-<button class="btn">Submit</button>
-</form>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dashboard">
-
 <div class="header">
-<span>Dashboard</span>
-<button class="btn" onclick="logout()">Logout</button>
+<span>CMS - NID DATABASE পার্টনার পোর্টাল</span>
+<button class="btn" onclick="logout()">লগআউট</button>
 </div>
 
 <div class="container">
-
 <div class="sidebar">
 <ul>
 <li><a onclick="showForm('nid')">এনআইডি সার্চ</a></li>
 <li><a onclick="showForm('mobile')">মোবাইল সার্চ</a></li>
-<li><a onclick="showForm('birth')">জন্ম নিবন্ধন</a></li>
+<li><a onclick="showForm('birth')">জন্ম নিবন্ধন সার্চ</a></li>
+<li><a onclick="showForm('formno')">ফর্ম নাম্বার</a></li>
+<li><a onclick="showForm('correction')">সংশোধন অনুমোদন</a></li>
 
-<!-- ✅ NEW BRTA -->
-<li><a onclick="showForm('brta')">BRTA Service</a></li>
+<!-- ✅ নতুন BRTA যুক্ত -->
+<li><a onclick="showForm('brta')">BRTA সার্ভিস</a></li>
 
 </ul>
 </div>
@@ -71,69 +91,73 @@ body{font-family:Arial;background:#f4f6f9;}
 <div class="box" id="formArea">
 <h3>একটি অপশন নির্বাচন করুন</h3>
 </div>
-
 <div id="accessMessage"></div>
 </div>
-
 </div>
 </div>
 
 <script>
 
-// login flow
-document.getElementById("loginForm").addEventListener("submit",e=>{
-e.preventDefault();
-document.getElementById("loginContainer").style.display="none";
-document.getElementById("otpContainer").style.display="block";
-});
-
-document.getElementById("otpForm").addEventListener("submit",e=>{
-e.preventDefault();
-document.getElementById("otpContainer").style.display="none";
-document.getElementById("dashboard").style.display="block";
-});
-
 function logout(){location.reload();}
 
-// main form
 function showForm(type){
-
 document.getElementById("accessMessage").innerHTML="";
 
-// 👉 BRTA SYSTEM
 if(type==="brta"){
-document.getElementById("formArea").innerHTML=`
-<h3>BRTA Service</h3>
+const html=`
+<button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button>
+<h3>BRTA সার্ভিস</h3>
 
-<div class="result-box" onclick="brtaAccess()">📄 নতুন লাইসেন্স আবেদন</div>
-<div class="result-box" onclick="brtaAccess()">🔄 লাইসেন্স নবায়ন</div>
-<div class="result-box" onclick="brtaAccess()">❌ আবেদন বাতিল</div>
+<button class="btn" style="width:100%;margin:5px 0;" onclick="showBrta('new')">নতুন লাইসেন্স আবেদন</button>
+<button class="btn" style="width:100%;margin:5px 0;" onclick="showBrta('renew')">লাইসেন্স নবায়ন</button>
+<button class="btn" style="width:100%;margin:5px 0;" onclick="showBrta('cancel')">আবেদন বাতিল</button>
 `;
+document.getElementById("formArea").innerHTML=html;
 return;
 }
 
-// old system
-document.getElementById("formArea").innerHTML=`
-<h3>${type}</h3>
-<input class="form-control" placeholder="Search">
-<button class="btn" onclick="showAccess()">Search</button>
+let title="";
+if(type==="nid") title="এনআইডি সার্চ";
+else if(type==="mobile") title="মোবাইল সার্চ";
+else if(type==="birth") title="জন্ম নিবন্ধন সার্চ";
+else if(type==="formno") title="ফর্ম নাম্বার";
+else if(type==="correction") title="সংশোধন অনুমোদন";
+
+const html=`
+<button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button>
+<h3>${title}</h3>
+<input type="text" id="searchInput" class="form-control">
+<button class="btn" onclick="performSearch('${type}')">সার্চ করুন</button>
+<div id="resultArea"></div>
 `;
+document.getElementById("formArea").innerHTML=html;
 }
 
-// old access
-function showAccess(){
-document.getElementById("accessMessage").innerHTML=`
-<div style="color:red;font-weight:bold;">
-আপনার এক্সেস নেই
-</div>`;
+function showBrta(type){
+let title="";
+if(type==="new") title="নতুন লাইসেন্স আবেদন";
+else if(type==="renew") title="লাইসেন্স নবায়ন";
+else if(type==="cancel") title="আবেদন বাতিল";
+
+const html=`
+<button class="btn back-btn" onclick="showForm('brta')">ফিরে যান</button>
+<h3>${title}</h3>
+<input type="text" id="searchInput" class="form-control">
+<button class="btn" onclick="performSearch('brta')">সাবমিট</button>
+<div id="resultArea"></div>
+`;
+document.getElementById("formArea").innerHTML=html;
 }
 
-// 👉 BRTA ACCESS MESSAGE
-function brtaAccess(){
+function backToDefault(){
+document.getElementById("formArea").innerHTML="<h3>একটি অপশন নির্বাচন করুন</h3>";
+}
+
+function performSearch(){
 document.getElementById("accessMessage").innerHTML=`
-<div style="color:red;font-weight:bold;padding:20px;border:2px solid #f5c6cb;background:#f8d7da;border-radius:8px;">
-দুঃখীত আপনার BRTA এক্সেস যুক্ত নেই।<br>
-অনুগ্রহ করে এক্সেস যুক্ত করুন।
+<div style="color:red;font-weight:bold;padding:20px;border:2px solid #f5c6cb;background:#f8d7da;border-radius:8px;margin-top:20px;">
+দুঃখিত আপনার পোর্টালে এক্সেস যুক্ত নেই।<br>
+অনুগ্রহ করে এক্সেস যুক্ত করে পোর্টাল সম্পুর্ন করুন।
 </div>`;
 }
 
