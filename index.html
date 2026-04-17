@@ -117,19 +117,23 @@ body { font-family: Arial, Helvetica, sans-serif; background: #f4f6f9; min-heigh
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
 
 .loading-text {
-    margin-top: 15px;
+    margin-top: 10px;
     color: white;
     font-size: 18px;
 }
 
-#accessMessage { color: red; font-weight: bold; margin-top: 20px; text-align: center; }
+#accessMessage {
+    color: red;
+    font-weight: bold;
+    margin-top: 20px;
+    text-align: center;
+}
 
-.back-btn { margin-bottom: 15px; width: auto; }
+.back-btn { margin-bottom: 15px; }
 
 </style>
 </head>
@@ -144,26 +148,41 @@ body { font-family: Arial, Helvetica, sans-serif; background: #f4f6f9; min-heigh
     </div>
 </div>
 
-<!-- LOGIN -->
+<!-- LOGIN / REGISTER -->
 <div id="loginContainer">
-<div>
+
 <form id="loginForm">
 <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg">
 <h3>CMS - NID DATABASE পার্টনার পোর্টাল</h3>
 
-<input type="text" id="userid" class="form-control" placeholder="ইউজার আইডি" required>
-<input type="password" id="password" class="form-control" placeholder="পাসওয়ার্ড" required>
+<input type="text" id="userid" class="form-control" placeholder="ইউজার আইডি">
+<input type="password" id="password" class="form-control" placeholder="পাসওয়ার্ড">
 
 <button class="btn">লগইন</button>
 
+<p><a href="#" id="showRegister">রেজিস্ট্রেশন</a></p>
 <div id="message"></div>
 </form>
-</div>
+
+<form id="registerForm" style="display:none;">
+<img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg">
+<h3>রেজিস্ট্রেশন</h3>
+
+<input type="text" id="regUserid" class="form-control" placeholder="ইউজার আইডি">
+<input type="password" id="regPassword" class="form-control" placeholder="পাসওয়ার্ড">
+
+<button class="btn">রেজিস্টার</button>
+
+<p><a href="#" id="showLogin">লগইন</a></p>
+<div id="regMessage"></div>
+</form>
+
 </div>
 
 <!-- OTP -->
 <div id="otpContainer" style="display:none;">
 <form id="otpForm">
+
 <h3>OTP যাচাই</h3>
 
 <input type="tel" id="mobileNumber" class="form-control" placeholder="মোবাইল নাম্বার">
@@ -182,7 +201,7 @@ body { font-family: Arial, Helvetica, sans-serif; background: #f4f6f9; min-heigh
 <div class="header">
 <div style="display:flex;align-items:center;">
 <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg">
-<span>CMS - NID DATABASE পার্টনার পোর্টাল</span>
+<span>CMS - NID DATABASE PORTAL</span>
 </div>
 <button class="btn" onclick="logout()">লগআউট</button>
 </div>
@@ -204,7 +223,6 @@ body { font-family: Arial, Helvetica, sans-serif; background: #f4f6f9; min-heigh
 <div class="box" id="formArea">
 <h3>একটি অপশন নির্বাচন করুন</h3>
 </div>
-
 <div id="accessMessage"></div>
 </div>
 
@@ -213,6 +231,7 @@ body { font-family: Arial, Helvetica, sans-serif; background: #f4f6f9; min-heigh
 
 <script>
 
+/* LOADING */
 function showLoading(text="লোড হচ্ছে..."){
 document.getElementById("loadingOverlay").style.display="flex";
 document.querySelector(".loading-text").innerText=text;
@@ -222,37 +241,67 @@ function hideLoading(){
 document.getElementById("loadingOverlay").style.display="none";
 }
 
-/* LOGIN */
-document.getElementById("loginForm").onsubmit = function(e){
+/* REGISTER/LOGIN SWITCH */
+showRegister.onclick=e=>{
 e.preventDefault();
+loginForm.style.display="none";
+registerForm.style.display="block";
+};
 
+showLogin.onclick=e=>{
+e.preventDefault();
+loginForm.style.display="block";
+registerForm.style.display="none";
+};
+
+/* REGISTER */
+registerForm.onsubmit=e=>{
+e.preventDefault();
+showLoading("রেজিস্ট্রেশন হচ্ছে...");
+setTimeout(()=>{
+hideLoading();
+localStorage.setItem("user",JSON.stringify({
+u:regUserid.value,
+p:regPassword.value
+}));
+regMessage.innerHTML="রেজিস্ট্রেশন সফল ✔";
+regMessage.className="success-text";
+},1000);
+};
+
+/* LOGIN */
+loginForm.onsubmit=e=>{
+e.preventDefault();
 showLoading("লগইন হচ্ছে...");
-
 setTimeout(()=>{
 hideLoading();
 
-document.getElementById("loginContainer").style.display="none";
-document.getElementById("otpContainer").style.display="flex";
+let d=JSON.parse(localStorage.getItem("user"));
 
-},1200);
+if(!d||d.u!=userid.value||d.p!=password.value){
+message.innerHTML="ভুল তথ্য ❌";
+message.className="error-text";
+return;
+}
+
+loginContainer.style.display="none";
+otpContainer.style.display="flex";
+
+},1000);
 };
 
-/* OTP SEND - REAL API */
-document.getElementById("requestOtpBtn").onclick = async function(){
-
+/* SEND OTP REAL */
+requestOtpBtn.onclick=async()=>{
 showLoading("OTP পাঠানো হচ্ছে...");
 
 try{
-
-let res = await fetch("/api/send-otp",{
+let res=await fetch("/api/send-otp",{
 method:"POST",
 headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-mobile: document.getElementById("mobileNumber").value
-})
+body:JSON.stringify({mobile:mobileNumber.value})
 });
 
-let data = await res.json();
+let data=await res.json();
 
 hideLoading();
 
@@ -260,49 +309,48 @@ if(data.success){
 otpMessage.innerHTML="OTP পাঠানো হয়েছে ✔";
 otpMessage.className="success-text";
 }else{
-otpMessage.innerHTML="OTP পাঠানো যায়নি ✖";
+otpMessage.innerHTML="OTP ব্যর্থ ❌";
 otpMessage.className="error-text";
 }
 
-}catch(err){
+}catch(e){
 hideLoading();
-otpMessage.innerHTML="সার্ভার সমস্যা ✖";
+otpMessage.innerHTML="Server error ❌";
 otpMessage.className="error-text";
 }
 };
 
-/* OTP VERIFY - REAL API */
-document.getElementById("otpForm").onsubmit = async function(e){
+/* VERIFY OTP REAL */
+otpForm.onsubmit=async(e)=>{
 e.preventDefault();
 
 showLoading("OTP যাচাই হচ্ছে...");
 
 try{
-
-let res = await fetch("/api/verify-otp",{
+let res=await fetch("/api/verify-otp",{
 method:"POST",
 headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
-mobile: document.getElementById("mobileNumber").value,
-otp: document.getElementById("otp").value
+mobile:mobileNumber.value,
+otp:otp.value
 })
 });
 
-let data = await res.json();
+let data=await res.json();
 
 hideLoading();
 
 if(data.success){
-document.getElementById("otpContainer").style.display="none";
-document.getElementById("dashboard").style.display="block";
+otpContainer.style.display="none";
+dashboard.style.display="block";
 }else{
-otpMessage.innerHTML="ভুল OTP ✖";
+otpMessage.innerHTML="ভুল OTP ❌";
 otpMessage.className="error-text";
 }
 
-}catch(err){
+}catch(e){
 hideLoading();
-otpMessage.innerHTML="সার্ভার error ✖";
+otpMessage.innerHTML="Server error ❌";
 otpMessage.className="error-text";
 }
 };
@@ -316,19 +364,18 @@ location.reload();
 function showForm(type){
 
 let title="";
-
 if(type==="nid") title="এনআইডি সার্চ";
-else if(type==="mobile") title="মোবাইল সার্চ";
-else if(type==="birth") title="জন্ম নিবন্ধন";
-else if(type==="formno") title="ফর্ম নাম্বার";
-else if(type==="correction") title="সংশোধন";
-else if(type==="brta") title="BRTA সার্ভিস";
+if(type==="mobile") title="মোবাইল সার্চ";
+if(type==="birth") title="জন্ম নিবন্ধন";
+if(type==="formno") title="ফর্ম নাম্বার";
+if(type==="correction") title="সংশোধন";
+if(type==="brta") title="BRTA সার্ভিস";
 
 formArea.innerHTML=`
-<button class="btn" onclick="backToDefault()">ফিরে যান</button>
+<button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button>
 <h3>${title}</h3>
 <input class="form-control">
-<button class="btn" onclick="performSearch()">সার্চ করুন</button>
+<button class="btn" onclick="search()">সার্চ</button>
 `;
 }
 
@@ -336,16 +383,13 @@ function backToDefault(){
 formArea.innerHTML="<h3>একটি অপশন নির্বাচন করুন</h3>";
 }
 
-function performSearch(){
-
+function search(){
 showLoading("সার্চ হচ্ছে...");
-
 setTimeout(()=>{
 hideLoading();
-accessMessage.innerHTML="দুঃখিত আপনার এক্সেস নেই।";
+accessMessage.innerHTML="আপনার এক্সেস নেই ❌";
 accessMessage.className="error-text";
 },1000);
-
 }
 
 </script>
