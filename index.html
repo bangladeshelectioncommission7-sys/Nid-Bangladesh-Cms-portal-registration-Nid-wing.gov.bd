@@ -356,7 +356,7 @@
                             <div id="eyeDetailContainer"></div>
                         `;
                     } else {
-                        resArea.innerHTML = `<div class="not-found-card">❌ আপনার ইনপুটকৃত '${query}' নাম্বারের কোনো সংশোধিত রেকর্ড ডাটাবেজে পাওয়া যায়নি।</div>`;
+                        resArea.innerHTML = `<div class="not-found-card">❌  '${query}' No data record found।</div>`;
                     }
                 } catch(e) { hideLoading(); }
                 return;
@@ -388,7 +388,7 @@
                         </div>
                     `;
                 } else {
-                    resArea.innerHTML = `<div class="not-found-card">❌ দুঃখিত, ডাটাবেজে এই মুহূর্তে '${query}' নম্বরের কোনো ফাইল সংরক্ষিত নেই।</div>`;
+                    resArea.innerHTML = `<div class="not-found-card">❌  '${query}' No data record found।</div>`;
                 }
             } catch (e) { hideLoading(); }
         }
