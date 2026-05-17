@@ -3,123 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CMS - NID DATABASE পার্টনার পোর্টাল</title>
+    <title>Bangladesh Election Commission - CMS Portal</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: Arial, Helvetica, sans-serif; background: #f4f6f9; min-height: 100vh; }
-        .header { background: #0b5ed7; color: white; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
-        .logo { width: 50px; margin-right: 10px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f6f9; min-height: 100vh; color: #333; }
+        .header { background: #0b5ed7; color: white; padding: 15px 20px; text-align: center; font-size: 20px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .logo { width: 45px; margin-right: 12px; }
         
-        /* আধুনিক সিএসএস রোলিং নোটিশ বার */
-        .notice-container {
-            background: #ffdbdb;
-            border-bottom: 2px solid #dc3545;
-            overflow: hidden;
-            position: relative;
-            padding: 12px 0;
-            display: flex;
-            align-items: center;
-        }
-        .notice-text {
-            display: inline-block;
-            white-space: nowrap;
-            padding-left: 100%;
-            color: #dc3545;
-            font-weight: bold;
-            font-size: 16px;
-            animation: text-roll 25s linear infinite;
-        }
-        /* নোটিশের ওপর মাউস রাখলে লেখাটি থামবে */
-        .notice-container:hover .notice-text {
-            animation-play-state: paused;
-        }
-        /* রোলিং অ্যানিমেশন কিফ্রেম */
-        @keyframes text-roll {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(-100%, 0, 0); }
-        }
+        .notice-container { background: #ffdbdb; border-bottom: 2px solid #dc3545; overflow: hidden; position: relative; padding: 10px 0; display: flex; align-items: center; }
+        .notice-text { display: inline-block; white-space: nowrap; padding-left: 100%; color: #dc3545; font-weight: bold; font-size: 15px; animation: text-roll 28s linear infinite; }
+        .notice-container:hover .notice-text { animation-play-state: paused; }
+        @keyframes text-roll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-        .container { display: flex; flex-direction: row; min-height: calc(100vh - 60px); }
-        .sidebar { width: 220px; background: #fff; border-right: 1px solid #ddd; }
+        .container { display: flex; flex-direction: row; min-height: calc(100vh - 65px); }
+        .sidebar { width: 240px; background: #fff; border-right: 1px solid #dee2e6; box-shadow: 2px 0 5px rgba(0,0,0,0.02); }
         .sidebar ul { list-style: none; }
-        .sidebar ul li a { display: block; padding: 12px; text-decoration: none; color: #000; cursor: pointer; }
-        .sidebar ul li a:hover { background: #f0f0f0; }
-        .content { flex: 1; padding: 20px; }
-        .box { background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
-        .form-control { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
-        .btn { padding: 10px 20px; background: #0b5ed7; border: none; color: white; cursor: pointer; border-radius: 5px; font-size: 16px; }
+        .sidebar ul li a { display: block; padding: 14px 20px; text-decoration: none; color: #495057; cursor: pointer; font-weight: 500; font-size: 15px; border-bottom: 1px solid #f1f3f5; transition: all 0.2s; }
+        .sidebar ul li a:hover { background: #f8f9fa; color: #0b5ed7; padding-left: 25px; }
+        
+        .sidebar ul li a.admin-menu-btn { background: #ffc107; font-weight: bold; color: #212529; display: none; }
+        .sidebar ul li a.admin-menu-btn:hover { background: #e0a800; color: #212529; }
+
+        .content { flex: 1; padding: 25px; }
+        .box { background: #fff; padding: 25px; border: 1px solid #e3e6f0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.01); }
+        .form-control { width: 100%; padding: 12px; margin: 8px 0 15px 0; border: 1px solid #ced4da; border-radius: 6px; font-size: 15px; transition: border 0.2s; }
+        .form-control:focus { border-color: #0b5ed7; outline: none; }
+        .btn { padding: 10px 22px; background: #0b5ed7; border: none; color: white; cursor: pointer; border-radius: 6px; font-size: 15px; font-weight: 500; }
         .btn:hover { background: #0949a5; }
-        #loginContainer { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        #loginForm, #registerForm { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.15); width: 100%; max-width: 400px; text-align: center; }
-        #message, #regMessage { margin-top: 15px; font-weight: bold; min-height: 22px; }
-        .success { color: green; }
-        .error { color: red; }
+        .back-btn { background: #6c757d; margin-bottom: 20px; }
+        .back-btn:hover { background: #5a6268; }
+        
+        #loginContainer { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; background: #e9ecef; }
+        #loginForm, #registerForm, #secretForm { background: white; padding: 35px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); width: 100%; max-width: 420px; text-align: center; }
+        #message, #regMessage, #secretMessage { margin-top: 15px; font-weight: bold; min-height: 22px; }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
         #dashboard { display: none; }
         
-        #loadingOverlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6); z-index: 9999;
-            justify-content: center; align-items: center;
-        }
-        .spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #0b5ed7; border-radius: 50%; animation: spin 1s linear infinite; }
+        #loadingOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
+        .spinner { width: 55px; height: 55px; border: 5px solid #f3f3f3; border-top: 5px solid #0b5ed7; border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .loading-text { margin-top: 15px; color: white; font-size: 18px; }
+        .loading-text { margin-top: 15px; color: white; font-size: 16px; }
 
-        #accessMessage { color: red; font-weight: bold; margin-top: 20px; text-align: center; }
-        .back-btn { margin-bottom: 15px; width: auto; }
-        .result-box { margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; }
+        /* অফিশিয়াল কারেকশন পোর্টাল টেবিল লেআউট (হুবহু স্ক্রিনশট ২ ও ৩ এর মতো) */
+        .ec-table-container { width: 100%; overflow-x: auto; margin-top: 15px; background: #fff; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .ec-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+        .ec-table th, .ec-table td { padding: 12px 15px; border: 1px solid #dee2e6; vertical-align: middle; }
+        .ec-table th { background: #f8f9fa; color: #495057; font-weight: 600; text-align: center; }
+        .text-center { text-align: center !important; }
+        
+        .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; display: inline-block; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-approved { background: #d4edda; color: #155724; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
+        
+        .view-icon-btn { border: none; background: transparent; cursor: pointer; font-size: 16px; color: #495057; }
+        .view-icon-btn:hover { color: #0b5ed7; }
+        
+        .app-details-box { border: 1px solid #ced4da; margin-top: 15px; border-radius: 4px; background: #fff; }
+        .app-details-header { background: #f8f9fa; padding: 10px 15px; border-bottom: 1px solid #ced4da; font-size: 13px; color: #6c757d; font-weight: bold; display: flex; justify-content: space-between; }
+        
+        .btn-approve { background: #28a745; margin-right: 5px; }
+        .btn-approve:hover { background: #218838; }
+        .btn-reject { background: #dc3545; }
+        .btn-reject:hover { background: #c82333; }
+
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
+        .admin-table th, .admin-table td { padding: 10px; border: 1px solid #ddd; }
+        .admin-table th { background: #e9ecef; }
+        .admin-section { border: 1px solid #ddd; padding: 18px; margin-bottom: 25px; border-radius: 6px; background: #fafafa; }
+        
+        .result-card { background: #f8f9fa; border: 1px solid #ced4da; padding: 18px; border-radius: 6px; margin-top: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .result-item { margin-bottom: 8px; font-size: 15px; }
+        .not-found-card { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 15px; border-radius: 6px; margin-top: 15px; font-weight: 500; }
     </style>
 </head>
 <body>
 
-    <!-- লগইন / রেজিস্টার -->
     <div id="loginContainer">
         <div>
             <form id="loginForm">
-                <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg" alt="লোগো">
-                <h3>CMS - NID DATABASE পার্টনার পোর্টাল</h3>
+                <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg" alt="EC Logo">
+                <h3 style="margin-bottom:15px;">CMS - NID DATABASE পার্টনার পোর্টাল</h3>
                 <input type="text" id="userid" class="form-control" placeholder="ইউজার আইডি" required>
                 <input type="password" id="password" class="form-control" placeholder="পাসওয়ার্ড" required>
-                <button type="submit" class="btn">লগইন</button>
-                <p style="margin-top:15px;">অ্যাকাউন্ট নেই? <a href="#" id="showRegister">রেজিস্টার করুন</a></p>
+                <button type="submit" class="btn" style="width:100%;">লগইন</button>
+                <p style="margin-top:15px; font-size:14px;">অ্যাকাউন্ট নেই? <a href="#" id="showRegister">রেজিস্টার করুন</a></p>
                 <div id="message"></div>
             </form>
 
             <form id="registerForm" style="display:none;">
-                <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg" alt="লোগো">
-                <h3>রেজিস্ট্রেশন</h3>
+                <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg" alt="EC Logo">
+                <h3 style="margin-bottom:15px;">নতুন অ্যাকাউন্ট রেজিস্ট্রেশন</h3>
                 <input type="text" id="regUserid" class="form-control" placeholder="ইউজার আইডি" required>
                 <input type="password" id="regPassword" class="form-control" placeholder="পাসওয়ার্ড" required>
-                <button type="submit" class="btn">রেজিস্টার</button>
-                <p style="margin-top:15px;"><a href="#" id="showLogin">লগইন পেজে ফিরুন</a></p>
+                <button type="submit" class="btn" style="width:100%;">রেজিস্টার</button>
+                <p style="margin-top:15px; font-size:14px;"><a href="#" id="showLogin">লগইন পেজে ফিরুন</a></p>
                 <div id="regMessage"></div>
+            </form>
+
+            <form id="secretForm" style="display:none;">
+                <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg" alt="EC Logo">
+                <h3>নিরাপত্তা ভেরিফিকেশন</h3>
+                <p style="font-size:13px; color:#6c757d; margin: 10px 0;">কন্ট্রোল প্যানেলে প্রবেশের সিক্রেট কী টাইপ করুন</p>
+                <input type="password" id="secretKeyInput" class="form-control" placeholder="••••" required>
+                <button type="submit" class="btn" style="background:#28a745; width:100%;">ভেরিফাই</button>
+                <p style="margin-top:15px; font-size:14px;"><a href="#" onclick="logout()">বাতিল করুন</a></p>
+                <div id="secretMessage"></div>
             </form>
         </div>
     </div>
 
-    <!-- লোডিং -->
     <div id="loadingOverlay">
-        <div style="text-align: center;">
-            <div class="spinner"></div>
-            <div class="loading-text">প্রক্রিয়া চলছে...</div>
-        </div>
+        <div class="spinner"></div>
+        <div class="loading-text" id="loadingText">অনুগ্রহ করে অপেক্ষা করুন...</div>
     </div>
 
-    <!-- ড্যাশবোর্ড -->
     <div id="dashboard">
         <div class="header">
             <div style="display: flex; align-items: center;">
-                <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg" alt="লোগো">
-                <span>CMS - NID DATABASE পার্টনার পোর্টাল</span>
+                <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg" alt="EC Logo">
+                <span>CMS - NID DATABASE পার্টনার পোর্টাল <span id="adminBadge" style="color:#ffc107; display:none;">(ADMIN)</span></span>
             </div>
-            <button class="btn" onclick="logout()">লগআউট</button>
+            <button class="btn" style="background:#dc3545;" onclick="logout()">লগআউট</button>
         </div>
 
-        <!-- সিএসএস অ্যানিমেশন নোটিশ বার -->
         <div class="notice-container">
-            <div class="notice-text">
-                ⚠️ দুঃখিত আপনার পোর্টাল এক্সেস এর মূল্য বৃদ্ধির কারনে আপনার এক্সেস স্থগিত রয়েছে, অনুগ্রহ করে নগদ নাম্বারে বকেয়া ৩৭০ টাকা পরিশোধ করুন, ধন্যবাদ। বাংলাদেশ নির্বাচন কমিশন সচিবালয়।।
-            </div>
+            <div class="notice-text" id="liveNoticeText">ডাটা লোড হচ্ছে...</div>
         </div>
 
         <div class="container">
@@ -130,138 +140,511 @@
                     <li><a onclick="showForm('birth')">জন্ম নিবন্ধন সার্চ</a></li>
                     <li><a onclick="showForm('formno')">ফর্ম নাম্বার</a></li>
                     <li><a onclick="showForm('correction')">সংশোধন অনুমোদন</a></li>
+                    <li><a onclick="showUserProfile()">👤 আমার প্রোফাইল</a></li>
+                    <li><a id="adminMenuOpt" class="admin-menu-btn" onclick="showAdminPanel()">🔐 অ্যাডমিন প্যানেল</a></li>
                 </ul>
             </div>
             <div class="content">
                 <div class="box" id="formArea">
-                    <h3>একটি অপশন নির্বাচন করুন</h3>
+                    <h3 style="color:#495057;">পোর্টাল ড্যাশবোর্ডে আপনাকে স্বাগতম। বামদিকের মেনু থেকে আপনার কাঙ্ক্ষিত অপশনটি নির্বাচন করুন।</h3>
                 </div>
-                <div id="accessMessage"></div>
             </div>
         </div>
     </div>
 
     <script>
-        function showLoading() { document.getElementById("loadingOverlay").style.display = "flex"; }
+        const FIREBASE_URL = "https://cms-portal-b020a-default-rtdb.firebaseio.com"; 
+        const _0x4f2a = [32, 32, 32, 32]; // ৪টি স্পেস সিক্রেট কী লক
+
+        function showLoading(text = "অনুগ্রহ করে অপেক্ষা করুন...") { 
+            document.getElementById("loadingText").innerText = text;
+            document.getElementById("loadingOverlay").style.display = "flex"; 
+        }
         function hideLoading() { document.getElementById("loadingOverlay").style.display = "none"; }
 
-        // Register & Login
-        document.getElementById("showRegister").addEventListener("click", e => { 
-            e.preventDefault(); 
-            document.getElementById("loginForm").style.display = "none"; 
-            document.getElementById("registerForm").style.display = "block"; 
-        });
-        
-        document.getElementById("showLogin").addEventListener("click", e => { 
-            e.preventDefault(); 
-            document.getElementById("registerForm").style.display = "none"; 
-            document.getElementById("loginForm").style.display = "block"; 
-        });
+        window.onload = function() {
+            const loggedInUser = localStorage.getItem("loggedInUser");
+            updateNoticeBar(loggedInUser);
+            if (loggedInUser) {
+                document.getElementById("loginContainer").style.display = "none";
+                document.getElementById("dashboard").style.display = "block";
+                if (loggedInUser === "admin") {
+                    document.getElementById("adminMenuOpt").style.display = "block";
+                    document.getElementById("adminBadge").style.display = "inline";
+                }
+            }
+        };
 
-        document.getElementById("registerForm").addEventListener("submit", e => {
+        async function updateNoticeBar(username) {
+            try {
+                if(username && username !== "admin") {
+                    const pRes = await fetch(`${FIREBASE_URL}/personal_notices/${username}.json`);
+                    const pNotice = await pRes.json();
+                    if(pNotice) {
+                        document.getElementById("liveNoticeText").innerText = pNotice;
+                        return;
+                    }
+                }
+                const response = await fetch(`${FIREBASE_URL}/common_notice.json`);
+                const commonNotice = await response.json();
+                document.getElementById("liveNoticeText").innerText = commonNotice || "⚠️ পোর্টাল সিস্টেম আপডেট চলছে। সাময়িক বিভ্রাটের জন্য দুঃখিত।";
+            } catch(e) { document.getElementById("liveNoticeText").innerText = "সার্ভার সংযোগ ত্রুটি!"; }
+        }
+
+        document.getElementById("showRegister").addEventListener("click", e => { e.preventDefault(); document.getElementById("loginForm").style.display = "none"; document.getElementById("registerForm").style.display = "block"; });
+        document.getElementById("showLogin").addEventListener("click", e => { e.preventDefault(); document.getElementById("registerForm").style.display = "none"; document.getElementById("loginForm").style.display = "block"; });
+
+        async function fetchUsers() {
+            try {
+                const response = await fetch(`${FIREBASE_URL}/users.json`);
+                const data = await response.json();
+                return data ? Object.values(data) : [];
+            } catch (error) { return []; }
+        }
+
+        document.getElementById("registerForm").addEventListener("submit", async e => {
             e.preventDefault();
             const user = document.getElementById("regUserid").value.trim();
             const pass = document.getElementById("regPassword").value.trim();
             const regMsg = document.getElementById("regMessage");
             if (!user || !pass) return;
+            if(user.toLowerCase() === 'admin') { regMsg.innerHTML = `<span class="error">'admin' ইউজার আইডি রিজার্ভড।</span>`; return; }
             
-            const existing = localStorage.getItem("ecUser");
-            if (existing) {
-                regMsg.innerHTML = `<button onclick="resetAccount()" class="btn" style="background:#dc3545;margin-top:10px;">পুরানো অ্যাকাউন্ট মুছে নতুন রেজিস্টার করুন</button>`;
-                regMsg.className = "error";
+            showLoading();
+            let users = await fetchUsers();
+            if (users.find(u => u.userid === user)) {
+                hideLoading();
+                regMsg.innerHTML = `<span class="error">এই ইউজার আইডিটি ইতিমধ্যে নিবন্ধিত!</span>`;
                 return;
             }
-            localStorage.setItem("ecUser", JSON.stringify({ userid: user, password: pass }));
+            const newUser = { userid: user, password: pass, status: "Active" };
+            await fetch(`${FIREBASE_URL}/users/${user}.json`, { method: 'PUT', body: JSON.stringify(newUser) });
+            hideLoading();
             regMsg.innerHTML = `<span class="success">রেজিস্ট্রেশন সফল হয়েছে। লগইন করুন...</span>`;
-            setTimeout(() => {
-                document.getElementById("registerForm").style.display = "none";
-                document.getElementById("loginForm").style.display = "block";
-                regMsg.innerHTML = "";
-            }, 1500);
+            setTimeout(() => { document.getElementById("registerForm").style.display = "none"; document.getElementById("loginForm").style.display = "block"; regMsg.innerHTML = ""; }, 1500);
         });
 
-        window.resetAccount = function() { 
-            localStorage.removeItem("ecUser"); 
-            location.reload(); 
-        };
-
-        // লগইন
-        document.getElementById("loginForm").addEventListener("submit", e => {
+        document.getElementById("loginForm").addEventListener("submit", async e => {
             e.preventDefault();
             const user = document.getElementById("userid").value.trim();
             const pass = document.getElementById("password").value.trim();
-            const stored = JSON.parse(localStorage.getItem("ecUser") || "{}");
+            if (user === "admin" && pass === "admin123") { document.getElementById("loginForm").style.display = "none"; document.getElementById("secretForm").style.display = "block"; document.getElementById("secretKeyInput").focus(); return; }
 
-            if (!stored || stored.userid !== user || stored.password !== pass) {
-                document.getElementById("message").innerHTML = `<span class="error">ইউজার আইডি অথবা পাসওয়ার্ড ভুল।</span>`;
+            showLoading();
+            try {
+                const response = await fetch(`${FIREBASE_URL}/users/${user}.json`);
+                const foundUser = await response.json();
+                hideLoading();
+                if (!foundUser || foundUser.password !== pass) { document.getElementById("message").innerHTML = `<span class="error">ইউজার আইডি অথবা পাসওয়ার্ড ভুল।</span>`; return; }
+                if (foundUser.status === "Blocked") { document.getElementById("message").innerHTML = `<span class="error">আপনার অ্যাকাউন্টটি সাময়িকভাবে স্থগিত রয়েছে!</span>`; return; }
+                localStorage.setItem("loggedInUser", user);
+                document.getElementById("loginContainer").style.display = "none";
+                document.getElementById("dashboard").style.display = "block";
+                updateNoticeBar(user);
+            } catch (error) { hideLoading(); document.getElementById("message").innerHTML = `<span class="error">সার্ভার ডাউন রয়েছে!</span>`; }
+        });
+
+        document.getElementById("secretForm").addEventListener("submit", e => {
+            e.preventDefault();
+            const inputVal = document.getElementById("secretKeyInput").value;
+            let isValid = inputVal.length === _0x4f2a.length;
+            if(isValid) { for(let i=0; i<inputVal.length; i++) { if(inputVal.charCodeAt(i) !== _0x4f2a[i]) { isValid = false; break; } } }
+            if(isValid) {
+                showLoading();
+                setTimeout(() => {
+                    hideLoading();
+                    localStorage.setItem("loggedInUser", "admin");
+                    document.getElementById("loginContainer").style.display = "none";
+                    document.getElementById("dashboard").style.display = "block";
+                    document.getElementById("adminMenuOpt").style.display = "block";
+                    document.getElementById("adminBadge").style.display = "inline";
+                    document.getElementById("secretForm").style.display = "none";
+                    updateNoticeBar("admin");
+                }, 800);
+            } else {
+                document.getElementById("secretMessage").innerHTML = `<span class="error">ভুল সিক্রেট কোড! প্রবেশ নিষিদ্ধ।</span>`;
+            }
+        });
+
+        function logout() { localStorage.removeItem("loggedInUser"); location.reload(); }
+        function backToDefault() { document.getElementById("formArea").innerHTML = "<h3>একটি অপশন নির্বাচন করুন</h3>"; }
+
+        // পাবলিক ফর্ম লেআউট জেনারেটর
+        function showForm(type) {
+            let title = "", fields = "", label = "";
+            if (type === "nid") { title = "এনআইডি সার্চ"; label = "জাতীয় পরিচয়পত্র নম্বর দিন"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}"><select id="nidType" class="form-control"><option value="ServerCopy">সার্ভার কপি</option><option value="SignCopy">সাইন কপি</option></select>`; }
+            else if (type === "mobile") { title = "মোবাইল সার্চ"; label = "মোবাইল নম্বর দিন"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}">`; }
+            else if (type === "birth") { title = "জন্ম নিবন্ধন সার্চ"; label = "জন্ম নিবন্ধন নম্বর দিন"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}">`; }
+            else if (type === "formno") { title = "ফর্ম নাম্বার"; label = "ফর্ম নম্বর দিন"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}">`; }
+            else if (type === "correction") { title = "সংশোধন অনুমোদন"; label = "জাতীয় পরিচয় পত্র নম্বর / আবেদন কপি নম্বর দিন"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}">`; }
+
+            document.getElementById("formArea").innerHTML = `
+                <button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button>
+                <h3 style="margin-bottom:15px; color:#0b5ed7;">${title}</h3>
+                ${fields}
+                <button class="btn" style="margin-top:5px;" onclick="handlePublicSearch('${type}')">অনুসন্ধান করুন</button>
+                <div id="resArea"></div>
+            `;
+        }
+
+        // 🔍 পাবলিক সার্চ ও রিয়েল-টাইম ম্যাচিং কোর মডিউল
+        async function handlePublicSearch(type) {
+            const query = document.getElementById("sqInput").value.trim();
+            const resArea = document.getElementById("resArea");
+            if (!query) { alert("অনুগ্রহ করে সঠিক নম্বর ইনপুট দিন!"); return; }
+
+            showLoading("সার্ভার অনুসন্ধান করা হচ্ছে...");
+            const user = localStorage.getItem("loggedInUser");
+
+            // ১. অ্যাডমিনের ট্র্যাকিং লগ ডাটাবেজে পুশ করা
+            try {
+                const logId = "log_" + Date.now();
+                await fetch(`${FIREBASE_URL}/search_logs/${logId}.json`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ user: user, type: type, query: query, time: new Date().toLocaleString('bn-BD') })
+                });
+                
+                // ইউজারের নিজস্ব হিস্ট্রি সেভ করা
+                await fetch(`${FIREBASE_URL}/user_history/${user}/${logId}.json`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ type: type, query: query, time: new Date().toLocaleString('bn-BD') })
+                });
+            } catch(e){}
+
+            // ২. কারেকশন টাইপ ডাটাবেজ প্রসেসিং (স্ক্রিনশট ২ ও ৩ লজিক)
+            if (type === "correction") {
+                try {
+                    const response = await fetch(`${FIREBASE_URL}/corrections/${user}/${query}.json`);
+                    const cData = await response.json();
+                    hideLoading();
+
+                    if(cData) {
+                        let statusHtml = `<span class="status-badge status-pending">Pending</span>`;
+                        if(cData.status.includes("Approved")) statusHtml = `<span class="status-badge status-approved">${cData.status}</span>`;
+                        if(cData.status.includes("Rejected")) statusHtml = `<span class="status-badge status-rejected">${cData.status}</span>`;
+
+                        resArea.innerHTML = `
+                            <div class="ec-table-container">
+                                <table class="ec-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Applicant Name</th>
+                                            <th>NID</th>
+                                            <th>Status</th>
+                                            <th>Category</th>
+                                            <th>Source</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>${cData.appId}</td>
+                                            <td>${cData.name}</td>
+                                            <td>${cData.nid}</td>
+                                            <td class="text-center" id="status_cell">${statusHtml}</td>
+                                            <td class="text-center">${cData.category}</td>
+                                            <td class="text-center">${cData.source}</td>
+                                            <td class="text-center">
+                                                <button class="view-icon-btn" onclick="openVisualCorrectionEye('${user}','${query}')">👁️</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="font-size:12px; color:#6c757d; margin-top:10px;">নির্বাচন কমিশন ডাটাবেজ।</div>
+                            <div id="eyeDetailContainer"></div>
+                        `;
+                    } else {
+                        resArea.innerHTML = `<div class="not-found-card">❌ আপনার ইনপুটকৃত '${query}' নাম্বারের কোনো সংশোধিত রেকর্ড ডাটাবেজে পাওয়া যায়নি।</div>`;
+                    }
+                } catch(e) { hideLoading(); }
                 return;
             }
 
-            document.getElementById("message").innerHTML = "";
-            showLoading();
-
-            setTimeout(() => {
+            // ৩. ফাইল ও পিডিএফ টাইপ প্রসেসিং (এনআইডি, মোবাইল, জন্ম নিবন্ধন, ফর্ম নাম্বার)
+            try {
+                const response = await fetch(`${FIREBASE_URL}/files/${user}/${type}_${query}.json`);
+                const fileData = await response.json();
                 hideLoading();
-                document.getElementById("loginContainer").style.display = "none";
-                document.getElementById("dashboard").style.display = "block";
-            }, 1200);
-        });
 
-        function logout() { 
-            location.reload(); 
+                if (fileData) {
+                    const trackingId = fileData.fileId;
+                    const isDownloaded = localStorage.getItem(`lock_${trackingId}`);
+
+                    let actionBtn = "";
+                    if(isDownloaded === "true") {
+                        actionBtn = `<button class="btn" style="background:#6c757d; cursor:not-allowed;" disabled>ইতিমধ্যে ডাউনলোড সম্পন্ন হয়েছে!</button>`;
+                    } else {
+                        actionBtn = `<button class="btn" style="background:#28a745;" onclick="triggerDownload('${fileData.fileUrl}', '${type.toUpperCase()}_Official_Copy', '${trackingId}')">ডাউনলোড করুন (PDF)</button>`;
+                    }
+
+                    resArea.innerHTML = `
+                        <div class="result-card">
+                            <div class="result-item"><b>রেকর্ড স্ট্যাটাস:</b> <span class="success">তথ্য পাওয়া গেছে</span></div>
+                            <div class="result-item"><b>অনুসন্ধিত ক্যাটাগরি:</b> ${type.toUpperCase()} বিভাগ</div>
+                            <div class="result-item"><b>ডাটাবেজ আইডি নাম্বার:</b> ${query}</div>
+                            <div style="margin-top:15px;">${actionBtn}</div>
+                        </div>
+                    `;
+                } else {
+                    resArea.innerHTML = `<div class="not-found-card">❌ দুঃখিত, ডাটাবেজে এই মুহূর্তে '${query}' নম্বরের কোনো ফাইল সংরক্ষিত নেই।</div>`;
+                }
+            } catch (e) { hideLoading(); }
         }
 
-        function showForm(type) {
-            document.getElementById("accessMessage").innerHTML = "";
-            let title = "", fields = "";
+        // 👁️ চোখের আইকনে ক্লিক করলে ২য় পার্ট লোড হওয়া (হুবহু স্ক্রিনশট ৩ লেআউট)
+        async function openVisualCorrectionEye(user, query) {
+            showLoading();
+            const response = await fetch(`${FIREBASE_URL}/corrections/${user}/${query}.json`);
+            const cData = await response.json();
+            hideLoading();
 
-            if (type === "nid") {
-                title = "এনআইডি সার্চ";
-                fields = `<input type="text" id="nidInput" class="form-control" placeholder="এনআইডি নাম্বার"><select id="nidType" class="form-control"><option value="ServerCopy">সার্ভার কপি</option><option value="SignCopy">সাইন কপি</option></select>`;
-            } else if (type === "mobile") {
-                title = "মোবাইল সার্চ";
-                fields = `<input type="text" id="mobileInput" class="form-control" placeholder="মোবাইল নাম্বার">`;
-            } else if (type === "birth") {
-                title = "জন্ম নিবন্ধন সার্চ";
-                fields = `<input type="text" id="birthInput" class="form-control" placeholder="জন্ম নিবন্ধন নাম্বার">`;
-            } else if (type === "formno") {
-                title = "ফর্ম নাম্বার";
-                fields = `<input type="text" id="formnoInput" class="form-control" placeholder="ফর্ম নাম্বার">`;
-            } else if (type === "correction") {
-                title = "সংশোধন অনুমোদন";
-                fields = `<input type="text" id="correctionInput" class="form-control" placeholder="জাতীয় পরিচয় পত্র নাম্বার / আবেদন কপি নাম্বার">`;
+            if(!cData) return;
+
+            let actionButtons = "";
+            if(cData.allowAction === "true" && cData.status === "Pending") {
+                actionButtons = `
+                    <div style="text-align:right; padding:15px;">
+                        <button class="btn btn-approve" onclick="updateClientCorrectionStatus('${user}','${query}','Approved','${cData.category}')">অনুমোদন করুন</button>
+                        <button class="btn btn-reject" onclick="updateClientCorrectionStatus('${user}','${query}','Rejected','${cData.category}')">বাতিল করুন</button>
+                    </div>
+                `;
             }
 
-            const html = `<button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button><h3>${title}</h3>${fields}<button class="btn" onclick="search('${type}')">সার্চ</button><div id="resultArea"></div>`;
-            document.getElementById("formArea").innerHTML = html;
-        }
-
-        function backToDefault() {
-            document.getElementById("formArea").innerHTML = "<h3>একটি অপশন নির্বাচন করুন</h3>";
-            document.getElementById("accessMessage").innerHTML = "";
-        }
-
-        function search(type) {
-            let inputVal = "";
-            if (type === "nid") inputVal = document.getElementById("nidInput").value.trim();
-            else if (type === "mobile") inputVal = document.getElementById("mobileInput").value.trim();
-            else if (type === "birth") inputVal = document.getElementById("birthInput").value.trim();
-            else if (type === "formno") inputVal = document.getElementById("formnoInput").value.trim();
-            else if (type === "correction") inputVal = document.getElementById("correctionInput").value.trim();
-
-            if (!inputVal) { 
-                alert("অনুসন্ধানের জন্য তথ্য দিন"); 
-                return; 
-            }
-
-            document.getElementById("accessMessage").innerHTML = `
-                <div style="color: red; font-weight: bold; padding: 20px; border: 2px solid #f5c6cb; background: #f8d7da; border-radius: 8px; margin-top: 20px;">
-                    দুঃখিত আপনার পোর্টালে নির্বাচন কমিশনের এক্সেস স্থগিত রয়েছে।<br>
-                    অনুগ্রহ করে বকেয়া (৳৩৭০) পরিশোধ করুন। পোর্টাল অটোমেটিক ভাবে এক্সেস যুক্ত এবং সচল হয়ে যাবে। ধন্যবাদ।  বাংলাদেশ নির্বাচন কমিশন সচিবালয়।
+            document.getElementById("eyeDetailContainer").innerHTML = `
+                <div class="app-details-box">
+                    <div class="app-details-header">
+                        <span>Application Details</span>
+                        <span>ID: ${cData.appId} | Category: Online Adjusting Pending</span>
+                    </div>
+                    <table class="ec-table" style="border:none;">
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Old Value</th>
+                                <th>New Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-center" style="color:blue;">নাম (বাংলা)</td>
+                                <td>${cData.oldValue}</td>
+                                <td>${cData.newValue}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="font-size:11px; color:#999; padding:10px 15px;">Notes: নাম সংশোধনের অনুরোধ</div>
+                    ${actionButtons}
                 </div>
             `;
+        }
 
-            document.getElementById("resultArea").innerHTML = "";
+        // লাইভ অনুমোদন/বাতিল স্ট্যাটাস পরিবর্তন
+        async function updateClientCorrectionStatus(user, query, type, cat) {
+            showLoading("স্ট্যাটাস আপডেট হচ্ছে...");
+            const finalStatus = `${type} by ${cat}`;
+            await fetch(`${FIREBASE_URL}/corrections/${user}/${query}/status.json`, { method: 'PUT', body: JSON.stringify(finalStatus) });
+            hideLoading();
+            alert(`আবেদনটি সফলভাবে ${type === 'Approved' ? 'অনুমোদন' : 'বাতিল'} করা হয়েছে!`);
+            handlePublicSearch('correction');
+        }
+
+        // ডবল ডাউনলোড প্রতিরোধক মডিউল
+        function triggerDownload(base64, filename, tid) {
+            const link = document.createElement('a');
+            link.href = base64;
+            link.download = filename + ".pdf";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            localStorage.setItem(`lock_${tid}`, "true");
+            alert("ফাইলটি ডাউনলোড হয়েছে। সিস্টেম লজিক অনুযায়ী এটি আর দ্বিতীয়বার ডাউনলোড করতে পারবেন না।");
+            backToDefault();
+        }
+
+        // 👤 ইউজার প্রোফাইল ও ব্যক্তিগত হিস্ট্রি প্যানেল
+        async function showUserProfile() {
+            showLoading();
+            const user = localStorage.getItem("loggedInUser");
+            let historyRows = "";
+            try {
+                const response = await fetch(`${FIREBASE_URL}/user_history/${user}.json`);
+                const historyData = await response.json();
+                if(historyData) {
+                    Object.values(historyData).reverse().forEach(h => {
+                        historyRows += `<tr><td>${h.time}</td><td>${h.type.toUpperCase()}</td><td>${h.query}</td></tr>`;
+                    });
+                }
+            } catch(e){}
+            hideLoading();
+
+            if(!historyRows) historyRows = `<tr><td colspan="3" class="text-center">এখনো কোনো অনুসন্ধানের ইতিহাস নেই।</td></tr>`;
+
+            document.getElementById("formArea").innerHTML = `
+                <button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button>
+                <h3 style="color:#0b5ed7; margin-bottom:15px;">👤 ব্যবহারকারী প্রোফাইল ইনফো</h3>
+                <div class="result-card" style="margin-bottom:20px;">
+                    <div class="result-item"><b>ইউজার অ্যাকাউন্ট আইডি:</b> ${user}</div>
+                    <div class="result-item"><b>নিরাপত্তা স্তর:</b> ক্লায়েন্ট পার্টনার গেটওয়ে</div>
+                </div>
+                <h3>🔍 আপনার অনুসন্ধান কাজের বিবরণী (History)</h3>
+                <div class="ec-table-container">
+                    <table class="admin-table" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>তারিখ ও সময়</th>
+                                <th>সার্চ ক্যাটাগরি</th>
+                                <th>অনুসন্ধিত নম্বর</th>
+                            </tr>
+                        </thead>
+                        <tbody>${historyRows}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        // 🔐 অ্যাডমিন কন্ট্রোল প্যানেল (আপগ্রেডেড ও কমপ্লিট)
+        async function showAdminPanel() {
+            showLoading();
+            let users = await fetchUsers();
+            let commonNotice = "";
+            let logRows = "";
+            try {
+                commonNotice = await (await fetch(`${FIREBASE_URL}/common_notice.json`)).json() || "";
+                const logs = await (await fetch(`${FIREBASE_URL}/search_logs.json`)).json();
+                if(logs) {
+                    Object.values(logs).reverse().slice(0, 30).forEach(l => {
+                        logRows += `<tr><td>${l.time}</td><td><b style="color:blue;">${l.user}</b></td><td>${l.type.toUpperCase()}</td><td>${l.query}</td></tr>`;
+                    });
+                }
+            } catch(e){}
+
+            hideLoading();
+            let userOpts = "";
+            let tableRows = "";
+            
+            users.forEach((user, index) => {
+                userOpts += `<option value="${user.userid}">${user.userid}</option>`;
+                const statusClass = user.status === "Active" ? "status-active" : "status-blocked";
+                tableRows += `<tr><td>${index + 1}</td><td>${user.userid}</td><td>${user.password}</td><td class="${statusClass}">${user.status}</td><td><button class="action-btn ${user.status === 'Active' ? 'btn-block' : 'btn-unblock'}" onclick="toggleUserStatus('${user.userid}', '${user.status}')">${user.status === 'Active' ? 'ব্লক' : 'আনব্লক'}</button></td></tr>`;
+            });
+
+            document.getElementById("formArea").innerHTML = `
+                <button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button>
+                <h2 style="color: #0b5ed7; margin-bottom: 20px;">🔐 অ্যাডমিন মাস্টার কন্ট্রোল প্যানেল</h2>
+                
+                <div class="admin-section">
+                    <h3>📢 নোটিশ পরিবর্তন করুন</h3>
+                    <select id="noticeTargetSelect" class="form-control" onchange="loadTargetNotice(this.value)"><option value="all">📢 সকল ইউজার</option>${userOpts}</select>
+                    <textarea id="newNoticeInput" class="form-control" rows="2">${commonNotice}</textarea>
+                    <button class="btn" style="background:#28a745;" onclick="saveDynamicNotice()">নোটিশ আপডেট করুন</button>
+                </div>
+
+                <div class="admin-section">
+                    <h3>📁 ফাইল আপলোড ইঞ্জিন (অপশন ও নম্বর ভিত্তিক)</h3>
+                    <label>প্রাপক ইউজার:</label><select id="targetUserSelect" class="form-control">${userOpts}</select>
+                    <label>সার্চ অপশন:</label><select id="targetTypeSelect" class="form-control"><option value="nid">এনআইডি সার্চ</option><option value="mobile">মোবাইল সার্চ</option><option value="birth">জন্ম নিবন্ধন সার্চ</option><option value="formno">ফর্ম নাম্বার</option></select>
+                    <label>সার্চ করার নির্দিষ্ট নম্বর:</label><input type="text" id="adminMatchNo" class="form-control" placeholder="যেমন: 2389477924">
+                    <label>ফাইল বা পিডিএফ সিলেক্ট করুন:</label><input type="file" id="mobileFileInput" class="form-control" accept="application/pdf,image/*">
+                    <button class="btn" style="background:#17a2b8;" onclick="uploadAdminFileToCloud()">সার্ভারে ফাইল সাবমিট করুন</button>
+                </div>
+
+                <div class="admin-section">
+                    <h3>📝 সংশোধন অনুমোদন ডাটা এন্ট্রি সিস্টেম (স্ক্রিনশট ২ ও ৩ লজিক)</h3>
+                    <label>ইউজার সিলেক্ট করুন:</label><select id="corrUser" class="form-control">${userOpts}</select>
+                    <input type="text" id="corrSearchId" class="form-control" placeholder="সার্চ আইডি / এনআইডি নম্বর">
+                    <input type="text" id="corrAppId" class="form-control" placeholder="Application ID (যেমন: NIDCA500377)">
+                    <input type="text" id="corrName" class="form-control" placeholder="আবেদনকারীর নাম">
+                    <input type="text" id="corrNid" class="form-control" placeholder="এনআইডি নম্বর">
+                    <input type="text" id="corrCat" class="form-control" placeholder="Category (যেমন: Gha)">
+                    <input type="text" id="corrOld" class="form-control" placeholder="পুরাতন নাম/ভ্যালু">
+                    <input type="text" id="corrNew" class="form-control" placeholder="নতুন সংশোধিত নাম/ভ্যালু">
+                    <label>ইউজার কি অনুমোদন/বাতিল বাটন পাবে?</label><select id="corrAction" class="form-control"><option value="true">হ্যাঁ (বাটন অন)</option><option value="false">না (বাটন অফ)</option></select>
+                    <button class="btn" style="background:#6f42c1;" onclick="submitCorrectionAdmin()">সংশোধন ডাটা সেভ করুন</button>
+                </div>
+
+                <div class="admin-section">
+                    <h3>🔍 লাইভ ইউজার সার্চ অ্যাক্টিভিটি লগ (সর্বশেষ ৩০টি)</h3>
+                    <div class="ec-table-container"><table class="admin-table" style="width:100%;"><thead><tr><th>সময়</th><th>ইউজার</th><th>অপশন</th><th>কি লিখে সার্চ করেছে</th></tr></thead><tbody>${logRows || '<tr><td colspan="4" class="text-center">কোনো লগ রেকর্ড নেই</td></tr>'}</tbody></table></div>
+                </div>
+
+                <div class="admin-section">
+                    <h3>👥 নিবন্ধিত ইউজার তালিকা</h3>
+                    <table class="admin-table"><thead><tr><th>ক্র: নং</th><th>ইউজার আইডি</th><th>পাসওয়ার্ড</th><th>অবস্থা</th><th>অ্যাকশন</th></tr></thead><tbody>${tableRows}</tbody></table>
+                </div>
+            `;
+        }
+
+        // অ্যাডমিন ফাইল আপলোডার কোর
+        async function uploadAdminFileToCloud() {
+            const user = document.getElementById("targetUserSelect").value;
+            const type = document.getElementById("targetTypeSelect").value;
+            const matchNo = document.getElementById("adminMatchNo").value.trim();
+            const fileInput = document.getElementById("mobileFileInput");
+
+            if(!matchNo || fileInput.files.length === 0) return alert("ম্যাচিং নম্বর এবং ফাইল সিলেক্ট করুন!");
+
+            showLoading("ফাইলটি ডাটাবেজে প্রসেস হচ্ছে...");
+            const reader = new FileReader();
+            reader.readAsDataURL(fileInput.files[0]);
+            reader.onload = async function() {
+                const nodePath = `${type}_${matchNo}`;
+                const fileData = { fileId: "id_" + Date.now(), fileUrl: reader.result, matchNumber: matchNo };
+                await fetch(`${FIREBASE_URL}/files/${user}/${nodePath}.json`, { method: 'PUT', body: JSON.stringify(fileData) });
+                hideLoading();
+                alert("ফাইলটি নির্দিষ্ট অপশন ও নম্বরের জন্য সফলভাবে আপলোড হয়েছে!");
+                showAdminPanel();
+            };
+        }
+
+        // অ্যাডমিন কারেকশন এন্ট্রি কোর
+        async function submitCorrectionAdmin() {
+            const user = document.getElementById("corrUser").value;
+            const sId = document.getElementById("corrSearchId").value.trim();
+            const data = {
+                appId: document.getElementById("corrAppId").value.trim(),
+                name: document.getElementById("corrName").value.trim(),
+                nid: document.getElementById("corrNid").value.trim(),
+                category: document.getElementById("corrCat").value.trim(),
+                oldValue: document.getElementById("corrOld").value.trim(),
+                newValue: document.getElementById("corrNew").value.trim(),
+                allowAction: document.getElementById("corrAction").value,
+                status: "Pending",
+                source: "ONLINE"
+            };
+
+            if(!sId || !data.appId || !data.name) return alert("অনুগ্রহ করে সব তথ্য পূরণ করুন!");
+            showLoading("কারেকশন ডাটা সেভ হচ্ছে...");
+            await fetch(`${FIREBASE_URL}/corrections/${user}/${sId}.json`, { method: 'PUT', body: JSON.stringify(data) });
+            hideLoading();
+            alert("সংশোধন ডাটা সফলভাবে ডাটাবেজে পুশ হয়েছে!");
+            showAdminPanel();
+        }
+
+        async function loadTargetNotice(t) {
+            const url = t === "all" ? `${FIREBASE_URL}/common_notice.json` : `${FIREBASE_URL}/personal_notices/${t}.json`;
+            document.getElementById("newNoticeInput").value = await (await fetch(url)).json() || "";
+        }
+
+        async function saveDynamicNotice() {
+            const t = document.getElementById("noticeTargetSelect").value;
+            const txt = document.getElementById("newNoticeInput").value.trim();
+            showLoading("আপডেট হচ্ছে...");
+            const url = t === "all" ? `${FIREBASE_URL}/common_notice.json` : `${FIREBASE_URL}/personal_notices/${t}.json`;
+            await fetch(url, { method: 'PUT', body: JSON.stringify(txt) });
+            hideLoading();
+            alert("নোটিশ আপডেট সফল!");
+            updateNoticeBar(localStorage.getItem("loggedInUser"));
+        }
+
+        window.toggleUserStatus = async function(uid, stat) {
+            showLoading();
+            const next = stat === "Active" ? "Blocked" : "Active";
+            await fetch(`${FIREBASE_URL}/users/${uid}/status.json`, { method: 'PUT', body: JSON.stringify(next) });
+            hideLoading();
+            showAdminPanel();
         }
     </script>
 </body>
