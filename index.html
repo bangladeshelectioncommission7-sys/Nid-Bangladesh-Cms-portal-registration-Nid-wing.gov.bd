@@ -42,7 +42,7 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .loading-text { margin-top: 15px; color: white; font-size: 15px; }
 
-        .ec-table-container { width: 100%; overflow-x: auto; margin-top: 15px; background: #fff; }
+        .ec-table-container { width: 100%; overflow-x: auto; margin-top: 15px; background: #fff; border: 1px solid #dee2e6; border-radius: 4px; }
         .ec-table { width: 100%; border-collapse: collapse; font-size: 13px; }
         .ec-table th, .ec-table td { padding: 12px 15px; border: 1px solid #dee2e6; vertical-align: middle; }
         .ec-table th { background: #f8f9fa; color: #495057; font-weight: 600; text-align: center; }
@@ -61,8 +61,8 @@
         .btn-reject { background: #dc3545; }
 
         .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
-        .admin-table th, .admin-table td { padding: 10px; border: 1px solid #ddd; }
-        .admin-table th { background: #e9ecef; }
+        .admin-table th, .admin-table td { padding: 12px; border: 1px solid #dee2e6; text-align: center; }
+        .admin-table th { background: #e9ecef; font-weight: bold; }
         .admin-section { border: 1px solid #ddd; padding: 18px; margin-bottom: 25px; border-radius: 6px; background: #fafafa; }
         
         .result-card { background: #f8f9fa; border: 1px solid #ced4da; padding: 18px; border-radius: 6px; margin-top: 15px; }
@@ -275,7 +275,6 @@
             `;
         }
 
-        // 🔍 পাবলিক সার্চ ও রিয়েল-টাইম ম্যাচিং কোর মডিউল
         async function handlePublicSearch(type) {
             const query = document.getElementById("sqInput").value.trim();
             const resArea = document.getElementById("resArea");
@@ -284,7 +283,6 @@
             showLoading("সার্ভার অনুসন্ধান করা হচ্ছে...");
             const user = localStorage.getItem("loggedInUser");
 
-            // ১. লগ ট্র্যাকিং জেনারেটর
             try {
                 const logId = "log_" + Date.now();
                 await fetch(`${FIREBASE_URL}/search_logs/${logId}.json`, {
@@ -297,7 +295,6 @@
                 });
             } catch(e){}
 
-            // ২. কারেকশন টাইপ ডাটা প্রসেসিং
             if (type === "correction") {
                 try {
                     const response = await fetch(`${FIREBASE_URL}/corrections/${user}/${query}.json`);
@@ -348,10 +345,9 @@
                 return;
             }
 
-            // ৩. ফাইল ডাটাবেজ ম্যাচিং লজিক (ড্রপডাউন ও সাব-টাইপ সিঙ্ক ফিক্স)
             let nodePath = `${type}_${query}`;
             if (type === "nid") {
-                const subType = document.getElementById("nidType").value; // ServerCopy বা SignCopy
+                const subType = document.getElementById("nidType").value;
                 nodePath = `${type}_${subType}_${query}`;
             }
 
@@ -373,8 +369,8 @@
 
                     resArea.innerHTML = `
                         <div class="result-card">
-                            <div class="result-item"><b>রেকর্ড স্ট্যাটাস:</b> <span class="success" style="color:green; font-weight:bold;">SUCCESS</span></div>
-                            <div class="result-item"><b>অনুসন্ধিত আইডি নাম্বার:</b> ${query}</div>
+                            <div class="result-item"><b>রেকورد স্ট্যাটাস:</b> <span class="success" style="color:green; font-weight:bold;">SUCCESS</span></div>
+                            <div class="result-item"><b>অনুসন্ধিত আইডি নম্বর:</b> ${query}</div>
                             <div style="margin-top:15px;">${actionBtn}</div>
                         </div>
                     `;
@@ -508,7 +504,9 @@
             let tableRows = "";
             users.forEach((user, index) => {
                 userOpts += `<option value="${user.userid}">${user.userid}</option>`;
-                tableRows += `<tr><td>${index + 1}</td><td>${user.userid}</td><td>${user.password}</td><td>${user.status}</td><td><button class="btn" style="padding:4px 10px; background:${user.status==='Active'?'#dc3545':'#28a745'}" onclick="toggleUserStatus('${user.userid}', '${user.status}')">${user.status==='Active'?'ব্লক':'আনব্লক'}</button></td></tr>`;
+                const btnColor = user.status === 'Active' ? '#dc3545' : '#28a745';
+                const btnText = user.status === 'Active' ? 'ব্লক করুন' : 'সক্রিয় করুন';
+                tableRows += `<tr><td>${index + 1}</td><td><b>${user.userid}</b></td><td>${user.password}</td><td><span style="color:${user.status==='Active'?'green':'red'}; font-weight:bold;">${user.status}</span></td><td><button class="btn" style="padding:5px 12px; font-size:12px; background:${btnColor}" onclick="toggleUserStatus('${user.userid}', '${user.status}')">${btnText}</button></td></tr>`;
             });
 
             document.getElementById("formArea").innerHTML = `
@@ -553,6 +551,26 @@
                 </div>
 
                 <div class="admin-section">
+                    <h3>👥 নিবন্ধিত ইউজার অ্যাকাউন্ট তালিকা (নিয়ন্ত্রণ প্যানেল)</h3>
+                    <div class="ec-table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ক্র: নং</th>
+                                    <th>ইউজার আইডি</th>
+                                    <th>পাসওয়ার্ড</th>
+                                    <th>অবস্থা (Status)</th>
+                                    <th>অ্যাকশন (অ্যাকাউন্ট নিয়ন্ত্রণ)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${tableRows}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="admin-section">
                     <h3>🔍 লাইভ ইউজার সার্চ অ্যাক্টিভিটি লগ</h3>
                     <div class="ec-table-container"><table class="admin-table" style="width:100%;"><thead><tr><th>সময়</th><th>ইউজার</th><th>অপশন</th><th>নম্বর</th></tr></thead><tbody>${logRows || '<tr><td colspan="4" class="text-center">কোনো লগ রেকর্ড নেই</td></tr>'}</tbody></table></div>
                 </div>
@@ -561,7 +579,7 @@
 
         async function uploadAdminFileToCloud() {
             const user = document.getElementById("targetUserSelect").value;
-            const selectType = document.getElementById("targetTypeSelect").value; // উদাহরণ: nid_ServerCopy বা mobile
+            const selectType = document.getElementById("targetTypeSelect").value; 
             const matchNo = document.getElementById("adminMatchNo").value.trim();
             const fileInput = document.getElementById("mobileFileInput");
 
@@ -571,7 +589,6 @@
             const reader = new FileReader();
             reader.readAsDataURL(fileInput.files[0]);
             reader.onload = async function() {
-                // nodePath তৈরি লজিক ফিক্স
                 const nodePath = selectType.startsWith("nid_") ? `nid_${selectType.split("_")[1]}_${matchNo}` : `${selectType}_${matchNo}`;
                 const fileData = { fileId: "id_" + Date.now(), fileUrl: reader.result, matchNumber: matchNo };
                 
@@ -621,11 +638,17 @@
         }
 
         window.toggleUserStatus = async function(uid, stat) {
-            showLoading();
-            const next = stat === "Active" ? "Blocked" : "Active";
-            await fetch(`${FIREBASE_URL}/users/${uid}/status.json`, { method: 'PUT', body: JSON.stringify(next) });
-            hideLoading();
-            showAdminPanel();
+            showLoading("ইউজার অ্যাকাউন্ট স্ট্যাটাস আপডেট হচ্ছে...");
+            const nextStatus = stat === "Active" ? "Blocked" : "Active";
+            try {
+                await fetch(`${FIREBASE_URL}/users/${uid}/status.json`, { method: 'PUT', body: JSON.stringify(nextStatus) });
+                hideLoading();
+                alert(`ইউজার '${uid}' এর অ্যাকাউন্টটি সফলভাবে ${nextStatus === 'Blocked' ? 'ব্লক' : 'সক্রিয়'} করা হয়েছে।`);
+                showAdminPanel();
+            } catch(e) {
+                hideLoading();
+                alert("স্ট্যাটাস পরিবর্তন ব্যর্থ হয়েছে!");
+            }
         }
     </script>
 </body>
