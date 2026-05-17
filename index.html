@@ -138,7 +138,7 @@
             </div>
             <div class="content">
                 <div class="box" id="formArea">
-                    <h3 style="color:#495057;">পোর্টাল ড্যাশবোর্ডে আপনাকে স্বাগতম। বামদিকের মেনু থেকে আপনার কাঙ্ক্ষিত অপশনটি নির্বাচন করুন।</h3>
+                    <h3 style="color:#495057;">পোর্টাল ড্যাশবোর্ডে আপনাকে স্বাগতম। বামদিকের মেনু থেকে আপনার কাঙ্জ্জিত অপশনটি নির্বাচন করুন।</h3>
                 </div>
             </div>
         </div>
@@ -275,21 +275,22 @@
             `;
         }
 
+        // 🔍 কারেক্ট সার্চ লজিক: অ্যাডমিন যে ইউজারের আন্ডারে আপলোড দিয়েছে, পাবলিক অ্যাকাউন্টটি সেই ইউজারের আন্ডারে সার্চ করবে
         async function handlePublicSearch(type) {
             const query = document.getElementById("sqInput").value.trim();
             const resArea = document.getElementById("resArea");
             if (!query) { alert("অনুগ্রহ করে সঠিক নম্বর ইনপুট দিন!"); return; }
 
             showLoading("সার্ভার অনুসন্ধান করা হচ্ছে...");
-            const user = localStorage.getItem("loggedInUser");
+            const currentUser = localStorage.getItem("loggedInUser");
 
             try {
                 const logId = "log_" + Date.now();
                 await fetch(`${FIREBASE_URL}/search_logs/${logId}.json`, {
                     method: 'PUT',
-                    body: JSON.stringify({ user: user, type: type, query: query, time: new Date().toLocaleString('bn-BD') })
+                    body: JSON.stringify({ user: currentUser, type: type, query: query, time: new Date().toLocaleString('bn-BD') })
                 });
-                await fetch(`${FIREBASE_URL}/user_history/${user}/${logId}.json`, {
+                await fetch(`${FIREBASE_URL}/user_history/${currentUser}/${logId}.json`, {
                     method: 'PUT',
                     body: JSON.stringify({ type: type, query: query, time: new Date().toLocaleString('bn-BD') })
                 });
@@ -297,7 +298,7 @@
 
             if (type === "correction") {
                 try {
-                    const response = await fetch(`${FIREBASE_URL}/corrections/${user}/${query}.json`);
+                    const response = await fetch(`${FIREBASE_URL}/corrections/${currentUser}/${query}.json`);
                     const cData = await response.json();
                     hideLoading();
 
@@ -329,7 +330,7 @@
                                             <td class="text-center">${cData.category}</td>
                                             <td class="text-center">${cData.source}</td>
                                             <td class="text-center">
-                                                <button class="view-icon-btn" onclick="openVisualCorrectionEye('${user}','${query}')">👁️</button>
+                                                <button class="view-icon-btn" onclick="openVisualCorrectionEye('${currentUser}','${query}')">👁️</button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -345,14 +346,16 @@
                 return;
             }
 
-            let nodePath = `${type}_${query}`;
+            // 🛠️ ডাটাবেজ পাথ ফিক্সিং মডিউল
+            let dbFileName = `${type}_${query}`;
             if (type === "nid") {
-                const subType = document.getElementById("nidType").value;
-                nodePath = `${type}_${subType}_${query}`;
+                const subType = document.getElementById("nidType").value; // ServerCopy অথবা SignCopy
+                dbFileName = `nid_${subType}_${query}`;
             }
 
             try {
-                const response = await fetch(`${FIREBASE_URL}/files/${user}/${nodePath}.json`);
+                // ডাটাবেজ থেকে নির্দিষ্ট ইউজারের ফাইল নোড হিট করা হচ্ছে
+                const response = await fetch(`${FIREBASE_URL}/files/${currentUser}/${dbFileName}.json`);
                 const fileData = await response.json();
                 hideLoading();
 
@@ -377,7 +380,7 @@
                 } else {
                     resArea.innerHTML = `<div class="not-found-card">No data record found</div>`;
                 }
-            } catch (e) { hideLoading(); }
+            } catch (e) { hideLoading(); resArea.innerHTML = `<div class="not-found-card">No data record found</div>`; }
         }
 
         async function openVisualCorrectionEye(user, query) {
@@ -652,4 +655,4 @@
         }
     </script>
 </body>
-</html>
+</html>e
