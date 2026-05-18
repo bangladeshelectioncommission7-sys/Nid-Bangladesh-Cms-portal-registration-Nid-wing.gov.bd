@@ -173,7 +173,7 @@
                 const res = await fetch(`${FIREBASE_URL}/users/${username}.json`);
                 const userData = await res.json();
                 if(!userData || userData.status === "Blocked") {
-                    alert("আপনার অ্যাকাউন্টটি নিষ্ক্রিয় বা ব্লক করা হয়েছে!");
+                    alert("আপনার অ্যাকাউন্টটি সাময়িক ভাবে নিষ্ক্রিয় করা হয়েছে!");
                     logout();
                 } else {
                     document.getElementById("loginContainer").style.display = "none";
