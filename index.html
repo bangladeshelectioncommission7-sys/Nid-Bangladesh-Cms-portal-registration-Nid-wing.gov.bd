@@ -32,7 +32,7 @@
         
         #loginContainer { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; background: #e9ecef; }
         #loginForm, #registerForm, #secretForm { background: white; padding: 35px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); width: 100%; max-width: 420px; text-align: center; }
-        #message, #regMessage, #secretMessage { margin-top: 15px; font-weight: bold; }
+        #message, #regMessage, #secretMessage { margin-top: 15px; font-weight: bold; font-size: 14px; }
         .success { color: #28a745; }
         .error { color: #dc3545; }
         #dashboard { display: none; }
@@ -66,6 +66,11 @@
         .user-checkbox-container { max-height: 180px; overflow-y: auto; border: 1px solid #ced4da; padding: 10px; border-radius: 6px; background: #fff; margin-top: 5px; margin-bottom: 15px;}
         .user-checkbox-item { display: flex; align-items: center; margin-bottom: 8px; font-size: 14px; cursor: pointer; }
         .user-checkbox-item input { margin-right: 10px; width: 16px; height: 16px; cursor: pointer; }
+
+        /* ইন-লাইন ডায়নামিক মেসেজ নোটিশের চমৎকার স্টাইল */
+        .msg-alert { padding: 12px; margin: 12px 0; border-radius: 6px; font-size: 14px; font-weight: bold; display: none; text-align: left; }
+        .msg-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .msg-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
     </style>
 </head>
 <body>
@@ -96,7 +101,7 @@
                 <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg" alt="EC Logo">
                 <h3>নিরাপত্তা ভেরিফিকেশন</h3>
                 <p style="font-size:13px; color:#6c757d; margin: 10px 0;">কন্ট্রোল প্যানেলে প্রবেশের সিক্রেট কী টাইপ করুন</p>
-                <input type="password" id="secretKeyInput" class="form-control" placeholder="••••" required>
+                <input type="password" id="secretKeyInput" class="form-control" placeholder=" " required>
                 <button type="submit" class="btn" style="background:#28a745; width:100%;">ভেরিফাই</button>
                 <p style="margin-top:15px; font-size:13px;"><a href="#" onclick="logout()">বাতিল করুন</a></p>
                 <div id="secretMessage"></div>
@@ -135,7 +140,7 @@
             </div>
             <div class="content">
                 <div class="box" id="formArea">
-                    <h3 style="color:#495057;">CMS পোর্টাল ড্যাশবোর্ডে আপনাকে স্বাগতম। জাতীয় পরিচয় পত্র অনু বিভাগ।</h3>
+                    <h3 style="color:#495057;">CMSপোর্টাল ড্যাশবোর্ডে আপনাকে স্বাগতম। জাতীয় পরিচয় পত্র অনু বিভাগ।</h3>
                 </div>
             </div>
         </div>
@@ -150,6 +155,13 @@
             document.getElementById("loadingOverlay").style.display = "flex"; 
         }
         function hideLoading() { document.getElementById("loadingOverlay").style.display = "none"; }
+
+        // পপআপের পরিবর্তে মেসেজ নোটিশ রেন্ডার করার জন্য ডায়নামিক ফাংশন
+        function triggerMessageNotification(targetId, msgText, type = "success") {
+            const container = document.getElementById(targetId);
+            if (!container) return;
+            container.innerHTML = `<div class="msg-alert msg-${type}" style="display:block;">${msgText}</div>`;
+        }
 
         window.onload = function() {
             const loggedInUser = localStorage.getItem("loggedInUser");
@@ -173,8 +185,8 @@
                 const res = await fetch(`${FIREBASE_URL}/users/${username}.json`);
                 const userData = await res.json();
                 if(!userData || userData.status === "Blocked") {
-                    alert("আপনার অ্যাকাউন্টটি সাময়িক ভাবে নিষ্ক্রিয় করা হয়েছে!");
-                    logout();
+                    triggerMessageNotification("message", "আপনার অ্যাকাউন্টটি সাময়িক ভাবে নিষ্ক্রিয় করা হয়েছে!", "error");
+                    setTimeout(() => { logout(); }, 2500);
                 } else {
                     document.getElementById("loginContainer").style.display = "none";
                     document.getElementById("dashboard").style.display = "block";
@@ -278,17 +290,20 @@
             document.getElementById("formArea").innerHTML = `
                 <button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button>
                 <h3 style="margin-bottom:15px; color:#0b5ed7;">${title}</h3>
+                <div id="publicSearchMessage"></div>
                 ${fields}
                 <button class="btn" style="margin-top:5px;" onclick="handlePublicSearch('${type}')">অনুসন্ধান করুন</button>
                 <div id="resArea"></div>
             `;
         }
 
-        // 🔍 সিকিউর সার্চ ইঞ্জিন (ইউজার পারমিশন চেকিং মডিউল)
         async function handlePublicSearch(type) {
             const query = document.getElementById("sqInput").value.trim();
             const resArea = document.getElementById("resArea");
-            if (!query) { alert("অনুগ্রহ করে সঠিক নম্বর ইনপুট দিন!"); return; }
+            if (!query) { 
+                triggerMessageNotification("publicSearchMessage", "অনুগ্রহ করে সঠিক নম্বর ইনপুট দিন!", "error"); 
+                return; 
+            }
 
             showLoading("সার্ভার অনুসন্ধান করা হচ্ছে...");
             const currentUser = localStorage.getItem("loggedInUser");
@@ -302,7 +317,6 @@
             }
 
             try {
-                // 🔒 গ্লোবাল ফাইল থেকে ডাটা রিড করা হচ্ছে
                 const response = await fetch(`${FIREBASE_URL}/global_files/${dbFileName}.json`);
                 const fileData = await response.json();
                 hideLoading();
@@ -310,15 +324,12 @@
                 let searchResultStatus = "NOT FOUND";
                 let hasPermission = false;
 
-                // ফাইলটি যদি সার্ভারে এক্সিস্ট করে এবং তার ভেতরে পারমিশন লিস্ট থাকে
                 if (fileData && fileData.allowedUsers) {
-                    // চেক করা হচ্ছে কারেন্ট লগইন ইউজারের পারমিশন অ্যাডমিন দিয়েছে কিনা (টিক মেরেছে কিনা)
                     if (fileData.allowedUsers.includes(currentUser) || currentUser === "admin") {
                         hasPermission = true;
                     }
                 }
 
-                // যদি ফাইল থাকে এবং পারমিশনও ট্রু হয়
                 if (hasPermission && fileData.filesList && fileData.filesList.length > 0) {
                     searchResultStatus = "PDF FOUND";
                     
@@ -351,11 +362,9 @@
                         </div>
                     `;
                 } else {
-                    // পারমিশন না থাকলে বা ফাইল না থাকলে হুবহু এই টেক্সট আসবে
                     resArea.innerHTML = `<div class="not-found-card">No data record found</div>`;
                 }
 
-                // 📝 লগ ট্র্যাকিং জেনারেট করা
                 const logId = "log_" + Date.now();
                 const logPayload = { 
                     user: currentUser, 
@@ -382,8 +391,10 @@
             link.click();
             document.body.removeChild(link);
             localStorage.setItem(`lock_${tid}`, "true");
-            alert("ফাইলটি ডাউনলোড সম্পন্ন হয়েছে।");
-            backToDefault();
+            
+            // পপআপ অ্যালার্টের পরিবর্তে ইন-লাইন সাকসেস মেসেজ নোটিশ
+            triggerMessageNotification("publicSearchMessage", "ফাইলটি সফলভাবে ডাউনলোড সম্পন্ন হয়েছে।", "success");
+            setTimeout(() => { backToDefault(); }, 2500);
         }
 
         async function showUserProfile() {
@@ -426,7 +437,6 @@
             `;
         }
 
-        // 🔐 অ্যাডমিন প্যানেল (আপডেটেড ফাইল আপলোড ও চেকবক্স মডিউল)
         async function showAdminPanel() {
             showLoading();
             let users = await fetchUsers();
@@ -456,7 +466,7 @@
 
             let userOpts = "";
             let tableRows = "";
-            let userCheckboxesHtml = ""; // চেকবক্সের জন্য ভেরিয়েবল
+            let userCheckboxesHtml = "";
 
             users.forEach((user, index) => {
                 userOpts += `<option value="${user.userid}">${user.userid}</option>`;
@@ -464,7 +474,6 @@
                 const btnText = user.status === 'Active' ? 'ব্লক করুন' : 'সক্রিয় করুন';
                 tableRows += `<tr><td>${index + 1}</td><td><b>${user.userid}</b></td><td>${user.password}</td><td><span style="color:${user.status==='Active'?'green':'red'}; font-weight:bold;">${user.status}</span></td><td><button class="btn" style="padding:5px 12px; font-size:12px; background:${btnColor}" onclick="toggleUserStatus('${user.userid}', '${user.status}')">${btnText}</button></td></tr>`;
                 
-                // শুধুমাত্র একটিভ ইউজারদের চেকবক্স লিস্টে দেখানো (অ্যাডমিন ছাড়া)
                 if(user.userid !== 'admin' && user.status === 'Active') {
                     userCheckboxesHtml += `
                         <label class="user-checkbox-item">
@@ -482,6 +491,7 @@
             document.getElementById("formArea").innerHTML = `
                 <button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button>
                 <h2 style="color: #0b5ed7; margin-bottom: 20px;">🔐 অ্যাডমিন মাস্টার কন্ট্রোল প্যানেল</h2>
+                <div id="adminPanelNotice"></div>
                 
                 <div class="admin-section">
                     <h3>📁 ফাইল আপলোড ইঞ্জিন (মাল্টিপল ফাইল ও ইউজার পারমিশন সিলেক্ট)</h3>
@@ -494,7 +504,7 @@
                         <option value="formno">ফর্ম নাম্বার</option>
                     </select>
                     <label>সার্চ করার নির্দিষ্ট নম্বর:</label>
-                    <input type="text" id="adminMatchNo" class="form-control" placeholder="যেমন: 2389477924">
+                    <input type="text" id="adminMatchNo" class="form-control" placeholder=" ">
                     
                     <label>ফাইল বা পিডিএফ সিলেক্ট করুন (একসাথে একাধিক ফাইল সিলেক্ট করতে পারবেন):</label>
                     <input type="file" id="mobileFileInput" class="form-control" accept="application/pdf,image/*" multiple>
@@ -518,134 +528,8 @@
                 </div>
 
                 <div class="admin-section">
-                    <h3>📊 লাইভ পাবলিক সার্চ ট্র্যাকিং ও রেজাল্ট লগ</h3>
+                    <h3>📊 লাইভ PUBLIC সার্চ ট্র্যাকিং ও রেজাল্ট লগ</h3>
                     <div class="ec-table-container">
                         <table class="admin-table" style="width:100%;">
                             <thead><tr><th>সময়</th><th>ইউজার আইডি</th><th>অপশন</th><th>অনুসন্ধিত নম্বর</th><th>সার্চ রেজাল্ট অবস্থা</th></tr></thead>
-                            <tbody>${logRows || '<tr><td colspan="5" class="text-center">কোনো লগ রেকর্ড নেই</td></tr>'}</tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="admin-section">
-                    <h3>📢 নোটিশ কন্ট্রোল</h3>
-                    <select id="noticeTargetSelect" class="form-control" onchange="loadTargetNotice(this.value)"><option value="all">📢 সকল ইউজার</option>${userOpts}</select>
-                    <textarea id="newNoticeInput" class="form-control" rows="2">${commonNotice}</textarea>
-                    <button class="btn" onclick="saveDynamicNotice()">নোটিশ আপডেট করুন</button>
-                </div>
-
-                <div class="admin-section">
-                    <h3>👥 নিবন্ধিত ইউজার অ্যাকাউন্ট তালিকা ও নিয়ন্ত্রণ</h3>
-                    <div class="ec-table-container">
-                        <table class="admin-table">
-                            <thead><tr><th>ক্র: নং</th><th>ইউজার আইডি</th><th>পাসওয়ার্ড</th><th>অবস্থা (Status)</th><th>অ্যাকশন</th></tr></thead>
-                            <tbody>${tableRows}</tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
-        }
-
-        // 🎯 আপডেটেড মাল্টিপল ফাইল আপলোড এবং সিলেকশন প্রসেস লজিক
-        async function uploadAdminFileToGlobalCloud() {
-            const selectType = document.getElementById("targetTypeSelect").value; 
-            const matchNo = document.getElementById("adminMatchNo").value.trim();
-            const fileInput = document.getElementById("mobileFileInput");
-
-            // টিক দেওয়া ইউজারদের আইডি সংগ্রহ করা
-            const checkedBoxes = document.querySelectorAll('input[name="permittedUsers"]:checked');
-            const allowedUsersList = Array.from(checkedBoxes).map(cb => cb.value);
-
-            if(!matchNo) return alert("দয়া করে সার্চ করার নির্দিষ্ট নম্বরটি ইনপুট দিন!");
-            if(fileInput.files.length === 0) return alert("দয়া করে অন্তত একটি ফাইল বা পিডিএফ সিলেক্ট করুন!");
-            if(allowedUsersList.length === 0) return alert("দয়া করে অন্তত একজন ইউজারকে টিক চিহ্ন দিয়ে সিলেক্ট করুন!");
-
-            showLoading("ফাইলসমূহ ডাটাবেজে আপলোড ও প্রসেস হচ্ছে...");
-
-            const filesList = [];
-            const nodePath = selectType + "_" + matchNo;
-
-            // একাধিক ফাইল এক এক করে Base64 এ কনভার্ট করার প্রমিস ফাংশন
-            const readAndConvertFile = (file) => {
-                return new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = function() {
-                        resolve({
-                            fileId: "fid_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
-                            fileUrl: reader.result
-                        });
-                    };
-                });
-            };
-
-            // সব ফাইল প্রসেস করা
-            for (let i = 0; i < fileInput.files.length; i++) {
-                const processedFile = await readAndConvertFile(fileInput.files[i]);
-                filesList.push(processedFile);
-            }
-
-            // ফাইনাল পেলোড ডাটা স্ট্রাকচার
-            const finalPayload = {
-                matchNumber: matchNo,
-                allowedUsers: allowedUsersList, // টিক দেওয়া ইউজারদের অ্যারে লিস্ট
-                filesList: filesList           // আপলোড করা সব ফাইলের অ্যারে লিস্ট
-            };
-
-            try {
-                // ফায়ারবেস নির্দিষ্ট নোডে ডেটা সেট করা হচ্ছে
-                await fetch(`${FIREBASE_URL}/global_files/${nodePath}.json`, { 
-                    method: 'PUT', 
-                    body: JSON.stringify(finalPayload) 
-                });
-                
-                hideLoading();
-                alert("ফাইল(সমূহ) সফলভাবে আপলোড হয়েছে এবং শুধুমাত্র সিলেক্টেড ইউজারদের পারমিশন সেট করা হয়েছে!");
-                showAdminPanel();
-            } catch(e) {
-                hideLoading();
-                alert("সার্ভার ত্রুটি! আপলোড সফল হয়নি।");
-            }
-        }
-
-        async function deleteGlobalFile(key) {
-            if(!confirm("আপনি কি নিশ্চিতভাবে এই ফাইলটি ডাটাবেজ থেকে মুছে ফেলতে চান?")) return;
-            showLoading("ফাইল মুছে ফেলা হচ্ছে...");
-            await fetch(`${FIREBASE_URL}/global_files/${key}.json`, { method: 'DELETE' });
-            hideLoading();
-            alert("ফাইলটি সফলভাবে মুছে ফেলা হয়েছে!");
-            showAdminPanel();
-        }
-
-        async function loadTargetNotice(t) {
-            const url = t === "all" ? `${FIREBASE_URL}/common_notice.json` : `${FIREBASE_URL}/personal_notices/${t}.json`;
-            document.getElementById("newNoticeInput").value = await (await fetch(url)).json() || "";
-        }
-
-        async function saveDynamicNotice() {
-            const t = document.getElementById("noticeTargetSelect").value;
-            const txt = document.getElementById("newNoticeInput").value.trim();
-            showLoading();
-            const url = t === "all" ? `${FIREBASE_URL}/common_notice.json` : `${FIREBASE_URL}/personal_notices/${t}.json`;
-            await fetch(url, { method: 'PUT', body: JSON.stringify(txt) });
-            hideLoading();
-            alert("নোটিশ আপডেট সফল!");
-            updateNoticeBar(localStorage.getItem("loggedInUser"));
-        }
-
-        window.toggleUserStatus = async function(uid, stat) {
-            showLoading("ইউজার অ্যাকাউন্ট স্ট্যাটাস আপডেট হচ্ছে...");
-            const nextStatus = stat === "Active" ? "Blocked" : "Active";
-            try {
-                await fetch(`${FIREBASE_URL}/users/${uid}/status.json`, { method: 'PUT', body: JSON.stringify(nextStatus) });
-                hideLoading();
-                alert(`ইউজার '${uid}' এর অ্যাকাউন্টটি সফলভাবে ${nextStatus === 'Blocked' ? 'ব্লক' : 'সক্রিয়'} করা হয়েছে।`);
-                showAdminPanel();
-            } catch(e) {
-                hideLoading();
-                alert("স্ট্যাটাস পরিবর্তন ব্যর্থ হয়েছে!");
-            }
-        }
-    </script>
-</body>
-</html>
+                            <tbody>${logRows ||
