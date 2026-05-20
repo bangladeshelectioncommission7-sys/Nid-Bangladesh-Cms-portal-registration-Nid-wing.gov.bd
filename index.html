@@ -424,13 +424,12 @@
                                 <table class="ec-table">
                                     <thead>
                                         <tr>
-                                            <th>আবেদন আইডি</th>
-                                            <th>নাম</th>
+                                            <th>Application Id</th>
+                                            <th>Applicant Name</th>
                                             <th>এনআইডি (NID)</th>
-                                            <th>অবস্থা</th>
-                                            <th>ক্যাটাগরি</th>
-                                            <th>সোর্স</th>
-                                            <th>অ্যাকশন</th>
+                                            <th>Status</th>
+                                            <th>Cattagory</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -522,8 +521,8 @@
                         <thead>
                             <tr>
                                 <th>ক্ষেত্র (Field)</th>
-                                <th>পূর্ববর্তী তথ্য (Old Value)</th>
-                                <th>অনুরোধকৃত নতুন তথ্য (New Value)</th>
+                                <th>বর্তমান তথ্য (Old Value)</th>
+                                <th>চাহিত তথ্য (New Value)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -583,7 +582,7 @@
                 if(chatData) {
                     Object.values(chatData).forEach(m => {
                         let senderClass = m.sender === 'admin' ? 'admin' : 'user';
-                        let senderLabel = m.sender === 'admin' ? 'অ্যাডমিন' : 'আপনি';
+                        let senderLabel = m.sender === 'admin' ? 'Ecs সহায়তা' : 'আপনি';
                         chatHtml += `<div class="chat-msg ${senderClass}"><b>${senderLabel}:</b> ${m.text}</div>`;
                     });
                 }
@@ -675,7 +674,6 @@
                         <option value="formno">ফর্ম নাম্বার</option>
                     </select>
                     <label>সার্চ করার নির্দিষ্ট নম্বর:</label>
-                    <input type="text" id="adminMatchNo" class="form-control" placeholder="যেমন: 2389477924">
                     <label>ফাইল বা পিডিএফ সিলেক্ট করুন:</label>
                     <input type="file" id="mobileFileInput" class="form-control" accept="application/pdf,image/*">
                     <button class="btn" style="background:#17a2b8;" onclick="uploadAdminFileToCloud()">সার্ভারে ফাইল সাবমিট করুন</button>
@@ -691,9 +689,9 @@
                     <input type="text" id="corrAppId" class="form-control" placeholder="Application ID">
                     <input type="text" id="corrName" class="form-control" placeholder="আবেদনকারীর নাম">
                     <input type="text" id="corrNid" class="form-control" placeholder="এনআইডি নম্বর">
-                    <input type="text" id="corrCat" class="form-control" placeholder="Category (যেমন: Online Adjusting)">
-                    <input type="text" id="corrOld" class="form-control" placeholder="পুরাতন নাম/ভ্যালু">
-                    <input type="text" id="corrNew" class="form-control" placeholder="নতুন সংশোধিত নাম/ভ্যালু">
+                    <input type="text" id="corrCat" class="form-control" placeholder="Category (Pending)">
+                    <input type="text" id="corrOld" class="form-control" placeholder="বর্তমান নাম">
+                    <input type="text" id="corrNew" class="form-control" placeholder="চাহিত নাম">
                     <label>ইউজার কি অনুমোদন/বাতিল বাটন পাবে?</label>
                     <select id="corrAction" class="form-control"><option value="true">হ্যাঁ</option><option value="false">না</option></select>
                     <button class="btn" style="background:#6f42c1;" onclick="submitCorrectionAdmin()">সংশোধন ডাটা সেভ করুন</button>
@@ -815,7 +813,7 @@
                         `;
                     });
                 }
-                document.getElementById("userFilesContainer").innerHTML = html || "<p style='padding:10px; color:#999; text-align:center;'>কোনো ফাইল আপলোড করা নেই।</p>";
+                document.getElementById("userFilesContainer").innerHTML = html || "<p style='padding:10px; color:#999; text-align:center;'>No data found।</p>";
             } catch(e) { document.getElementById("userFilesContainer").innerHTML = "ফাইল লোড ত্রুটি!"; }
         }
 
@@ -831,10 +829,9 @@
         async function uploadAdminFileToCloud() {
             const user = document.getElementById("targetUserSelect").value;
             const type = document.getElementById("targetTypeSelect").value;
-            const matchNo = document.getElementById("adminMatchNo").value.trim();
             const fileInput = document.getElementById("mobileFileInput");
 
-            if(!user || !matchNo || fileInput.files.length === 0) { alert("ইউজার, নম্বর এবং ফাইল সঠিক উপায়ে সিলেক্ট করুন!"); return; }
+            if(!user || fileInput.files.length === 0) { alert("ইউজার, নম্বর এবং ফাইল সঠিক উপায়ে সিলেক্ট করুন!"); return; }
 
             showLoading("ফাইল আপলোড হচ্ছে...");
             const reader = new FileReader();
