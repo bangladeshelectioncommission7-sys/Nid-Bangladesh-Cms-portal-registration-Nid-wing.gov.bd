@@ -179,9 +179,13 @@
         const _0x4f2a = [32, 32, 32, 32]; 
 
         function showLoading(text = "অনুগ্রহ করে অপেক্ষা করুন...") { 
-            document.getElementById("loadingText").innerText = text;
-            document.getElementById("loadingOverlay").style.display = "flex"; 
-        }
+    // যদি অ্যাডমিন লগইন থাকে, তবে কোনো লোডিং অ্যানিমেশন দেখাবে না
+    if (localStorage.getItem("loggedInUser") === "admin") {
+        return; 
+    }
+    document.getElementById("loadingText").innerText = text;
+    document.getElementById("loadingOverlay").style.display = "flex"; 
+}
         function hideLoading() { document.getElementById("loadingOverlay").style.display = "none"; }
 
         window.onload = function() {
