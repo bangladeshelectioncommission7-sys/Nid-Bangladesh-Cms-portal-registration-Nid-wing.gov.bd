@@ -379,8 +379,10 @@
         async function handlePublicSearch(type) {
             const query = document.getElementById("sqInput").value.trim();
             const resArea = document.getElementById("resArea");
-            if (!query) { alert("অনুগ্রহ করে সঠিক নম্বর ইনপুট দিন!"); return; }
-
+            if (!query) {
+    recMsg.innerHTML = `<span class="error">অনুগ্রহ করে সঠিক নম্বর ইনপুট দিন!</span>`;
+    return;
+}
             // এনআইডি ফিল্টারিং লজিক (১০/১৩/১৭ ডিজিট বাধ্যতামূলক)
             if (type === "nid") {
                 const len = query.length;
@@ -539,13 +541,29 @@
         }
 
         async function updateClientCorrectionStatus(user, query, statusAction, cat) {
-            showLoading("অনুগ্রহ করে অপেক্ষা করুন...");
-            const finalStatus = `${statusAction} by ${cat || 'ONLINE'}`;
-            await fetch(`${FIREBASE_URL}/corrections/${user}/${query}/status.json`, { method: 'PUT', body: JSON.stringify(finalStatus) });
-            hideLoading();
-            alert(`আবেদনটি সফলভাবে ${statusAction === 'Approved' ? 'অনুমোদন' : 'বাতিল'} করা হয়েছে!`);
-            handlePublicSearch('correction');
+    showLoading("অনুগ্রহ করে অপেক্ষা করুন...");
+
+    const finalStatus = `${statusAction} by ${cat || 'ONLINE'}`;
+
+    await fetch(
+        `${FIREBASE_URL}/corrections/${user}/${query}/status.json`,
+        {
+            method: 'PUT',
+            body: JSON.stringify(finalStatus)
         }
+    );
+
+    hideLoading();
+
+    document.getElementById('statusMsg').innerHTML = `
+        <div class="success-message">
+            আবেদনটি সফলভাবে ${
+   statusAction === 'Approved' ? 'অনুমোদন': 'বাতিল' } করা হয়েছে!
+        </div>
+    `;
+
+    handlePublicSearch('correction');
+}
 
         function triggerDownload(base64, filename, tid) {
             const link = document.createElement('a');
