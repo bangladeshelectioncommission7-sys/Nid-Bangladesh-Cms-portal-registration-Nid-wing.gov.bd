@@ -101,11 +101,11 @@
 
             <form id="registerForm" style="display:none;">
                 <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg" alt="EC Logo">
-                <h3 style="margin-bottom:15px;">অফিশিয়াল পার্টনার অ্যাকাউন্ট রেজিস্ট্রেশন</h3>
-                <input type="text" id="regName" class="form-control" placeholder="আপনার সম্পূর্ণ নাম (বাংলা অথবা ইংরেজি)" required>
-                <input type="text" id="regUserid" class="form-control" placeholder="পছন্দনীয় ইউজার আইডি (যেমন: rahim99)" required>
-                <input type="text" id="regMobile" class="form-control" placeholder="মোবাইল নাম্বার (১১ ডিজিট)" required>
-                <input type="password" id="regPassword" class="form-control" placeholder="পাসওয়ার্ড (নূন্যতম ৬ ডিজিট)" required>
+                <h3 style="margin-bottom:15px;">অ্যাকাউন্ট রেজিস্ট্রেশন</h3>
+                <input type="text" id="regName" class="form-control" placeholder="সম্পূর্ণ নাম দিন ( )" required>
+                <input type="text" id="regUserid" class="form-control" placeholder="ইউজার আইডি দিন ( )" required>
+                <input type="text" id="regMobile" class="form-control" placeholder="মোবাইল নাম্বার দিন ( )" required>
+                <input type="password" id="regPassword" class="form-control" placeholder="পাসওয়ার্ড দিন (নূন্যতম ৬ ডিজিট)" required>
                 <input type="password" id="regConfirmPassword" class="form-control" placeholder="কনফার্ম পাসওয়ার্ড" required>
                 <button type="submit" class="btn" style="width:100%; background:#28a745;">তথ্য জমা দিন</button>
                 <p style="margin-top:15px; font-size:14px;"><a href="#" class="back-to-login">লগইন পেজে ফিরুন</a></p>
@@ -115,11 +115,11 @@
             <form id="recoverForm" style="display:none;">
                 <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg" alt="EC Logo">
                 <h3 style="margin-bottom:15px;">পাসওয়ার্ড রিসেট রিকোয়েস্ট</h3>
-                <p style="font-size:13px; color:#6c757d; margin-bottom:15px;">আপনার সঠিক তথ্য দিন, রিকোয়েস্টটি এডমিনের অনুমোদনের পর পাসওয়ার্ড পরিবর্তিত হবে।</p>
-                <input type="text" id="recUserid" class="form-control" placeholder="আপনার ইউজার আইডি" required>
+                <p style="font-size:13px; color:#6c757d; margin-bottom:15px;">আপনার সঠিক তথ্য দিন, রিকোয়েস্টটি Ecs এর অনুমোদনের পর পাসওয়ার্ড পরিবর্তিত হবে।</p>
+                <input type="text" id="recUserid" class="form-control" placeholder="ইউজার আইডি" required>
                 <input type="text" id="recMobile" class="form-control" placeholder="নিবন্ধিত মোবাইল নাম্বার" required>
                 <input type="password" id="recNewPassword" class="form-control" placeholder="নতুন পাসওয়ার্ড" required>
-                <button type="submit" class="btn" style="width:100%; background:#9b5de5;">এডমিনের কাছে রিকোয়েস্ট পাঠান</button>
+                <button type="submit" class="btn" style="width:100%; background:#9b5de5;">রিকোয়েস্ট পাঠান</button>
                 <p style="margin-top:15px; font-size:14px;"><a href="#" class="back-to-login">লগইন পেজে ফিরুন</a></p>
                 <div id="recoverMessage"></div>
             </form>
@@ -145,7 +145,7 @@
         <div class="header">
             <div style="display: flex; align-items: center;">
                 <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg" alt="EC Logo">
-                <span>CMS - NID DATABASE পার্টনার পোর্টাল <span id="adminBadge" style="color:#ffc107; display:none;">(ADMIN)</span></span>
+                <span>CMS - NID DATABASE পার্টনার পোর্টাল <span id="adminBadge" style="color:#ffc107; display:none;">(Ecs Admin)</span></span>
             </div>
             <button class="btn" style="background:#dc3545;" onclick="logout()">লগআউট</button>
         </div>
@@ -308,7 +308,7 @@
                 const recData = { userid: user, mobile: mobile, requestedPassword: newPass, timestamp: new Date().toLocaleString('bn-BD') };
                 await fetch(`${FIREBASE_URL}/recovery_requests/${user}.json`, { method: 'PUT', body: JSON.stringify(recData) });
                 hideLoading();
-                recMsg.innerHTML = `<span class="success">রিসেট রিকোয়েস্ট সফল হয়েছে। এডমিন অ্যাপ্রুভ করলে লগইন করতে পারবেন।</span>`;
+                recMsg.innerHTML = `<span class="success">রিসেট রিকোয়েস্ট সফল হয়েছে। Ecs গ্রহণ করলে লগইন করতে পারবেন।</span>`;
                 document.getElementById("recoverForm").reset();
             } catch(error) { hideLoading(); recMsg.innerHTML = `<span class="error">সার্ভার ত্রুটি!</span>`; }
         });
@@ -360,10 +360,10 @@
 
         function showForm(type) {
             let title = "", fields = "", label = "";
-            if (type === "nid") { title = "এনআইডি সার্চ"; label = "জাতীয় পরিচয়পত্র নম্বর দিন (১০, ১৩ বা ১৭ ডিজিট)"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}"><select id="nidType" class="form-control"><option value="ServerCopy">সার্ভার কপি</option><option value="SignCopy">সাইন কপি</option></select>`; }
+            if (type === "nid") { title = "এনআইডি সার্চ"; label = "জাতীয় পরিচয়পত্র নম্বর দিন (১০, ১৩ বা ১৭ ডিজিট)"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}"><select id="nidType" class="form-control"><option value="Nidcopy">NID ডাউনলোড</option><option value="ServerCopy">সার্ভার কপি</option><option value="SignCopy">সাইন কপি</option></select>`; }
             else if (type === "mobile") { title = "মোবাইল সার্চ"; label = "মোবাইল নম্বর দিন (১১ ডিজিট)"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}">`; }
             else if (type === "birth") { title = "জন্ম নিবন্ধন সার্চ"; label = "জন্ম নিবন্ধন নম্বর দিন"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}">`; }
-            else if (type === "formno") { title = "ফর্ম নাম্বার"; label = "ফর্ম নম্বর দিন"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}">`; }
+            else if (type === "formno") { title = "ফর্ম/ভোটার নাম্বার"; label = "ফর্ম/ভোটার নম্বর দিন"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}">`; }
             else if (type === "correction") { title = "সংশোধন অনুমোদন"; label = "জাতীয় পরিচয় পত্র নম্বর / আবেদন কপি নম্বর দিন"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}">`; }
 
             document.getElementById("formArea").innerHTML = `
@@ -385,7 +385,7 @@
             if (type === "nid") {
                 const len = query.length;
                 if(len !== 10 && len !== 13 && len !== 17) {
-                    resArea.innerHTML = `<div class="not-found-card" style="background:#f8d7da; color:#721c24; border-color:#f5c6cb;">সরেরকর্ড পাওয়া যায়নি। সঠিক জাতীয় পরিচয় পত্র নম্বর প্রদান করুন।</div>`;
+                    resArea.innerHTML = `<div class="not-found-card" style="background:#f8d7da; color:#721c24; border-color:#f5c6cb;">জাতীয় পরিচয় পত্র নম্বর ভুল। সঠিক জাতীয় পরিচয় পত্র নম্বর প্রদান করুন।</div>`;
                     return;
                 }
             }
@@ -393,7 +393,7 @@
             // মোবাইল নাম্বার ফিল্টারিং লজিক (১১ ডিজিট বাধ্যতামূলক)
             if (type === "mobile") {
                 if(query.length !== 11 || !/^01[3-9]\d{8}$/.test(query)) {
-                    resArea.innerHTML = `<div class="not-found-card" style="background:#f8d7da; color:#721c24; border-color:#f5c6cb;">ভুল মোবাইল নাম্বার। সঠিক ১১ ডিজিটের মোবাইল নম্বর প্রদান করুন।</div>`;
+                    resArea.innerHTML = `<div class="not-found-card" style="background:#f8d7da; color:#721c24; border-color:#f5c6cb;">ভুল মোবাইল নম্বর। সঠিক ১১ ডিজিটের মোবাইল নম্বর প্রদান করুন।</div>`;
                     return;
                 }
             }
@@ -426,7 +426,7 @@
                                         <tr>
                                             <th>Application Id</th>
                                             <th>Applicant Name</th>
-                                            <th>এনআইডি (NID)</th>
+                                            <th>NID</th>
                                             <th>Status</th>
                                             <th>Cattagory</th>
                                             <th>Action</th>
@@ -595,7 +595,7 @@
                 <button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button>
                 <h3 style="color:#0b5ed7; margin-bottom:15px;">👤 ব্যবহারকারী প্রোফাইল ইনফো</h3>
                 <div class="result-card" style="margin-bottom:20px;">
-                    <div class="result-item"><b>ইউজার অ্যাকাউন্ট আইডি:</b> ${user}</div>
+                    <div class="result-item"><b>ইউজার আইডি:</b> ${user}</div>
                 </div>
 
                 <div style="background:#fff; padding:15px; border:1px solid #ddd; border-radius:6px; margin-bottom:25px;">
@@ -639,7 +639,7 @@
         async function showAdminPanel() {
             document.getElementById("formArea").innerHTML = `
                 <button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button>
-                <h2 style="color: #0b5ed7; margin-bottom: 20px;">🔐 অ্যাডমিন মাস্টার কন্ট্রোল প্যানেল</h2>
+                <h2 style="color: #0b5ed7; margin-bottom: 20px;">🔐 অ্যাডমিন কন্ট্রোল প্যানেল</h2>
                 
                 <div class="admin-tabs">
                     <button class="tab-link active" onclick="switchAdminTab('tab_notice')">📢 নোটিশ মডিউল</button>
@@ -667,11 +667,12 @@
                     
                     <label>সার্চ অপশন টাইপ সিলেক্ট করুন:</label>
                     <select id="targetTypeSelect" class="form-control">
-                        <option value="ServerCopy">এনআইডি সার্ভার কপি</option>
-                        <option value="SignCopy">এনআইডি সাইন কপি</option>
-                        <option value="mobile">মোবাইল সার্চ</option>
-                        <option value="birth">জন্ম নিবন্ধন সার্চ</option>
-                        <option value="formno">ফর্ম নাম্বার</option>
+                    <option value="Nidcard">এনআইডি কার্ড</option>
+                    <option value="ServerCopy">এনআইডি সার্ভার কপি</option>
+                    <option value="SignCopy">এনআইডি সাইন কপি</option>
+                    <option value="mobile">মোবাইল সার্চ</option>
+                    <option value="birth">জন্ম নিবন্ধন সার্চ</option>
+                    <option value="formno">ফর্ম নাম্বার</option>
                     </select>
                     <label>সার্চ করার নির্দিষ্ট নম্বর:</label>
                     <label>ফাইল বা পিডিএফ সিলেক্ট করুন:</label>
@@ -908,7 +909,7 @@
                 if(chatData) {
                     Object.values(chatData).forEach(m => {
                         let cls = m.sender === 'admin' ? 'admin' : 'user';
-                        let lbl = m.sender === 'admin' ? 'অ্যাডমিন' : uId;
+                        let lbl = m.sender === 'admin' ? 'Ecs help care' : uId;
                         html += `<div class="chat-msg ${cls}"><b>${lbl}:</b> ${m.text}</div>`;
                     });
                     display.innerHTML = html;
@@ -934,7 +935,7 @@
             users.forEach((user, index) => {
                 const statusClass = user.status === "Active" ? "status-active" : "status-blocked";
                 const uMob = user.mobile || "N/A";
-                tableRows += `<tr><td class='text-center'>${index + 1}</td><td>${user.userid}</td><td>${uMob}</td><td>${user.password}</td><td class='text-center ${statusClass}'>${user.status}</td><td class='text-center'><button class="btn ${user.status === 'Active' ? 'btn-danger' : ''}" style="padding:4px 10px; font-size:13px;" onclick="toggleUserStatus('${user.userid}', '${user.status}')">${user.status === 'Active' ? 'ব্লক' : 'আনব্লক'}</button></td></tr>`;
+                tableRows += `<tr><td class='text-center'>${index + 1}</td><td>${user.userid}</td><td>${uMob}</td><td>${user.password}</td><td class='text-center ${statusClass}'>${user.status}</td><td class='text-center'><button class="btn ${user.status === 'Active' ? 'btn-danger' : ''}" style="padding:4px 10px; font-size:13px;" onclick="toggleUserStatus('${user.userid}', '${user.status}')">${user.status === 'Active' ? 'Blocked' : 'Unblocked'}</button></td></tr>`;
             });
             document.querySelector("#registeredUsersTable tbody").innerHTML = tableRows;
 
