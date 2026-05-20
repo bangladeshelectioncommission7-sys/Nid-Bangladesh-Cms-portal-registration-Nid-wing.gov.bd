@@ -6,80 +6,66 @@
     <title>Bangladesh Election Commission - CMS Portal</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f6f9; min-height: 100vh; color: #333; }
-        .header { background: #0b5ed7; color: white; padding: 15px 20px; text-align: center; font-size: 20px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; min-height: 100vh; color: #333; }
+        .header { background: #0b5ed7; color: white; padding: 15px 20px; font-size: 18px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .logo { width: 45px; margin-right: 12px; }
         
         .notice-container { background: #ffdbdb; border-bottom: 2px solid #dc3545; overflow: hidden; position: relative; padding: 10px 0; display: flex; align-items: center; }
-        .notice-text { display: inline-block; white-space: nowrap; padding-left: 100%; color: #dc3545; font-weight: bold; font-size: 15px; animation: text-roll 28s linear infinite; }
+        .notice-text { display: inline-block; white-space: nowrap; padding-left: 100%; color: #dc3545; font-weight: bold; font-size: 14px; animation: text-roll 28s linear infinite; }
         @keyframes text-roll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
         .container { display: flex; flex-direction: row; min-height: calc(100vh - 65px); }
-        .sidebar { width: 240px; background: #fff; border-right: 1px solid #dee2e6; box-shadow: 2px 0 5px rgba(0,0,0,0.02); }
+        .sidebar { width: 240px; background: #fff; border-right: 1px solid #dee2e6; }
         .sidebar ul { list-style: none; }
-        .sidebar ul li a { display: block; padding: 14px 20px; text-decoration: none; color: #495057; cursor: pointer; font-weight: 500; font-size: 15px; border-bottom: 1px solid #f1f3f5; transition: all 0.2s; }
-        .sidebar ul li a:hover { background: #f8f9fa; color: #0b5ed7; padding-left: 25px; }
+        .sidebar ul li a { display: block; padding: 14px 20px; text-decoration: none; color: #495057; cursor: pointer; font-weight: 500; font-size: 14px; border-bottom: 1px solid #f1f3f5; }
+        .sidebar ul li a:hover { background: #f8f9fa; color: #0b5ed7; }
         
         .sidebar ul li a.admin-menu-btn { background: #ffc107; font-weight: bold; color: #212529; display: none; }
-        .sidebar ul li a.admin-menu-btn:hover { background: #e0a800; color: #212529; }
 
         .content { flex: 1; padding: 25px; }
-        .box { background: #fff; padding: 25px; border: 1px solid #e3e6f0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.01); }
-        .form-control { width: 100%; padding: 12px; margin: 8px 0 15px 0; border: 1px solid #ced4da; border-radius: 6px; font-size: 15px; transition: border 0.2s; }
+        .box { background: #fff; padding: 25px; border: 1px solid #e3e6f0; border-radius: 8px; }
+        .form-control { width: 100%; padding: 12px; margin: 8px 0 15px 0; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px; }
         .form-control:focus { border-color: #0b5ed7; outline: none; }
-        
-        .btn { padding: 10px 22px; background: #0b5ed7; border: none; color: white; cursor: pointer; border-radius: 6px; font-size: 15px; font-weight: 500; text-align: center; }
+        .btn { padding: 10px 22px; background: #0b5ed7; border: none; color: white; cursor: pointer; border-radius: 6px; font-size: 14px; font-weight: 500; }
         .btn:hover { background: #0949a5; }
-        .btn-danger { background: #dc3545; }
-        .btn-danger:hover { background: #bd2130; }
         .back-btn { background: #6c757d; margin-bottom: 20px; }
-        .back-btn:hover { background: #5a6268; }
         
         #loginContainer { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; background: #e9ecef; }
-        #loginForm, #registerForm, #secretForm, #recoverForm { background: white; padding: 35px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); width: 100%; max-width: 450px; text-align: center; }
-        #message, #regMessage, #secretMessage, #recoverMessage { margin-top: 15px; font-weight: bold; min-height: 22px; }
+        #loginForm, #registerForm, #secretForm { background: white; padding: 35px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); width: 100%; max-width: 420px; text-align: center; }
+        #message, #regMessage, #secretMessage { margin-top: 15px; font-weight: bold; }
         .success { color: #28a745; }
         .error { color: #dc3545; }
         #dashboard { display: none; }
         
         #loadingOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
-        .spinner { width: 55px; height: 55px; border: 5px solid #f3f3f3; border-top: 5px solid #0b5ed7; border-radius: 50%; animation: spin 1s linear infinite; }
+        .spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #0b5ed7; border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .loading-text { margin-top: 15px; color: white; font-size: 16px; }
+        .loading-text { margin-top: 15px; color: white; font-size: 15px; }
 
-        .admin-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid #dee2e6; padding-bottom: 10px; }
-        .tab-link { padding: 10px 20px; background: #e9ecef; border: none; cursor: pointer; border-radius: 6px; font-weight: bold; color: #495057; transition: all 0.2s; }
-        .tab-link.active { background: #0b5ed7; color: white; }
-        .admin-tab-content { display: none; background: #fafafa; border: 1px solid #ddd; padding: 20px; border-radius: 8px; }
-
-        .user-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; max-height: 220px; overflow-y: auto; padding: 15px; border: 1px solid #ced4da; background: #fff; border-radius: 6px; margin-bottom: 15px; }
-        .user-item { display: flex; align-items: center; gap: 8px; background: #f8f9fa; padding: 8px 12px; border-radius: 4px; border: 1px solid #e9ecef; font-size: 14px; word-break: break-all; }
-        .user-item input { width: 16px; height: 16px; cursor: pointer; }
-
-        .ec-table-container { width: 100%; overflow-x: auto; margin-top: 15px; background: #fff; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .ec-table, .admin-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
-        .ec-table th, .ec-table td, .admin-table th, .admin-table td { padding: 12px 15px; border: 1px solid #dee2e6; vertical-align: middle; }
-        .admin-table th, .ec-table th { background: #f8f9fa; color: #495057; font-weight: 600; text-align: center; }
+        .ec-table-container { width: 100%; overflow-x: auto; margin-top: 15px; background: #fff; border: 1px solid #dee2e6; border-radius: 4px; }
+        .ec-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .ec-table th, .ec-table td { padding: 12px 15px; border: 1px solid #dee2e6; vertical-align: middle; }
+        .ec-table th { background: #f8f9fa; color: #495057; font-weight: 600; text-align: center; }
         .text-center { text-align: center !important; }
         
-        .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; display: inline-block; }
+        .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; display: inline-block; }
         .status-pending { background: #fff3cd; color: #856404; }
         .status-approved { background: #d4edda; color: #155724; }
         .status-rejected { background: #f8d7da; color: #721c24; }
-        .status-active { color: #28a745; font-weight: bold; }
-        .status-blocked { color: #dc3545; font-weight: bold; }
+
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
+        .admin-table th, .admin-table td { padding: 12px; border: 1px solid #dee2e6; text-align: center; }
+        .admin-table th { background: #e9ecef; font-weight: bold; }
+        .admin-section { border: 1px solid #ddd; padding: 18px; margin-bottom: 25px; border-radius: 6px; background: #fafafa; }
         
         .result-card { background: #f8f9fa; border: 1px solid #ced4da; padding: 18px; border-radius: 6px; margin-top: 15px; }
-        .result-item { margin-bottom: 8px; font-size: 15px; }
-        .not-found-card { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 15px; border-radius: 6px; margin-top: 15px; font-weight: 500; text-align: center; }
-        
-        .chat-box { max-height: 250px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; background: #f9f9f9; border-radius: 6px; margin-bottom: 10px; }
-        .chat-msg { margin-bottom: 8px; padding: 8px 12px; border-radius: 6px; font-size: 14px; max-width: 80%; }
-        .chat-msg.admin { background: #e2f0d9; align-self: flex-start; }
-        .chat-msg.user { background: #cfe2ff; margin-left: auto; text-align: right; }
-        .msg-threads { padding: 10px; border: 1px solid #eee; background: #fff; margin-bottom: 8px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
-        .uploaded-file-list { margin-top: 12px; border: 1px solid #ddd; background: #fff; border-radius: 6px; max-height: 180px; overflow-y: auto; }
-        .file-list-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+        .result-item { margin-bottom: 8px; font-size: 14px; }
+        .not-found-card { color: #dc3545; padding: 15px 5px; margin-top: 15px; font-weight: bold; font-size: 15px; }
+
+        /* ইউজার সিলেকশন চেকবক্সের জন্য সুন্দর স্টাইল */
+        .user-checkbox-container { max-height: 180px; overflow-y: auto; border: 1px solid #ced4da; padding: 10px; border-radius: 6px; background: #fff; margin-top: 5px; margin-bottom: 15px;}
+        .user-checkbox-item { display: flex; align-items: center; margin-bottom: 8px; font-size: 14px; cursor: pointer; }
+        .user-checkbox-item input { margin-right: 10px; width: 16px; height: 16px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -92,36 +78,18 @@
                 <input type="text" id="userid" class="form-control" placeholder="ইউজার আইডি" required>
                 <input type="password" id="password" class="form-control" placeholder="পাসওয়ার্ড" required>
                 <button type="submit" class="btn" style="width:100%;">লগইন</button>
-                <div style="margin-top:15px; font-size:14px; display:flex; justify-content: space-between;">
-                    <a href="#" id="showRegister">নতুন অ্যাকাউন্ট খুলুন</a>
-                    <a href="#" id="showRecover" style="color:#dc3545;">পাসওয়ার্ড ভুলে গেছেন?</a>
-                </div>
+                <p style="margin-top:15px; font-size:13px;">অ্যাকাউন্ট নেই? <a href="#" id="showRegister">রেজিস্টার করুন</a></p>
                 <div id="message"></div>
             </form>
 
             <form id="registerForm" style="display:none;">
                 <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg" alt="EC Logo">
-                <h3 style="margin-bottom:15px;">অ্যাকাউন্ট রেজিস্ট্রেশন</h3>
-                <input type="text" id="regName" class="form-control" placeholder="সম্পূর্ণ নাম দিন ( )" required>
-                <input type="text" id="regUserid" class="form-control" placeholder="ইউজার আইডি দিন ( )" required>
-                <input type="text" id="regMobile" class="form-control" placeholder="মোবাইল নাম্বার দিন ( )" required>
-                <input type="password" id="regPassword" class="form-control" placeholder="পাসওয়ার্ড দিন (নূন্যতম ৬ ডিজিট)" required>
-                <input type="password" id="regConfirmPassword" class="form-control" placeholder="কনফার্ম পাসওয়ার্ড" required>
-                <button type="submit" class="btn" style="width:100%; background:#28a745;">তথ্য জমা দিন</button>
-                <p style="margin-top:15px; font-size:14px;"><a href="#" class="back-to-login">লগইন পেজে ফিরুন</a></p>
+                <h3 style="margin-bottom:15px;">নতুন অ্যাকাউন্ট রেজিস্ট্রেশন</h3>
+                <input type="text" id="regUserid" class="form-control" placeholder="ইউজার আইডি" required>
+                <input type="password" id="regPassword" class="form-control" placeholder="পাসওয়ার্ড" required>
+                <button type="submit" class="btn" style="width:100%;">রেজিস্টার</button>
+                <p style="margin-top:15px; font-size:13px;"><a href="#" id="showLogin">লগইন পেজে ফিরুন</a></p>
                 <div id="regMessage"></div>
-            </form>
-
-            <form id="recoverForm" style="display:none;">
-                <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg" alt="EC Logo">
-                <h3 style="margin-bottom:15px;">পাসওয়ার্ড রিসেট রিকোয়েস্ট</h3>
-                <p style="font-size:13px; color:#6c757d; margin-bottom:15px;">আপনার সঠিক তথ্য দিন, রিকোয়েস্টটি Ecs এর অনুমোদনের পর পাসওয়ার্ড পরিবর্তিত হবে।</p>
-                <input type="text" id="recUserid" class="form-control" placeholder="ইউজার আইডি" required>
-                <input type="text" id="recMobile" class="form-control" placeholder="নিবন্ধিত মোবাইল নাম্বার" required>
-                <input type="password" id="recNewPassword" class="form-control" placeholder="নতুন পাসওয়ার্ড" required>
-                <button type="submit" class="btn" style="width:100%; background:#9b5de5;">রিকোয়েস্ট পাঠান</button>
-                <p style="margin-top:15px; font-size:14px;"><a href="#" class="back-to-login">লগইন পেজে ফিরুন</a></p>
-                <div id="recoverMessage"></div>
             </form>
 
             <form id="secretForm" style="display:none;">
@@ -130,7 +98,7 @@
                 <p style="font-size:13px; color:#6c757d; margin: 10px 0;">কন্ট্রোল প্যানেলে প্রবেশের সিক্রেট কী টাইপ করুন</p>
                 <input type="password" id="secretKeyInput" class="form-control" placeholder="••••" required>
                 <button type="submit" class="btn" style="background:#28a745; width:100%;">ভেরিফাই</button>
-                <p style="margin-top:15px; font-size:14px;"><a href="#" onclick="logout()">বাতিল করুন</a></p>
+                <p style="margin-top:15px; font-size:13px;"><a href="#" onclick="logout()">বাতিল করুন</a></p>
                 <div id="secretMessage"></div>
             </form>
         </div>
@@ -145,7 +113,7 @@
         <div class="header">
             <div style="display: flex; align-items: center;">
                 <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg" alt="EC Logo">
-                <span>CMS - NID DATABASE পার্টনার পোর্টাল <span id="adminBadge" style="color:#ffc107; display:none;">(Ecs Admin)</span></span>
+                <span>CMS - NID DATABASE পার্টনার পোর্টাল <span id="adminBadge" style="color:#ffc107; display:none;">(ADMIN)</span></span>
             </div>
             <button class="btn" style="background:#dc3545;" onclick="logout()">লগআউট</button>
         </div>
@@ -160,15 +128,14 @@
                     <li><a onclick="showForm('nid')">এনআইডি সার্চ</a></li>
                     <li><a onclick="showForm('mobile')">মোবাইল সার্চ</a></li>
                     <li><a onclick="showForm('birth')">জন্ম নিবন্ধন সার্চ</a></li>
-                    <li><a onclick="showForm('formno')">ফর্ম/ভোটার নাম্বার</a></li>
-                    <li><a onclick="showForm('correction')">সংশোধন অনুমোদন</a></li>
-                    <li><a onclick="showUserProfile()">👤 আমার প্রোফাইল & ইনবক্স</a></li>
+                    <li><a onclick="showForm('formno')">ফর্ম নাম্বার</a></li>
+                    <li><a onclick="showUserProfile()">👤 আমার প্রোফাইল</a></li>
                     <li><a id="adminMenuOpt" class="admin-menu-btn" onclick="showAdminPanel()">🔐 অ্যাডমিন প্যানেল</a></li>
                 </ul>
             </div>
             <div class="content">
                 <div class="box" id="formArea">
-                    <h3 style="color:#495057;">CMS পোর্টাল ড্যাশবোর্ডে আপনাকে স্বাগতম।</h3>
+                    <h3 style="color:#495057;">CMS পোর্টাল ড্যাশবোর্ডে আপনাকে স্বাগতম। জাতীয় পরিচয় পত্র অনু বিভাগ।</h3>
                 </div>
             </div>
         </div>
@@ -179,143 +146,92 @@
         const _0x4f2a = [32, 32, 32, 32]; 
 
         function showLoading(text = "অনুগ্রহ করে অপেক্ষা করুন...") { 
-    // যদি অ্যাডমিন লগইন থাকে, তবে কোনো লোডিং অ্যানিমেশন দেখাবে না
-    if (localStorage.getItem("loggedInUser") === "admin") {
-        return; 
-    }
-    document.getElementById("loadingText").innerText = text;
-    document.getElementById("loadingOverlay").style.display = "flex"; 
-}
+            document.getElementById("loadingText").innerText = text;
+            document.getElementById("loadingOverlay").style.display = "flex"; 
+        }
         function hideLoading() { document.getElementById("loadingOverlay").style.display = "none"; }
 
         window.onload = function() {
             const loggedInUser = localStorage.getItem("loggedInUser");
-            updateNoticeBar(loggedInUser);
             if (loggedInUser) {
-                document.getElementById("loginContainer").style.display = "none";
-                document.getElementById("dashboard").style.display = "block";
-                if (loggedInUser === "admin") {
-                    document.getElementById("adminMenuOpt").style.display = "block";
-                    document.getElementById("adminBadge").style.display = "inline";
-                }
+                checkUserSecurityStatus(loggedInUser);
+                setInterval(() => { checkUserSecurityStatus(loggedInUser); }, 10000);
             }
         };
+
+        async function checkUserSecurityStatus(username) {
+            if(!username) return;
+            if(username === "admin") {
+                document.getElementById("loginContainer").style.display = "none";
+                document.getElementById("dashboard").style.display = "block";
+                document.getElementById("adminMenuOpt").style.display = "block";
+                document.getElementById("adminBadge").style.display = "inline";
+                updateNoticeBar("admin");
+                return;
+            }
+            try {
+                const res = await fetch(`${FIREBASE_URL}/users/${username}.json`);
+                const userData = await res.json();
+                if(!userData || userData.status === "Blocked") {
+                    alert("আপনার অ্যাকাউন্টটি নিষ্ক্রিয় বা ব্লক করা হয়েছে!");
+                    logout();
+                } else {
+                    document.getElementById("loginContainer").style.display = "none";
+                    document.getElementById("dashboard").style.display = "block";
+                    updateNoticeBar(username);
+                }
+            } catch(e){}
+        }
 
         async function updateNoticeBar(username) {
             try {
                 if(username && username !== "admin") {
                     const pRes = await fetch(`${FIREBASE_URL}/personal_notices/${username}.json`);
                     const pNotice = await pRes.json();
-                    if(pNotice) {
-                        document.getElementById("liveNoticeText").innerText = pNotice;
-                        return;
-                    }
+                    if(pNotice) { document.getElementById("liveNoticeText").innerText = pNotice; return; }
                 }
                 const response = await fetch(`${FIREBASE_URL}/common_notice.json`);
                 const commonNotice = await response.json();
-                document.getElementById("liveNoticeText").innerText = commonNotice || "⚠️ পোর্টাল সিস্টেম আপডেট চলছে। সাময়িক বিভ্রাটের জন্য দুঃখিত।";
+                document.getElementById("liveNoticeText").innerText = commonNotice || "⚠️ পোর্টাল সিস্টেম আপডেট চলছে।";
             } catch(e) { document.getElementById("liveNoticeText").innerText = "সার্ভার সংযোগ ত্রুটি!"; }
         }
 
-        // ফর্ম নেভিগেশন কন্ট্রোল
-        document.getElementById("showRegister").addEventListener("click", e => { e.preventDefault(); toggleAuthForms('register'); });
-        document.getElementById("showRecover").addEventListener("click", e => { e.preventDefault(); toggleAuthForms('recover'); });
-        document.querySelectorAll(".back-to-login").forEach(el => {
-            el.addEventListener("click", e => { e.preventDefault(); toggleAuthForms('login'); });
-        });
-
-        function toggleAuthForms(target) {
-            document.getElementById("loginForm").style.display = target === 'login' ? 'block' : 'none';
-            document.getElementById("registerForm").style.display = target === 'register' ? 'block' : 'none';
-            document.getElementById("recoverForm").style.display = target === 'recover' ? 'block' : 'none';
-            document.getElementById("message").innerHTML = "";
-            document.getElementById("regMessage").innerHTML = "";
-            document.getElementById("recoverMessage").innerHTML = "";
-        }
+        document.getElementById("showRegister").addEventListener("click", e => { e.preventDefault(); document.getElementById("loginForm").style.display = "none"; document.getElementById("registerForm").style.display = "block"; });
+        document.getElementById("showLogin").addEventListener("click", e => { e.preventDefault(); document.getElementById("registerForm").style.display = "none"; document.getElementById("loginForm").style.display = "block"; });
 
         async function fetchUsers() {
             try {
-                const response = await fetch(`${FIREBASE_URL}/users.json?shallow=true`);
+                const response = await fetch(`${FIREBASE_URL}/users.json`);
                 const data = await response.json();
-                if(!data) return [];
-                let userList = [];
-                for(let key in data) {
-                    let uRes = await fetch(`${FIREBASE_URL}/users/${key}.json`);
-                    let uData = await uRes.json();
-                    if(uData) userList.push(uData);
-                }
-                return userList;
+                return data ? Object.values(data) : [];
             } catch (error) { return []; }
         }
 
-        // কঠোর ডাটা ভ্যালিডেশন সহ অফিশিয়াল রেজিস্ট্রেশন সাবমিট
         document.getElementById("registerForm").addEventListener("submit", async e => {
             e.preventDefault();
-            const name = document.getElementById("regName").value.trim();
-            const user = document.getElementById("regUserid").value.trim().toLowerCase();
-            const mobile = document.getElementById("regMobile").value.trim();
+            const user = document.getElementById("regUserid").value.trim();
             const pass = document.getElementById("regPassword").value.trim();
-            const cPass = document.getElementById("regConfirmPassword").value.trim();
             const regMsg = document.getElementById("regMessage");
-
-            // নাম ভ্যালিডেশন
-            if(name.length < 3) { regMsg.innerHTML = `<span class="error">অনুগ্রহ করে আপনার সঠিক নাম প্রদান করুন।</span>`; return; }
-            // ইউজার আইডি চেক
-            if(!/^[a-z0-Warm0-9]+$/.test(user) || user.length < 4) { regMsg.innerHTML = `<span class="error">ইউজার আইডি অবশ্যই ইংরেজি ছোট অক্ষর ও সংখ্যার সমন্বয়ে নূন্যতম ৪ ডিজিট হতে হবে (কোনো স্পেস থাকবে না)।</span>`; return; }
-            if(user === 'admin') { regMsg.innerHTML = `<span class="error">'admin' ইউজার আইডিটি সংরক্ষিত।</span>`; return; }
-            // মোবাইল নাম্বার ভ্যালিডেশন (১১ ডিজিট বাংলাদেশী ফরম্যাট)
-            if(!/^01[3-9]\d{8}$/.test(mobile)) { regMsg.innerHTML = `<span class="error">১১ ডিজিটের সঠিক বাংলাদেশী মোবাইল নম্বর প্রদান করুন।</span>`; return; }
-            // পাসওয়ার্ড ম্যাচিং চেক
-            if(pass.length < 6) { regMsg.innerHTML = `<span class="error">নিরাপত্তার স্বার্থে পাসওয়ার্ড নূন্যতম ৬ ডিজিটের দিন।</span>`; return; }
-            if(pass !== cPass) { regMsg.innerHTML = `<span class="error">পাসওয়ার্ড এবং কনফার্ম পাসওয়ার্ড মিলছে না!</span>`; return; }
-
-            showLoading("তথ্য ভেরিফাই করা হচ্ছে...");
+            if (!user || !pass) return;
+            if(user.toLowerCase() === 'admin') { regMsg.innerHTML = `<span class="error">'admin' আইডি রিজার্ভড।</span>`; return; }
+            
+            showLoading();
             let users = await fetchUsers();
             if (users.find(u => u.userid === user)) {
                 hideLoading();
-                regMsg.innerHTML = `<span class="error">এই ইউজার আইডিটি ইতিমধ্যে সিস্টেমে নিবন্ধিত আছে!</span>`;
+                regMsg.innerHTML = `<span class="error">এই আইডিটি ইতিমধ্যে নিবন্ধিত!</span>`;
                 return;
             }
-            
-            const newUser = { name: name, userid: user, mobile: mobile, password: pass, status: "Active" };
+            const newUser = { userid: user, password: pass, status: "Active" };
             await fetch(`${FIREBASE_URL}/users/${user}.json`, { method: 'PUT', body: JSON.stringify(newUser) });
             hideLoading();
-            regMsg.innerHTML = `<span class="success">আপনার অ্যাকাউন্ট রেজিস্ট্রেশন সফল হয়েছে। লগইন করুন...</span>`;
-            setTimeout(() => { toggleAuthForms('login'); }, 2000);
-        });
-
-        // পাসওয়ার্ড রিকভারি রিকোয়েস্ট ইঞ্জিন (অ্যাডমিনের অনুমোদনের জন্য যাবে)
-        document.getElementById("recoverForm").addEventListener("submit", async e => {
-            e.preventDefault();
-            const user = document.getElementById("recUserid").value.trim().toLowerCase();
-            const mobile = document.getElementById("recMobile").value.trim();
-            const newPass = document.getElementById("recNewPassword").value.trim();
-            const recMsg = document.getElementById("recoverMessage");
-
-            if(newPass.length < 6) { recMsg.innerHTML = `<span class="error">নতুন পাসওয়ার্ড নূন্যতম ৬ ডিজিটের দিন।</span>`; return; }
-
-            showLoading("রিকোয়েস্ট প্রসেস হচ্ছে...");
-            try {
-                const uRes = await fetch(`${FIREBASE_URL}/users/${user}.json`);
-                const userData = await uRes.json();
-                
-                if(!userData || userData.mobile !== mobile) {
-                    hideLoading();
-                    recMsg.innerHTML = `<span class="error">প্রদত্ত ইউজার আইডি অথবা মোবাইল নম্বর মিলছে না!</span>`;
-                    return;
-                }
-
-                const recData = { userid: user, mobile: mobile, requestedPassword: newPass, timestamp: new Date().toLocaleString('bn-BD') };
-                await fetch(`${FIREBASE_URL}/recovery_requests/${user}.json`, { method: 'PUT', body: JSON.stringify(recData) });
-                hideLoading();
-                recMsg.innerHTML = `<span class="success">রিসেট রিকোয়েস্ট সফল হয়েছে। Ecs গ্রহণ করলে লগইন করতে পারবেন।</span>`;
-                document.getElementById("recoverForm").reset();
-            } catch(error) { hideLoading(); recMsg.innerHTML = `<span class="error">সার্ভার ত্রুটি!</span>`; }
+            regMsg.innerHTML = `<span class="success">রেজিস্ট্রেশন সফল। লগইন করুন...</span>`;
+            setTimeout(() => { document.getElementById("registerForm").style.display = "none"; document.getElementById("loginForm").style.display = "block"; regMsg.innerHTML = ""; }, 1500);
         });
 
         document.getElementById("loginForm").addEventListener("submit", async e => {
             e.preventDefault();
-            const user = document.getElementById("userid").value.trim().toLowerCase();
+            const user = document.getElementById("userid").value.trim();
             const pass = document.getElementById("password").value.trim();
             if (user === "admin" && pass === "admin123") { document.getElementById("loginForm").style.display = "none"; document.getElementById("secretForm").style.display = "block"; document.getElementById("secretKeyInput").focus(); return; }
 
@@ -324,13 +240,11 @@
                 const response = await fetch(`${FIREBASE_URL}/users/${user}.json`);
                 const foundUser = await response.json();
                 hideLoading();
-                if (!foundUser || foundUser.password !== pass) { document.getElementById("message").innerHTML = `<span class="error">ইউজার আইডি অথবা পাসওয়ার্ড ভুল।</span>`; return; }
-                if (foundUser.status === "Blocked") { document.getElementById("message").innerHTML = `<span class="error">আপনার অ্যাকাউন্টটি সাময়িকভাবে স্থগিত রয়েছে!</span>`; return; }
+                if (!foundUser || foundUser.password !== pass) { document.getElementById("message").innerHTML = `<span class="error">আইডি বা পাসওয়ার্ড ভুল।</span>`; return; }
+                if (foundUser.status === "Blocked") { document.getElementById("message").innerHTML = `<span class="error">আপনার অ্যাকাউন্টটি ব্লকড!</span>`; return; }
                 localStorage.setItem("loggedInUser", user);
-                document.getElementById("loginContainer").style.display = "none";
-                document.getElementById("dashboard").style.display = "block";
-                updateNoticeBar(user);
-            } catch (error) { hideLoading(); document.getElementById("message").innerHTML = `<span class="error">সার্ভার ডাউন রয়েছে!</span>`; }
+                checkUserSecurityStatus(user);
+            } catch (error) { hideLoading(); document.getElementById("message").innerHTML = `<span class="error">সার্ভার ডাউন!</span>`; }
         });
 
         document.getElementById("secretForm").addEventListener("submit", e => {
@@ -343,28 +257,23 @@
                 setTimeout(() => {
                     hideLoading();
                     localStorage.setItem("loggedInUser", "admin");
-                    document.getElementById("loginContainer").style.display = "none";
-                    document.getElementById("dashboard").style.display = "block";
-                    document.getElementById("adminMenuOpt").style.display = "block";
-                    document.getElementById("adminBadge").style.display = "inline";
                     document.getElementById("secretForm").style.display = "none";
-                    updateNoticeBar("admin");
+                    checkUserSecurityStatus("admin");
                 }, 800);
             } else {
-                document.getElementById("secretMessage").innerHTML = `<span class="error">ভুল কোড!</span>`;
+                document.getElementById("secretMessage").innerHTML = `<span class="error">ভুল সিক্রেট কোড!</span>`;
             }
         });
 
         function logout() { localStorage.removeItem("loggedInUser"); location.reload(); }
-        function backToDefault() { document.getElementById("formArea").innerHTML = "<h3>CMS পোর্টাল ড্যাশবোর্ডে আপনাকে স্বাগতম।</h3>"; }
+        function backToDefault() { document.getElementById("formArea").innerHTML = "<h3>একটি অপশন নির্বাচন করুন</h3>"; }
 
         function showForm(type) {
             let title = "", fields = "", label = "";
-            if (type === "nid") { title = "এনআইডি সার্চ"; label = "জাতীয় পরিচয়পত্র নম্বর দিন (১০, ১৩ বা ১৭ ডিজিট)"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}"><select id="nidType" class="form-control"><option value="Nidcopy">NID ডাউনলোড</option><option value="ServerCopy">সার্ভার কপি</option><option value="SignCopy">সাইন কপি</option></select>`; }
-            else if (type === "mobile") { title = "মোবাইল সার্চ"; label = "মোবাইল নম্বর দিন (১১ ডিজিট)"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}">`; }
+            if (type === "nid") { title = "এনআইডি সার্চ"; label = "জাতীয় পরিচয়পত্র নম্বর দিন"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}"><select id="nidType" class="form-control"><option value="ServerCopy">সার্ভার কপি</option><option value="SignCopy">সাইন কপি</option></select>`; }
+            else if (type === "mobile") { title = "মোবাইল সার্চ"; label = "মোবাইল নম্বর দিন"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}">`; }
             else if (type === "birth") { title = "জন্ম নিবন্ধন সার্চ"; label = "জন্ম নিবন্ধন নম্বর দিন"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}">`; }
-            else if (type === "formno") { title = "ফর্ম/ভোটার নাম্বার"; label = "ফর্ম/ভোটার নম্বর দিন"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}">`; }
-            else if (type === "correction") { title = "সংশোধন অনুমোদন"; label = "জাতীয় পরিচয় পত্র নম্বর / আবেদন কপি নম্বর দিন"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}">`; }
+            else if (type === "formno") { title = "ফর্ম নাম্বার"; label = "ফর্ম নম্বর দিন"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}">`; }
 
             document.getElementById("formArea").innerHTML = `
                 <button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button>
@@ -375,195 +284,95 @@
             `;
         }
 
-        // অফিসিয়াল রিয়েল-টাইম ডাটা গেটওয়ে ও কঠোর সার্চ ইনপুট ভ্যালিডেশন
+        // 🔍 সিকিউর সার্চ ইঞ্জিন (ইউজার পারমিশন চেকিং মডিউল)
         async function handlePublicSearch(type) {
             const query = document.getElementById("sqInput").value.trim();
             const resArea = document.getElementById("resArea");
-            if (!query) {
-    recMsg.innerHTML = `<span class="error">অনুগ্রহ করে সঠিক নম্বর ইনপুট দিন!</span>`;
-    return;
-}
-            // এনআইডি ফিল্টারিং লজিক (১০/১৩/১৭ ডিজিট বাধ্যতামূলক)
-            if (type === "nid") {
-                const len = query.length;
-                if(len !== 10 && len !== 13 && len !== 17) {
-                    resArea.innerHTML = `<div class="not-found-card" style="background:#f8d7da; color:#721c24; border-color:#f5c6cb;">জাতীয় পরিচয় পত্র নম্বর ভুল। সঠিক জাতীয় পরিচয় পত্র নম্বর প্রদান করুন।</div>`;
-                    return;
-                }
-            }
-            
-            // মোবাইল নাম্বার ফিল্টারিং লজিক (১১ ডিজিট বাধ্যতামূলক)
-            if (type === "mobile") {
-                if(query.length !== 11 || !/^01[3-9]\d{8}$/.test(query)) {
-                    resArea.innerHTML = `<div class="not-found-card" style="background:#f8d7da; color:#721c24; border-color:#f5c6cb;">ভুল মোবাইল নম্বর। সঠিক ১১ ডিজিটের মোবাইল নম্বর প্রদান করুন।</div>`;
-                    return;
-                }
-            }
+            if (!query) { alert("অনুগ্রহ করে সঠিক নম্বর ইনপুট দিন!"); return; }
 
             showLoading("সার্ভার অনুসন্ধান করা হচ্ছে...");
-            const user = localStorage.getItem("loggedInUser");
-            const logId = "log_" + Date.now();
-            const currentTimeStr = new Date().toLocaleString('bn-BD');
+            const currentUser = localStorage.getItem("loggedInUser");
 
-            if (type === "correction") {
-                try {
-                    const response = await fetch(`${FIREBASE_URL}/corrections/${user}/${query}.json`);
-                    const cData = await response.json();
-                    
-                    let logStatus = cData ? "Success" : "No data record found.";
-                    await fetch(`${FIREBASE_URL}/search_logs/${logId}.json`, { method: 'PUT', body: JSON.stringify({ user: user, type: type, query: query, time: currentTimeStr, status: logStatus }) });
-                    await fetch(`${FIREBASE_URL}/user_history/${user}/${logId}.json`, { method: 'PUT', body: JSON.stringify({ type: type, query: query, time: currentTimeStr, status: logStatus }) });
-
-                    hideLoading();
-
-                    if(cData) {
-                        let statusHtml = `<span class="status-badge status-pending">Pending</span>`;
-                        if(cData.status.includes("Approved")) statusHtml = `<span class="status-badge status-approved">${cData.status}</span>`;
-                        if(cData.status.includes("Rejected")) statusHtml = `<span class="status-badge status-rejected">${cData.status}</span>`;
-
-                        resArea.innerHTML = `
-                            <div class="ec-table-container">
-                                <table class="ec-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Application Id</th>
-                                            <th>Applicant Name</th>
-                                            <th>NID</th>
-                                            <th>Status</th>
-                                            <th>Cattagory</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>${cData.appId}</td>
-                                            <td>${cData.name}</td>
-                                            <td>${cData.nid}</td>
-                                            <td class="text-center" id="status_cell">${statusHtml}</td>
-                                            <td class="text-center">${cData.category || 'N/A'}</td>
-                                            <td class="text-center">${cData.source}</td>
-                                            <td class="text-center">
-                                                <button class="btn" style="padding:4px 8px; font-size:12px;" onclick="openVisualCorrectionEye('${user}','${query}')">👁️ দেখুন</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div id="eyeDetailContainer"></div>
-                        `;
-                    } else {
-                        resArea.innerHTML = `<div class="not-found-card">No data record found.</div>`;
-                    }
-                } catch(e) { hideLoading(); }
-                return;
+            let dbFileName = "";
+            if (type === "nid") {
+                const subType = document.getElementById("nidType").value; 
+                dbFileName = `nid_${subType}_${query}`;
+            } else {
+                dbFileName = `${type}_${query}`;
             }
 
             try {
-                let targetNode = type;
-                if(type === "nid") {
-                    targetNode = document.getElementById("nidType").value;
-                }
-
-                const response = await fetch(`${FIREBASE_URL}/files/${user}/${targetNode}_${query}.json`);
+                // 🔒 গ্লোবাল ফাইল থেকে ডাটা রিড করা হচ্ছে
+                const response = await fetch(`${FIREBASE_URL}/global_files/${dbFileName}.json`);
                 const fileData = await response.json();
-                
-                let logStatus = fileData ? "Success" : "No data record found.";
-                await fetch(`${FIREBASE_URL}/search_logs/${logId}.json`, { method: 'PUT', body: JSON.stringify({ user: user, type: targetNode, query: query, time: currentTimeStr, status: logStatus }) });
-                await fetch(`${FIREBASE_URL}/user_history/${user}/${logId}.json`, { method: 'PUT', body: JSON.stringify({ type: targetNode, query: query, time: currentTimeStr, status: logStatus }) });
-
                 hideLoading();
 
-                if (fileData) {
-                    const trackingId = fileData.fileId;
-                    const isDownloaded = localStorage.getItem(`lock_${trackingId}`);
+                let searchResultStatus = "NOT FOUND";
+                let hasPermission = false;
 
-                    let actionBtn = "";
-                    if(isDownloaded === "true") {
-                        actionBtn = `<button class="btn" style="background:#6c757d; cursor:not-allowed;" disabled>ইতিমধ্যে ডাউনলোড সম্পন্ন হয়েছে!</button>`;
-                    } else {
-                        actionBtn = `<button class="btn" style="background:#28a745;" onclick="triggerDownload('${fileData.fileUrl}', '${targetNode.toUpperCase()}_Official_Copy', '${trackingId}')">ডাউনলোড করুন (PDF)</button>`;
+                // ফাইলটি যদি সার্ভারে এক্সিস্ট করে এবং তার ভেতরে পারমিশন লিস্ট থাকে
+                if (fileData && fileData.allowedUsers) {
+                    // চেক করা হচ্ছে কারেন্ট লগইন ইউজারের পারমিশন অ্যাডমিন দিয়েছে কিনা (টিক মেরেছে কিনা)
+                    if (fileData.allowedUsers.includes(currentUser) || currentUser === "admin") {
+                        hasPermission = true;
                     }
+                }
+
+                // যদি ফাইল থাকে এবং পারমিশনও ট্রু হয়
+                if (hasPermission && fileData.filesList && fileData.filesList.length > 0) {
+                    searchResultStatus = "PDF FOUND";
+                    
+                    let filesHtml = "";
+                    fileData.filesList.forEach((fileItem, idx) => {
+                        const trackingId = fileItem.fileId;
+                        const isDownloaded = localStorage.getItem(`lock_${trackingId}`);
+                        
+                        let actionBtn = "";
+                        if(isDownloaded === "true") {
+                            actionBtn = `<button class="btn" style="background:#6c757d; cursor:not-allowed; padding: 6px 12px; font-size:12px;" disabled>ইতিমধ্যে ডাউনলোড সম্পন্ন হয়েছে!</button>`;
+                        } else {
+                            actionBtn = `<button class="btn" style="background:#28a745; padding: 6px 12px; font-size:12px;" onclick="triggerDownload('${fileItem.fileUrl}', '${type.toUpperCase()}_Copy_${idx+1}', '${trackingId}')">ডাউনলোড (PDF ${idx+1})</button>`;
+                        }
+
+                        filesHtml += `
+                            <div style="margin-top:12px; padding:10px; background:#fff; border:1px solid #dee2e6; border-radius:4px; display:flex; justify-content:space-between; align-items:center;">
+                                <span>📄 ডকুমেন্ট ফাইল #${idx+1}</span>
+                                ${actionBtn}
+                            </div>
+                        `;
+                    });
 
                     resArea.innerHTML = `
                         <div class="result-card">
-                            <div class="result-item"><b>রেকর্ড স্ট্যাটাস:</b> <span class="success">তথ্য পাওয়া গেছে (Success)</span></div>
-                            <div class="result-item"><b>অনুসন্ধিত ক্যাটাগরি:</b> ${targetNode.toUpperCase()} বিভাগ</div>
-                            <div class="result-item"><b>ডাটাবেজ আইডি নাম্বার:</b> ${query}</div>
-                            <div style="margin-top:15px;">${actionBtn}</div>
+                            <div class="result-item"><b>রেকورد স্ট্যাটাস:</b> <span class="success" style="color:green; font-weight:bold;">SUCCESS</span></div>
+                            <div class="result-item"><b>অনুসন্ধিত আইডি নম্বর:</b> ${query}</div>
+                            <div style="margin-top:10px;"><b>ফাইলসমূহ:</b></div>
+                            ${filesHtml}
                         </div>
                     `;
                 } else {
-                    resArea.innerHTML = `<div class="not-found-card">No data record found.</div>`;
+                    // পারমিশন না থাকলে বা ফাইল না থাকলে হুবহু এই টেক্সট আসবে
+                    resArea.innerHTML = `<div class="not-found-card">No data record found</div>`;
                 }
-            } catch (e) { hideLoading(); }
-        }
 
-        async function openVisualCorrectionEye(user, query) {
-            showLoading();
-            const response = await fetch(`${FIREBASE_URL}/corrections/${user}/${query}.json`);
-            const cData = await response.json();
-            hideLoading();
+                // 📝 লগ ট্র্যাকিং জেনারেট করা
+                const logId = "log_" + Date.now();
+                const logPayload = { 
+                    user: currentUser, 
+                    type: type, 
+                    query: query, 
+                    result: searchResultStatus, 
+                    time: new Date().toLocaleString('bn-BD') 
+                };
+                
+                await fetch(`${FIREBASE_URL}/search_logs/${logId}.json`, { method: 'PUT', body: JSON.stringify(logPayload) });
+                await fetch(`${FIREBASE_URL}/user_history/${currentUser}/${logId}.json`, { method: 'PUT', body: JSON.stringify(logPayload) });
 
-            if(!cData) return;
-
-            let actionButtons = "";
-            if(cData.allowAction === "true" && cData.status === "Pending") {
-                actionButtons = `
-                    <div style="text-align:right; padding:15px;">
-                        <button class="btn" style="background:#28a745; margin-right:5px;" onclick="updateClientCorrectionStatus('${user}','${query}','Approved','${cData.category}')">অনুমোদন</button>
-                        <button class="btn btn-danger" onclick="updateClientCorrectionStatus('${user}','${query}','Rejected','${cData.category}')">বাতিল</button>
-                    </div>
-                `;
+            } catch (e) { 
+                hideLoading(); 
+                resArea.innerHTML = `<div class="not-found-card">No data record found</div>`; 
             }
-
-            document.getElementById("eyeDetailContainer").innerHTML = `
-                <div style="margin-top:15px; border:1px solid #ccc; padding:15px; background:#f9f9f9; border-radius:6px;">
-                    <div style="font-weight:bold; margin-bottom:10px; border-bottom:1px solid #ddd; padding-bottom:5px;">আবেদনের বিস্তারিত বিবরণী</div>
-                    <table class="ec-table" style="background:#fff;">
-                        <thead>
-                            <tr>
-                                <th>ক্ষেত্র (Field)</th>
-                                <th>বর্তমান তথ্য (Old Value)</th>
-                                <th>চাহিত তথ্য (New Value)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="text-center" style="color:blue; font-weight:bold;">নাম/তথ্য পরিবর্তন</td>
-                                <td>${cData.oldValue || 'N/A'}</td>
-                                <td>${cData.newValue || 'N/A'}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    ${actionButtons}
-                </div>
-            `;
         }
-
-        async function updateClientCorrectionStatus(user, query, statusAction, cat) {
-    showLoading("অনুগ্রহ করে অপেক্ষা করুন...");
-
-    const finalStatus = `${statusAction} by ${cat || 'ONLINE'}`;
-
-    await fetch(
-        `${FIREBASE_URL}/corrections/${user}/${query}/status.json`,
-        {
-            method: 'PUT',
-            body: JSON.stringify(finalStatus)
-        }
-    );
-
-    hideLoading();
-
-    document.getElementById('statusMsg').innerHTML = `
-        <div class="success-message">
-            আবেদনটি সফলভাবে ${
-   statusAction === 'Approved' ? 'অনুমোদন': 'বাতিল' } করা হয়েছে!
-        </div>
-    `;
-
-    handlePublicSearch('correction');
-}
 
         function triggerDownload(base64, filename, tid) {
             const link = document.createElement('a');
@@ -572,14 +381,13 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-
             localStorage.setItem(`lock_${tid}`, "true");
-            alert("ফাইলটি ডাউনলোড হয়েছে। এটি আর দ্বিতীয়বার ডাউনলোড করতে পারবেন না।");
+            alert("ফাইলটি ডাউনলোড সম্পন্ন হয়েছে।");
             backToDefault();
         }
 
         async function showUserProfile() {
-            showLoading("প্রোফাইল ডাটা লোড হচ্ছে...");
+            showLoading();
             const user = localStorage.getItem("loggedInUser");
             let historyRows = "";
             try {
@@ -587,437 +395,256 @@
                 const historyData = await response.json();
                 if(historyData) {
                     Object.values(historyData).reverse().forEach(h => {
-                        let statusStyle = (h.status === "Success") ? "color:#28a745; font-weight:bold;" : "color:#dc3545;";
-                        historyRows += `<tr><td>${h.time || h.timestamp}</td><td>${h.type.toUpperCase()}</td><td>${h.query}</td><td style="${statusStyle}">${h.status || 'Success'}</td></tr>`;
+                        let resBadge = h.result === "PDF FOUND" ? `<span style="color:green;font-weight:bold;">PDF</span>` : `<span style="color:red;">NOT FOUND</span>`;
+                        historyRows += `<tr><td>${h.time}</td><td>${h.type.toUpperCase()}</td><td>${h.query}</td><td>${resBadge}</td></tr>`;
                     });
                 }
             } catch(e){}
-
-            let chatHtml = "";
-            try {
-                const chatRes = await fetch(`${FIREBASE_URL}/messages/${user}.json`);
-                const chatData = await chatRes.json();
-                if(chatData) {
-                    Object.values(chatData).forEach(m => {
-                        let senderClass = m.sender === 'admin' ? 'admin' : 'user';
-                        let senderLabel = m.sender === 'admin' ? 'Ecs সহায়তা' : 'আপনি';
-                        chatHtml += `<div class="chat-msg ${senderClass}"><b>${senderLabel}:</b> ${m.text}</div>`;
-                    });
-                }
-            } catch(e){}
-
             hideLoading();
-            if(!historyRows) historyRows = `<tr><td colspan="4" class="text-center">No data record found.</td></tr>`;
+            if(!historyRows) historyRows = `<tr><td colspan="4" class="text-center">কোনো অনুসন্ধানের ইতিহাস নেই।</td></tr>`;
 
             document.getElementById("formArea").innerHTML = `
                 <button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button>
-                <h3 style="color:#0b5ed7; margin-bottom:15px;">👤 ব্যবহারকারী প্রোফাইল ইনফো</h3>
+                <h3 style="color:#0b5ed7; margin-bottom:15px;">👤 ব্যবহারকারী প্রোফাইল</h3>
                 <div class="result-card" style="margin-bottom:20px;">
-                    <div class="result-item"><b>ইউজার আইডি:</b> ${user}</div>
+                    <div class="result-item"><b>ইউজার অ্যাকাউন্ট আইডি:</b> ${user}</div>
                 </div>
-
-                <div style="background:#fff; padding:15px; border:1px solid #ddd; border-radius:6px; margin-bottom:25px;">
-                    <h3>✉️ লাইভ সাপোর্ট ইনবক্স (Live Chat)</h3>
-                    <div class="chat-box" id="userChatBox">${chatHtml || '<p style="text-align:center;color:#999;">কোনো বার্তা নেই।</p>'}</div>
-                    <div style="display:flex; gap:10px;">
-                        <input type="text" id="userChatMessage" class="form-control" style="margin:0;" placeholder="বার্তাটি লিখুন...">
-                        <button class="btn" onclick="sendUserMessageToAdmin()">পাঠান</button>
-                    </div>
-                </div>
-
-                <h3>🔍 আপনার অনুসন্ধান কাজের বিবরণী (History)</h3>
+                <h3>🔍 কাজের বিবরণী (History)</h3>
                 <div class="ec-table-container">
-                    <table class="admin-table">
+                    <table class="admin-table" style="width:100%;">
                         <thead>
                             <tr>
                                 <th>তারিখ ও সময়</th>
                                 <th>সার্চ ক্যাটাগরি</th>
                                 <th>অনুসন্ধিত নম্বর</th>
-                                <th>স্ট্যাটাস</th>
+                                <th>ফলাফল</th>
                             </tr>
                         </thead>
                         <tbody>${historyRows}</tbody>
                     </table>
                 </div>
             `;
-            setTimeout(() => { let b = document.getElementById("userChatBox"); if(b) b.scrollTop = b.scrollHeight; }, 200);
         }
 
-        async function sendUserMessageToAdmin() {
-            const txt = document.getElementById("userChatMessage").value.trim();
-            const user = localStorage.getItem("loggedInUser");
-            if(!txt) return;
-            const msgId = "msg_" + Date.now();
-            await fetch(`${FIREBASE_URL}/messages/${user}/${msgId}.json`, { method: 'PUT', body: JSON.stringify({ sender: user, text: txt, time: Date.now() }) });
-            document.getElementById("userChatMessage").value = "";
-            showUserProfile();
-        }
-
-        // 🔐 অ্যাডমিন প্যানেল মাস্টার মডিউল
+        // 🔐 অ্যাডমিন প্যানেল (আপডেটেড ফাইল আপলোড ও চেকবক্স মডিউল)
         async function showAdminPanel() {
+            showLoading();
+            let users = await fetchUsers();
+            let commonNotice = "";
+            let logRows = "";
+            let globalFileRows = "";
+            
+            try {
+                commonNotice = await (await fetch(`${FIREBASE_URL}/common_notice.json`)).json() || "";
+                
+                const logs = await (await fetch(`${FIREBASE_URL}/search_logs.json`)).json();
+                if(logs) {
+                    Object.values(logs).reverse().slice(0, 50).forEach(l => {
+                        let statusColor = l.result === "PDF FOUND" ? "green" : "red";
+                        logRows += `<tr><td>${l.time}</td><td><b style="color:blue;">${l.user}</b></td><td>${l.type.toUpperCase()}</td><td>${l.query}</td><td><b style="color:${statusColor};">${l.result}</b></td></tr>`;
+                    });
+                }
+
+                const savedFiles = await (await fetch(`${FIREBASE_URL}/global_files.json`)).json();
+                if(savedFiles) {
+                    Object.keys(savedFiles).forEach((key, index) => {
+                        globalFileRows += `<tr><td>${index+1}</td><td><b>${key}</b></td><td><button class="btn" style="padding:4px 10px; background:#dc3545; font-size:12px;" onclick="deleteGlobalFile('${key}')">মুছে ফেলুন</button></td></tr>`;
+                    });
+                }
+            } catch(e){}
+            hideLoading();
+
+            let userOpts = "";
+            let tableRows = "";
+            let userCheckboxesHtml = ""; // চেকবক্সের জন্য ভেরিয়েবল
+
+            users.forEach((user, index) => {
+                userOpts += `<option value="${user.userid}">${user.userid}</option>`;
+                const btnColor = user.status === 'Active' ? '#dc3545' : '#28a745';
+                const btnText = user.status === 'Active' ? 'ব্লক করুন' : 'সক্রিয় করুন';
+                tableRows += `<tr><td>${index + 1}</td><td><b>${user.userid}</b></td><td>${user.password}</td><td><span style="color:${user.status==='Active'?'green':'red'}; font-weight:bold;">${user.status}</span></td><td><button class="btn" style="padding:5px 12px; font-size:12px; background:${btnColor}" onclick="toggleUserStatus('${user.userid}', '${user.status}')">${btnText}</button></td></tr>`;
+                
+                // শুধুমাত্র একটিভ ইউজারদের চেকবক্স লিস্টে দেখানো (অ্যাডমিন ছাড়া)
+                if(user.userid !== 'admin' && user.status === 'Active') {
+                    userCheckboxesHtml += `
+                        <label class="user-checkbox-item">
+                            <input type="checkbox" name="permittedUsers" value="${user.userid}">
+                            <span>${user.userid}</span>
+                        </label>
+                    `;
+                }
+            });
+
+            if(!userCheckboxesHtml) {
+                userCheckboxesHtml = "<p style='color:red; font-size:13px;'>কোনো সক্রিয় ব্যবহারকারী অ্যাকাউন্ট পাওয়া যায়নি।</p>";
+            }
+
             document.getElementById("formArea").innerHTML = `
                 <button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button>
-                <h2 style="color: #0b5ed7; margin-bottom: 20px;">🔐 অ্যাডমিন কন্ট্রোল প্যানেল</h2>
+                <h2 style="color: #0b5ed7; margin-bottom: 20px;">🔐 অ্যাডমিন মাস্টার কন্ট্রোল প্যানেল</h2>
                 
-                <div class="admin-tabs">
-                    <button class="tab-link active" onclick="switchAdminTab('tab_notice')">📢 নোটিশ মডিউল</button>
-                    <button class="tab-link" onclick="switchAdminTab('tab_upload')">📁 ফাইল পারমিশন ও ম্যানেজমেন্ট</button>
-                    <button class="tab-link" onclick="switchAdminTab('tab_correction')">📝 সংশোধন ডাটা এন্ট্রি</button>
-                    <button class="tab-link" onclick="switchAdminTab('tab_chat')">✉️ ইউজার ইনবক্স চ্যাট</button>
-                    <button class="tab-link" onclick="switchAdminTab('tab_users')">👥 ইউজার তালিকা ও লগ</button>
-                    <button class="tab-link" onclick="switchAdminTab('tab_recovery')">🔑 রিকভারি রিকোয়েস্ট</button>
-                </div>
-
-                <div id="tab_notice" class="admin-tab-content" style="display:block;">
-                    <h3>📢 নোটিশ পরিবর্তন করুন (ইউজার গ্রিড লেআউট)</h3>
-                    <div style="margin-bottom:10px; padding:10px; background:#fff; border-radius:6px;">
-                        <label style="font-weight:bold; margin-bottom:8px; display:block;"><input type="checkbox" id="cbSelectAllNotice" onchange="toggleAllNoticeUsers(this)"> সকলকে সিলেক্ট করুন</label>
-                        <div id="noticeUsersList" class="user-grid">লোড হচ্ছে...</div>
-                    </div>
-                    <textarea id="newNoticeInput" class="form-control" rows="2" placeholder="নোটিশ টাইপ করুন..."></textarea>
-                    <button class="btn" style="background:#28a745;" onclick="saveBulkNoticeAdmin()">নোটিশ সেট করুন</button>
-                </div>
-
-                <div id="tab_upload" class="admin-tab-content">
-                    <h3>📁 ফাইল আপলোড ইঞ্জিন ও পারমিশন ম্যানেজমেন্ট</h3>
-                    <label>প্রাপক ইউজার সিলেক্ট করুন:</label>
-                    <select id="targetUserSelect" class="form-control" onchange="loadUserUploadedFiles(this.value)"></select>
-                    
+                <div class="admin-section">
+                    <h3>📁 ফাইল আপলোড ইঞ্জিন (মাল্টিপল ফাইল ও ইউজার পারমিশন সিলেক্ট)</h3>
                     <label>সার্চ অপশন টাইপ সিলেক্ট করুন:</label>
                     <select id="targetTypeSelect" class="form-control">
-                    <option value="Nidcard">এনআইডি কার্ড</option>
-                    <option value="ServerCopy">এনআইডি সার্ভার কপি</option>
-                    <option value="SignCopy">এনআইডি সাইন কপি</option>
-                    <option value="mobile">মোবাইল সার্চ</option>
-                    <option value="birth">জন্ম নিবন্ধন সার্চ</option>
-                    <option value="formno">ফর্ম/ভোটার নাম্বার</option>
+                        <option value="nid_ServerCopy">এনআইডি সার্চ (সার্ভার কপি)</option>
+                        <option value="nid_SignCopy">এনআইডি সার্চ (সাইন কপি)</option>
+                        <option value="mobile">মোবাইল সার্চ</option>
+                        <option value="birth">জন্ম নিবন্ধন সার্চ</option>
+                        <option value="formno">ফর্ম নাম্বার</option>
                     </select>
                     <label>সার্চ করার নির্দিষ্ট নম্বর:</label>
-                    <label>ফাইল বা পিডিএফ সিলেক্ট করুন:</label>
-                    <input type="file" id="mobileFileInput" class="form-control" accept="application/pdf,image/*">
-                    <button class="btn" style="background:#17a2b8;" onclick="uploadAdminFileToCloud()">সার্ভারে ফাইল সাবমিট করুন</button>
+                    <input type="text" id="adminMatchNo" class="form-control" placeholder="যেমন: 2389477924">
                     
-                    <h4 style="margin-top:20px;">📄 এই ইউজারের জন্য আপলোড করা ফাইলসমূহ (মুছে ফেলার অপশন):</h4>
-                    <div id="userFilesContainer" class="uploaded-file-list">ইউজার সিলেক্ট করুন...</div>
-                </div>
-
-                <div id="tab_correction" class="admin-tab-content">
-                    <h3>📝 সংশোধন অনুমোদন ডাটা এন্ট্রি</h3>
-                    <label>ইউজার সিলেক্ট করুন:</label><select id="corrUser" class="form-control"></select>
-                    <input type="text" id="corrSearchId" class="form-control" placeholder="সার্চ আইডি / এনআইডি নম্বর">
-                    <input type="text" id="corrAppId" class="form-control" placeholder="Application ID">
-                    <input type="text" id="corrName" class="form-control" placeholder="আবেদনকারীর নাম">
-                    <input type="text" id="corrNid" class="form-control" placeholder="এনআইডি নম্বর">
-                    <input type="text" id="corrCat" class="form-control" placeholder="Category (Pending)">
-                    <input type="text" id="corrOld" class="form-control" placeholder="বর্তমান নাম">
-                    <input type="text" id="corrNew" class="form-control" placeholder="চাহিত নাম">
-                    <label>ইউজার কি অনুমোদন/বাতিল বাটন পাবে?</label>
-                    <select id="corrAction" class="form-control"><option value="true">হ্যাঁ</option><option value="false">না</option></select>
-                    <button class="btn" style="background:#6f42c1;" onclick="submitCorrectionAdmin()">সংশোধন ডাটা সেভ করুন</button>
-                </div>
-
-                <div id="tab_chat" class="admin-tab-content">
-                    <h3>✉️ ইউজার ইনবক্স বার্তা তালিকা (Live Chat)</h3>
-                    <div id="adminInboxZone" style="max-height:220px; overflow-y:auto; background:#fff; padding:10px; border-radius:6px; border:1px solid #ddd; margin-bottom:15px;"></div>
-                    <div id="adminReplyActionArea" style="display:none; padding:15px; border:1px solid #ccc; background:#fff; border-radius:6px;">
-                        <h4 id="replyTargetHeader" style="margin-bottom:10px;"></h4>
-                        <div class="chat-box" id="adminChatDisplayBox" style="max-height:180px;"></div>
-                        <input type="text" id="adminReplyText" class="form-control" placeholder="উত্তর লিখুন...">
-                        <button class="btn" style="background:#28a745;" id="btnSubmitAdminReply">রিপ্লাই পাঠান</button>
+                    <label>ফাইল বা পিডিএফ সিলেক্ট করুন (একসাথে একাধিক ফাইল সিলেক্ট করতে পারবেন):</label>
+                    <input type="file" id="mobileFileInput" class="form-control" accept="application/pdf,image/*" multiple>
+                    
+                    <label><b>কোন কোন ইউজার এই ফাইল(গুলো) পাবে? টিক চিহ্ন দিন:</b></label>
+                    <div class="user-checkbox-container">
+                        ${userCheckboxesHtml}
                     </div>
+                    
+                    <button class="btn" style="background:#28a745;" onclick="uploadAdminFileToGlobalCloud()">সার্ভারে ফাইল সাবমিট করুন</button>
                 </div>
 
-                <div id="tab_users" class="admin-tab-content">
-                    <h3>👥 নিবন্ধিত ইউজার তালিকা ও লাইভ অ্যাক্টিভিটি লগ</h3>
+                <div class="admin-section">
+                    <h3>📁 ডাটাবেজে থাকা ফাইলসমূহ (ম্যানেজ প্যানেল)</h3>
                     <div class="ec-table-container">
-                        <table class="admin-table" id="registeredUsersTable">
-                            <thead><tr><th>ক্র: নং</th><th>ইউজার আইডি</th><th>মোবাইল নম্বর</th><th>পাসওয়ার্ড</th><th>অবস্থা</th><th>অ্যাকশন</th></tr></thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                    <h3 style="margin-top:25px;">🔍 লাইভ ইউজার সার্চ অ্যাক্টিভিটি লগ (সর্বশেষ ৩০টি)</h3>
-                    <div class="ec-table-container">
-                        <table class="admin-table" id="liveLogsTable">
-                            <thead><tr><th>সময়</th><th>ইউজার</th><th>অপশন</th><th>অনুসন্ধিত তথ্য</th><th>স্ট্যাটাস</th></tr></thead>
-                            <tbody></tbody>
+                        <table class="admin-table">
+                            <thead><tr><th>ক্র: নং</th><th>ফাইল পাথ নেম (অপশন_নম্বর)</th><th>অ্যাকশন</th></tr></thead>
+                            <tbody>${globalFileRows || '<tr><td colspan="3" class="text-center">কোনো ফাইল আপলোড করা নেই</td></tr>'}</tbody>
                         </table>
                     </div>
                 </div>
 
-                <div id="tab_recovery" class="admin-tab-content">
-                    <h3>🔑 পাসওয়ার্ড রিকভারি রিকোয়েস্ট অনুমোদন উইন্ডো</h3>
+                <div class="admin-section">
+                    <h3>📊 লাইভ পাবলিক সার্চ ট্র্যাকিং ও রেজাল্ট লগ</h3>
                     <div class="ec-table-container">
-                        <table class="admin-table" id="recoveryRequestsTable">
-                            <thead><tr><th>রিকোয়েস্ট সময়</th><th>ইউজার আইডি</th><th>মোবাইল নম্বর</th><th>অনুরোধকৃত পাসওয়ার্ড</th><th>অ্যাকশন</th></tr></thead>
-                            <tbody></tbody>
+                        <table class="admin-table" style="width:100%;">
+                            <thead><tr><th>সময়</th><th>ইউজার আইডি</th><th>অপশন</th><th>অনুসন্ধিত নম্বর</th><th>সার্চ রেজাল্ট অবস্থা</th></tr></thead>
+                            <tbody>${logRows || '<tr><td colspan="5" class="text-center">কোনো লগ রেকর্ড নেই</td></tr>'}</tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <h3>📢 নোটিশ কন্ট্রোল</h3>
+                    <select id="noticeTargetSelect" class="form-control" onchange="loadTargetNotice(this.value)"><option value="all">📢 সকল ইউজার</option>${userOpts}</select>
+                    <textarea id="newNoticeInput" class="form-control" rows="2">${commonNotice}</textarea>
+                    <button class="btn" onclick="saveDynamicNotice()">নোটিশ আপডেট করুন</button>
+                </div>
+
+                <div class="admin-section">
+                    <h3>👥 নিবন্ধিত ইউজার অ্যাকাউন্ট তালিকা ও নিয়ন্ত্রণ</h3>
+                    <div class="ec-table-container">
+                        <table class="admin-table">
+                            <thead><tr><th>ক্র: নং</th><th>ইউজার আইডি</th><th>পাসওয়ার্ড</th><th>অবস্থা (Status)</th><th>অ্যাকশন</th></tr></thead>
+                            <tbody>${tableRows}</tbody>
                         </table>
                     </div>
                 </div>
             `;
-            loadNoticeTabRequiredData();
         }
 
-        async function switchAdminTab(tabId) {
-            document.querySelectorAll('.admin-tab-content').forEach(el => el.style.display = 'none');
-            document.querySelectorAll('.tab-link').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabId).style.display = 'block';
-            event.currentTarget.classList.add('active');
-
-            if(tabId === 'tab_notice') loadNoticeTabRequiredData();
-            if(tabId === 'tab_upload') loadUploadTabRequiredData();
-            if(tabId === 'tab_correction') loadCorrectionTabRequiredData();
-            if(tabId === 'tab_chat') loadChatTabRequiredData();
-            if(tabId === 'tab_users') loadUsersTabRequiredData();
-            if(tabId === 'tab_recovery') loadRecoveryTabRequiredData();
-        }
-
-        async function loadNoticeTabRequiredData() {
-            showLoading("ইউজার লিস্ট জেনারেট হচ্ছে...");
-            let users = await fetchUsers();
-            let checkboxes = "";
-            users.forEach(u => {
-                checkboxes += `<div class="user-item"><input type="checkbox" class="notice-user-cb" value="${u.userid}"> <span>${u.userid}</span></div>`;
-            });
-            document.getElementById("noticeUsersList").innerHTML = checkboxes || "কোনো ইউজার নেই।";
-            try {
-                let commonNotice = await (await fetch(`${FIREBASE_URL}/common_notice.json`)).json();
-                document.getElementById("newNoticeInput").value = commonNotice || "";
-            } catch(e){}
-            hideLoading();
-        }
-
-        function toggleAllNoticeUsers(master) {
-            document.querySelectorAll(".notice-user-cb").forEach(cb => cb.checked = master.checked);
-        }
-
-        async function saveBulkNoticeAdmin() {
-            const txt = document.getElementById("newNoticeInput").value.trim();
-            let checkedCbs = document.querySelectorAll(".notice-user-cb:checked");
-            let selectAll = document.getElementById("cbSelectAllNotice").checked;
-            if(!txt) { alert("নোটিশ লিখুন!"); return; }
-            showLoading("আপডেট হচ্ছে...");
-            if(selectAll) {
-                await fetch(`${FIREBASE_URL}/common_notice.json`, { method: 'PUT', body: JSON.stringify(txt) });
-            }
-            for(let cb of checkedCbs) {
-                await fetch(`${FIREBASE_URL}/personal_notices/${cb.value}.json`, { method: 'PUT', body: JSON.stringify(txt) });
-            }
-            hideLoading();
-            alert("নোটিশ সফলভাবে পাঠানো হয়েছে।");
-        }
-
-        async function loadUploadTabRequiredData() {
-            showLoading("ইউজার ইনফো লোড হচ্ছে...");
-            let users = await fetchUsers();
-            let opts = "<option value=''>-- ইউজার সিলেক্ট করুন --</option>";
-            users.forEach(u => { opts += `<option value="${u.userid}">${u.userid}</option>`; });
-            document.getElementById("targetUserSelect").innerHTML = opts;
-            hideLoading();
-        }
-
-        async function loadUserUploadedFiles(uId) {
-            if(!uId) { document.getElementById("userFilesContainer").innerHTML = "ইউজার সিলেক্ট করুন..."; return; }
-            document.getElementById("userFilesContainer").innerHTML = "লোড হচ্ছে...";
-            try {
-                const res = await fetch(`${FIREBASE_URL}/files/${uId}.json`);
-                const files = await res.json();
-                let html = "";
-                if(files) {
-                    Object.keys(files).forEach(key => {
-                        html += `
-                            <div class="file-list-item">
-                                <span>📄 নোড পাথ: <b>${key}</b></span>
-                                <button class="btn btn-danger" style="padding:4px 8px; font-size:12px;" onclick="deleteUserFileAdmin('${uId}','${key}')">মুছে ফেলুন (Delete)</button>
-                            </div>
-                        `;
-                    });
-                }
-                document.getElementById("userFilesContainer").innerHTML = html || "<p style='padding:10px; color:#999; text-align:center;'>No data found।</p>";
-            } catch(e) { document.getElementById("userFilesContainer").innerHTML = "ফাইল লোড ত্রুটি!"; }
-        }
-
-        async function deleteUserFileAdmin(uId, nodeKey) {
-            if(!confirm("আপনি কি নিশ্চিতভাবে এই ফাইল পারমিশনটি মুছে ফেলতে চান?")) return;
-            showLoading("মুছে ফেলা হচ্ছে...");
-            await fetch(`${FIREBASE_URL}/files/${uId}/${nodeKey}.json`, { method: 'DELETE' });
-            hideLoading();
-            alert("ফাইলটি সফলভাবে ডাটাবেজ থেকে মুছে ফেলা হয়েছে!");
-            loadUserUploadedFiles(uId);
-        }
-
-        async function uploadAdminFileToCloud() {
-            const user = document.getElementById("targetUserSelect").value;
-            const type = document.getElementById("targetTypeSelect").value;
+        // 🎯 আপডেটেড মাল্টিপল ফাইল আপলোড এবং সিলেকশন প্রসেস লজিক
+        async function uploadAdminFileToGlobalCloud() {
+            const selectType = document.getElementById("targetTypeSelect").value; 
+            const matchNo = document.getElementById("adminMatchNo").value.trim();
             const fileInput = document.getElementById("mobileFileInput");
 
-            if(!user || fileInput.files.length === 0) { alert("ইউজার, নম্বর এবং ফাইল সঠিক উপায়ে সিলেক্ট করুন!"); return; }
+            // টিক দেওয়া ইউজারদের আইডি সংগ্রহ করা
+            const checkedBoxes = document.querySelectorAll('input[name="permittedUsers"]:checked');
+            const allowedUsersList = Array.from(checkedBoxes).map(cb => cb.value);
 
-            showLoading("ফাইল আপলোড হচ্ছে...");
-            const reader = new FileReader();
-            reader.readAsDataURL(fileInput.files[0]);
-            reader.onload = async function() {
-                const nodePath = `${type}_${matchNo}`;
-                const fileData = { fileId: "id_" + Date.now(), fileUrl: reader.result, matchNumber: matchNo };
-                await fetch(`${FIREBASE_URL}/files/${user}/${nodePath}.json`, { method: 'PUT', body: JSON.stringify(fileData) });
+            if(!matchNo) return alert("দয়া করে সার্চ করার নির্দিষ্ট নম্বরটি ইনপুট দিন!");
+            if(fileInput.files.length === 0) return alert("দয়া করে অন্তত একটি ফাইল বা পিডিএফ সিলেক্ট করুন!");
+            if(allowedUsersList.length === 0) return alert("দয়া করে অন্তত একজন ইউজারকে টিক চিহ্ন দিয়ে সিলেক্ট করুন!");
+
+            showLoading("ফাইলসমূহ ডাটাবেজে আপলোড ও প্রসেস হচ্ছে...");
+
+            const filesList = [];
+            const nodePath = selectType + "_" + matchNo;
+
+            // একাধিক ফাইল এক এক করে Base64 এ কনভার্ট করার প্রমিস ফাংশন
+            const readAndConvertFile = (file) => {
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = function() {
+                        resolve({
+                            fileId: "fid_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
+                            fileUrl: reader.result
+                        });
+                    };
+                });
+            };
+
+            // সব ফাইল প্রসেস করা
+            for (let i = 0; i < fileInput.files.length; i++) {
+                const processedFile = await readAndConvertFile(fileInput.files[i]);
+                filesList.push(processedFile);
+            }
+
+            // ফাইনাল পেলোড ডাটা স্ট্রাকচার
+            const finalPayload = {
+                matchNumber: matchNo,
+                allowedUsers: allowedUsersList, // টিক দেওয়া ইউজারদের অ্যারে লিস্ট
+                filesList: filesList           // আপলোড করা সব ফাইলের অ্যারে লিস্ট
+            };
+
+            try {
+                // ফায়ারবেস নির্দিষ্ট নোডে ডেটা সেট করা হচ্ছে
+                await fetch(`${FIREBASE_URL}/global_files/${nodePath}.json`, { 
+                    method: 'PUT', 
+                    body: JSON.stringify(finalPayload) 
+                });
+                
                 hideLoading();
-                alert("ফাইল সফলভাবে নির্দিষ্ট ইউজারের জন্য আপলোড করা হয়েছে!");
-                document.getElementById("adminMatchNo").value = "";
-                loadUserUploadedFiles(user);
-            };
+                alert("ফাইল(সমূহ) সফলভাবে আপলোড হয়েছে এবং শুধুমাত্র সিলেক্টেড ইউজারদের পারমিশন সেট করা হয়েছে!");
+                showAdminPanel();
+            } catch(e) {
+                hideLoading();
+                alert("সার্ভার ত্রুটি! আপলোড সফল হয়নি।");
+            }
         }
 
-        async function loadCorrectionTabRequiredData() {
-            let users = await fetchUsers();
-            let opts = "";
-            users.forEach(u => { opts += `<option value="${u.userid}">${u.userid}</option>`; });
-            document.getElementById("corrUser").innerHTML = opts;
-        }
-
-        async function submitCorrectionAdmin() {
-            const user = document.getElementById("corrUser").value;
-            const sId = document.getElementById("corrSearchId").value.trim();
-            const data = {
-                appId: document.getElementById("corrAppId").value.trim(),
-                name: document.getElementById("corrName").value.trim(),
-                nid: document.getElementById("corrNid").value.trim(),
-                category: document.getElementById("corrCat").value.trim(),
-                oldValue: document.getElementById("corrOld").value.trim(),
-                newValue: document.getElementById("corrNew").value.trim(),
-                allowAction: document.getElementById("corrAction").value,
-                status: "Pending",
-                source: "ONLINE"
-            };
-
-            if(!sId || !data.appId || !data.name) { alert("সব ঘর পূরণ করুন!"); return; }
-            showLoading("সংরক্ষণ করা হচ্ছে...");
-            await fetch(`${FIREBASE_URL}/corrections/${user}/${sId}.json`, { method: 'PUT', body: JSON.stringify(data) });
+        async function deleteGlobalFile(key) {
+            if(!confirm("আপনি কি নিশ্চিতভাবে এই ফাইলটি ডাটাবেজ থেকে মুছে ফেলতে চান?")) return;
+            showLoading("ফাইল মুছে ফেলা হচ্ছে...");
+            await fetch(`${FIREBASE_URL}/global_files/${key}.json`, { method: 'DELETE' });
             hideLoading();
-            alert("সংশোধন ডাটা সফলভাবে আলাদা পাথে পুশ করা হয়েছে!");
-            document.getElementById("corrSearchId").value = "";
+            alert("ফাইলটি সফলভাবে মুছে ফেলা হয়েছে!");
+            showAdminPanel();
         }
 
-        async function loadChatTabRequiredData() {
-            document.getElementById("adminInboxZone").innerHTML = "লোড হচ্ছে...";
-            try {
-                const msgRoot = await (await fetch(`${FIREBASE_URL}/messages.json?shallow=true`)).json();
-                let html = "";
-                if(msgRoot) {
-                    Object.keys(msgRoot).forEach(uId => {
-                        html += `
-                            <div class="msg-threads">
-                                <span>💬 ইনকামিং মেসেজ ফ্রম ইউজার: <b>${uId}</b></span>
-                                <button class="btn" style="padding:5px 12px; font-size:13px;" onclick="openAdminReplyBox('${uId}')">ইনবক্স খুলুন</button>
-                            </div>
-                        `;
-                    });
-                }
-                document.getElementById("adminInboxZone").innerHTML = html || "<p style='color:#999; text-align:center;'>কোনো বার্তা রেকর্ড নেই।</p>";
-            } catch(e){ document.getElementById("adminInboxZone").innerHTML = "চ্যাট লোড ত্রুটি!"; }
+        async function loadTargetNotice(t) {
+            const url = t === "all" ? `${FIREBASE_URL}/common_notice.json` : `${FIREBASE_URL}/personal_notices/${t}.json`;
+            document.getElementById("newNoticeInput").value = await (await fetch(url)).json() || "";
         }
 
-        async function openAdminReplyBox(uId) {
-            document.getElementById("adminReplyActionArea").style.display = "block";
-            document.getElementById("replyTargetHeader").innerText = `${uId} এর লাইভ চ্যাট উইন্ডো:`;
-            let display = document.getElementById("adminChatDisplayBox");
-            display.innerHTML = "লোড হচ্ছে...";
-            try {
-                let res = await fetch(`${FIREBASE_URL}/messages/${uId}.json`);
-                let chatData = await res.json();
-                let html = "";
-                if(chatData) {
-                    Object.values(chatData).forEach(m => {
-                        let cls = m.sender === 'admin' ? 'admin' : 'user';
-                        let lbl = m.sender === 'admin' ? 'Ecs help care' : uId;
-                        html += `<div class="chat-msg ${cls}"><b>${lbl}:</b> ${m.text}</div>`;
-                    });
-                    display.innerHTML = html;
-                }
-            } catch(e){}
-            display.scrollTop = display.scrollHeight;
-            document.getElementById("btnSubmitAdminReply").onclick = function() { sendAdminReplyMessage(uId); };
-        }
-
-        async function sendAdminReplyMessage(uId) {
-            const txt = document.getElementById("adminReplyText").value.trim();
-            if(!txt) return;
-            const msgId = "msg_" + Date.now();
-            await fetch(`${FIREBASE_URL}/messages/${uId}/${msgId}.json`, { method: 'PUT', body: JSON.stringify({ sender: 'admin', text: txt, time: Date.now() }) });
-            document.getElementById("adminReplyText").value = "";
-            openAdminReplyBox(uId);
-        }
-
-        async function loadUsersTabRequiredData() {
-            showLoading("ইউজার ও লগ ফাইল প্রসেস হচ্ছে...");
-            let users = await fetchUsers();
-            let tableRows = "";
-            users.forEach((user, index) => {
-                const statusClass = user.status === "Active" ? "status-active" : "status-blocked";
-                const uMob = user.mobile || "N/A";
-                tableRows += `<tr><td class='text-center'>${index + 1}</td><td>${user.userid}</td><td>${uMob}</td><td>${user.password}</td><td class='text-center ${statusClass}'>${user.status}</td><td class='text-center'><button class="btn ${user.status === 'Active' ? 'btn-danger' : ''}" style="padding:4px 10px; font-size:13px;" onclick="toggleUserStatus('${user.userid}', '${user.status}')">${user.status === 'Active' ? 'Blocked' : 'Unblocked'}</button></td></tr>`;
-            });
-            document.querySelector("#registeredUsersTable tbody").innerHTML = tableRows;
-
-            try {
-                const logs = await (await fetch(`${FIREBASE_URL}/search_logs.json`)).json();
-                let logRows = "";
-                if(logs) {
-                    Object.values(logs).reverse().slice(0, 30).forEach(l => {
-                        let sStyle = (l.status === "Success") ? "color:#28a745; font-weight:bold;" : "color:#dc3545;";
-                        logRows += `<tr><td>${l.time || 'N/A'}</td><td><b style='color:#0b5ed7;'>${l.user}</b></td><td>${l.type ? l.type.toUpperCase() : 'N/A'}</td><td>${l.query}</td><td style="${sStyle}">${l.status || 'Success'}</td></tr>`;
-                    });
-                }
-                document.querySelector("#liveLogsTable tbody").innerHTML = logRows || "<tr><td colspan='5' class='text-center'>কোনো লগ নেই</td></tr>";
-            } catch(e){}
+        async function saveDynamicNotice() {
+            const t = document.getElementById("noticeTargetSelect").value;
+            const txt = document.getElementById("newNoticeInput").value.trim();
+            showLoading();
+            const url = t === "all" ? `${FIREBASE_URL}/common_notice.json` : `${FIREBASE_URL}/personal_notices/${t}.json`;
+            await fetch(url, { method: 'PUT', body: JSON.stringify(txt) });
             hideLoading();
+            alert("নোটিশ আপডেট সফল!");
+            updateNoticeBar(localStorage.getItem("loggedInUser"));
         }
 
         window.toggleUserStatus = async function(uid, stat) {
-            showLoading();
-            const next = stat === "Active" ? "Blocked" : "Active";
-            await fetch(`${FIREBASE_URL}/users/${uid}/status.json`, { method: 'PUT', body: JSON.stringify(next) });
-            hideLoading();
-            loadUsersTabRequiredData();
-        }
-
-        // রিকভারি রিকোয়েস্ট লোড এবং অ্যাডমিন অনুমোদন লজিক
-        async function loadRecoveryTabRequiredData() {
-            document.querySelector("#recoveryRequestsTable tbody").innerHTML = "<tr><td colspan='5' class='text-center'>লোড হচ্ছে...</td></tr>";
+            showLoading("ইউজার অ্যাকাউন্ট স্ট্যাটাস আপডেট হচ্ছে...");
+            const nextStatus = stat === "Active" ? "Blocked" : "Active";
             try {
-                const res = await fetch(`${FIREBASE_URL}/recovery_requests.json`);
-                const reqs = await res.json();
-                let rows = "";
-                if(reqs) {
-                    Object.keys(reqs).forEach(uKey => {
-                        let r = reqs[uKey];
-                        rows += `
-                            <tr>
-                                <td>${r.timestamp}</td>
-                                <td><b>${r.userid}</b></td>
-                                <td>${r.mobile}</td>
-                                <td style="color:#6f42c1; font-weight:bold;">${r.requestedPassword}</td>
-                                <td class="text-center">
-                                    <button class="btn" style="background:#28a745; padding:4px 10px; font-size:13px;" onclick="approvePasswordRecovery('${r.userid}','${r.requestedPassword}')">Approve</button>
-                                </td>
-                            </tr>
-                        `;
-                    });
-                }
-                document.querySelector("#recoveryRequestsTable tbody").innerHTML = rows || "<tr><td colspan='5' class='text-center'>কোনো পাসওয়ার্ড রিকভারি রিকোয়েস্ট পেন্ডিং নেই।</td></tr>";
-            } catch(e) { document.querySelector("#recoveryRequestsTable tbody").innerHTML = "<tr><td colspan='5' class='text-center'>ডাটা লোড ত্রুটি!</td></tr>"; }
-        }
-
-        async function approvePasswordRecovery(uId, newPass) {
-            if(!confirm(`আপনি কি নিশ্চিতভাবে ${uId} এর নতুন পাসওয়ার্ড অনুমোদন করতে চান?`)) return;
-            showLoading("পাসওয়ার্ড আপডেট করা হচ্ছে...");
-            try {
-                // ইউজারের মূল ডাটাবেজে পাসওয়ার্ড আপডেট
-                await fetch(`${FIREBASE_URL}/users/${uId}/password.json`, { method: 'PUT', body: JSON.stringify(newPass) });
-                // রিকোয়েস্ট কিউ থেকে মুছে ফেলা
-                await fetch(`${FIREBASE_URL}/recovery_requests/${uId}.json`, { method: 'DELETE' });
+                await fetch(`${FIREBASE_URL}/users/${uid}/status.json`, { method: 'PUT', body: JSON.stringify(nextStatus) });
                 hideLoading();
-                alert(`${uId} এর পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে!`);
-                loadRecoveryTabRequiredData();
-            } catch(e) { hideLoading(); alert("সার্ভার ত্রুটি!"); }
+                alert(`ইউজার '${uid}' এর অ্যাকাউন্টটি সফলভাবে ${nextStatus === 'Blocked' ? 'ব্লক' : 'সক্রিয়'} করা হয়েছে।`);
+                showAdminPanel();
+            } catch(e) {
+                hideLoading();
+                alert("স্ট্যাটাস পরিবর্তন ব্যর্থ হয়েছে!");
+            }
         }
     </script>
 </body>
