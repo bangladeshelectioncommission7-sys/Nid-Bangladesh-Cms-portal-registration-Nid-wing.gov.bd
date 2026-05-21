@@ -270,7 +270,7 @@
 
         function showForm(type) {
             let title = "", fields = "", label = "";
-            if (type === "nid") { title = "এনআইডি সার্চ"; label = "জাতীয় পরিচয়পত্র নম্বর দিন"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}"><select id="nidType" class="form-control"><option value="ServerCopy">সার্ভার কপি</option><option value="SignCopy">সাইন কপি</option></select>`; }
+            if (type === "nid") { title = "এনআইডি সার্চ"; label = "জাতীয় পরিচয়পত্র নম্বর দিন"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}"><select id="nidType" class="form-control"><option value="NIDCard">এনআইডি কার্ড</option><option value="ServerCopy">সার্ভার কপি</option><option value="SignCopy">সাইন কপি</option></select>`; }
             else if (type === "mobile") { title = "মোবাইল সার্চ"; label = "মোবাইল নম্বর দিন"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}">`; }
             else if (type === "birth") { title = "জন্ম নিবন্ধন সার্চ"; label = "জন্ম নিবন্ধন নম্বর দিন"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}">`; }
             else if (type === "formno") { title = "ফর্ম নাম্বার"; label = "ফর্ম নম্বর দিন"; fields = `<input type="text" id="sqInput" class="form-control" placeholder="${label}">`; }
