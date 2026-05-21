@@ -344,9 +344,9 @@
 
                     resArea.innerHTML = `
                         <div class="result-card">
-                            <div class="result-item"><b>রেকورد স্ট্যাটাস:</b> <span class="success" style="color:green; font-weight:bold;">SUCCESS</span></div>
-                            <div class="result-item"><b>অনুসন্ধিত আইডি নম্বর:</b> ${query}</div>
-                            <div style="margin-top:10px;"><b>ফাইলসমূহ:</b></div>
+                            <div class="result-item"><b>স্ট্যাটাস:</b> <span class="success" style="color:green; font-weight:bold;">SUCCESS</span></div>
+                            <div class="result-item"><b>অনুসন্ধিত তথ্য:</b> ${query}</div>
+                            <div style="margin-top:10px;"><b>ফাইল:</b></div>
                             ${filesHtml}
                         </div>
                     `;
@@ -513,7 +513,7 @@
                     <div class="ec-table-container">
                         <table class="admin-table">
                             <thead><tr><th>ক্র: নং</th><th>ফাইল পাথ নেম (অপশন_নম্বর)</th><th>অ্যাকশন</th></tr></thead>
-                            <tbody>${globalFileRows || '<tr><td colspan="3" class="text-center">কোনো ফাইল আপলোড করা নেই</td></tr>'}</tbody>
+                            <tbody>${globalFileRows || '<tr><td colspan="3" class="text-center">no data found</td></tr>'}</tbody>
                         </table>
                     </div>
                 </div>
