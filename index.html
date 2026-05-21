@@ -325,7 +325,7 @@
                 const foundUser = await response.json();
                 hideLoading();
                 if (!foundUser || foundUser.password !== pass) { document.getElementById("message").innerHTML = `<span class="error">ইউজার আইডি অথবা পাসওয়ার্ড ভুল।</span>`; return; }
-                if (foundUser.status === "Blocked") { document.getElementById("message").innerHTML = `<span class="error">আপনার অ্যাকাউন্টটি সাময়িকভাবে স্থগিত রয়েছে!</span>`; return; }
+                if (foundUser.status === "Blocked") { document.getElementById("message").innerHTML = `<span class="error">আপনার রেজিষ্ট্রেশন বাতিল করা হয়েছে,পূনরায় এক্টিভ করতে আপনার রেজিস্ট্রার অফিসারের সাথে যোগাযোগ করুন!</span>`; return; }
                 localStorage.setItem("loggedInUser", user);
                 document.getElementById("loginContainer").style.display = "none";
                 document.getElementById("dashboard").style.display = "block";
