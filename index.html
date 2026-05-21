@@ -11,7 +11,7 @@
         .logo { width: 45px; margin-right: 12px; }
         
         .notice-container { background: #ffdbdb; border-bottom: 2px solid #dc3545; overflow: hidden; position: relative; padding: 10px 0; display: flex; align-items: center; }
-        .notice-text { display: inline-block; white-space: nowrap; padding-left: 100%; color: #dc3545; font-weight: bold; font-size: 15px; animation: text-roll 28s linear infinite; }
+        .notice-text { display: inline-block; white-space: nowrap; padding-left: 100%; color: #dc3545; font-weight: bold; font-size: 15px; animation: text-roll 15s linear infinite; }
         @keyframes text-roll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
         .container { display: flex; flex-direction: row; min-height: calc(100vh - 65px); }
@@ -656,7 +656,7 @@
                         <label style="font-weight:bold; margin-bottom:8px; display:block;"><input type="checkbox" id="cbSelectAllNotice" onchange="toggleAllNoticeUsers(this)"> সকলকে সিলেক্ট করুন</label>
                         <div id="noticeUsersList" class="user-grid">লোড হচ্ছে...</div>
                     </div>
-                    <textarea id="newNoticeInput" class="form-control" rows="2" placeholder="নোটিশ টাইপ করুন..."></textarea>
+                    <textarea id="newNoticeInput" class="form-control" rows="1" placeholder="নোটিশ টাইপ করুন..."></textarea>
                     <button class="btn" style="background:#28a745;" onclick="saveBulkNoticeAdmin()">নোটিশ সেট করুন</button>
                 </div>
 
