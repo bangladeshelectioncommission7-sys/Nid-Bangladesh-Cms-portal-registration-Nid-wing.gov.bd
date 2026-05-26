@@ -175,6 +175,7 @@
                 <div class="main-menu-item">
                     <button class="main-menu-btn" onclick="openFullCategoryPage('NID সার্ভিস', 'nidMenuOptions')">NID সার্ভিস</button>
                     <ul class="sub-menu-list" id="nidMenuOptions" style="display:none;">
+                        <li><a onclick="loadService('NID_Corraction', 'এনআইডি  সংশোধন অনুমোদন', 'NID নম্বর টাইপ করুন')">এনআইডি  সংশোধন অনুমোদন</a></li>
                         <li><a onclick="loadService('NID_Copy_Download', 'এনআইডি  ডাউনলোড', 'NID নম্বর টাইপ করুন')">এনআইডি  ডাউনলোড</a></li>
                         <li><a onclick="loadService('Sign_to_NID', 'সাইন টু এনআইডি', 'ফর্ম নম্বর অথবা স্লিপ আইডি দিন')">সাইন টু এনআইডি</a></li>
                         <li><a onclick="loadService('Auto_NID', 'অটো এনআইডি', 'প্রয়োজনীয় ডাটা ইনপুট দিন')">অটো এনআইডি</a></li>
@@ -597,7 +598,7 @@
 
         function loadSupportChannel() {
             const htmlContent = `
-                <h3>হেল্পডেস্ক সাপোর্ট চ্যানেল</h3>
+                <h3>হেল্পডেস্ক সাপোর্ট</h3>
                 <p style="margin-top:10px; font-size:13px; color:#6c757d;">যেকোনো কারিগরি সহায়তার জন্য নিচের WhatsApp এ যোগাযোগ করুন।</p>
                 <div class="msg-box msg-success" style="margin-top:15px; border-left:4px solid #0088cc; background:#ebf7ff;">
                     💬 <b>হোয়াটসঅ্যাপ:</b>+8801981597776
@@ -670,7 +671,9 @@
                         <h4>💰 প্রতিটি সার্ভিসের মূল্য (সার্ভিস ফি) নির্ধারণ করুন</h4>
                         <label style="font-size:12px;">সার্ভিস সিলেক্ট করুন:</label>
                         <select id="admPriceTargetService" class="form-control">
-                            <option value="NID_Copy_Download">এনআইডি কপি ডাউনলোড</option>
+                            <option value="NID_Copy_Download">এনআইডি সংশোধন অনুমোদন</option>
+                            <option
+value="NID_Copy_Download">এনআইডি কপি ডাউনলোড</option>
                             <option value="Sign_to_NID">সাইন টু এনআইডি</option>
                             <option value="Auto_NID">অটো এনআইডি</option>
                             <option value="Server_Copy">সার্ভার কপি</option>
@@ -721,7 +724,9 @@
                         <h4>📤 ফাইল মেমোরি আপলোড (ভল্ট ইঞ্জেকশন)</h4>
                         <label style="font-size:12px;">সার্ভিস:</label>
                         <select id="admTargetService" class="form-control">
-                            <option value="NID_Copy_Download">এনআইডি কপি ডাউনলোড</option>
+                            <option value="NID_Copy_Download">এনআইডি সংশোধন অনুমোদন</option>
+                            <option
+value="NID_Copy_Download">এনআইডি কপি ডাউনলোড</option>
                             <option value="Sign_to_NID">সাইন টু এনআইডি</option>
                             <option value="Auto_NID">পুরাতন এনআইডি</option>
                             <option value="Server_Copy">সার্ভার কপি</option>
