@@ -3,90 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bangladesh Election Commission - CMS Portal</title>
+    <title>CMS NID Database System</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f6f9; min-height: 100vh; color: #333; }
-        .header { background: #0b5ed7; color: white; padding: 15px 20px; text-align: center; font-size: 20px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .logo { width: 45px; margin-right: 12px; }
         
+        /* হেডার ও রেসপন্সিভ নেভিগেশন */
+        .header { background: #0b5ed7; color: white; padding: 15px 20px; text-align: center; font-size: 18px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .user-meta { display: flex; align-items: center; gap: 15px; font-size: 14px; flex-wrap: wrap; }
+        .balance-badge { background: #198754; color: white; padding: 5px 12px; border-radius: 20px; font-weight: bold; }
+        
+        /* লাইভ স্ক্রলিং নোটিশ */
         .notice-container { background: #ffdbdb; border-bottom: 2px solid #dc3545; overflow: hidden; position: relative; padding: 10px 0; display: flex; align-items: center; }
-        .notice-text { display: inline-block; white-space: nowrap; padding-left: 100%; color: #dc3545; font-weight: bold; font-size: 15px; animation: text-roll 28s linear infinite; }
-        .notice-container:hover .notice-text { animation-play-state: paused; }
+        .notice-text { display: inline-block; white-space: nowrap; padding-left: 100%; color: #dc3545; font-weight: bold; font-size: 14px; animation: text-roll 28s linear infinite; }
         @keyframes text-roll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-        .container { display: flex; flex-direction: row; min-height: calc(100vh - 65px); }
-        .sidebar { width: 240px; background: #fff; border-right: 1px solid #dee2e6; box-shadow: 2px 0 5px rgba(0,0,0,0.02); }
-        .sidebar ul { list-style: none; }
-        .sidebar ul li a { display: block; padding: 14px 20px; text-decoration: none; color: #495057; cursor: pointer; font-weight: 500; font-size: 15px; border-bottom: 1px solid #f1f3f5; transition: all 0.2s; }
-        .sidebar ul li a:hover { background: #f8f9fa; color: #0b5ed7; padding-left: 25px; }
+        /* মেইন লেআউট */
+        .container { display: flex; flex-direction: row; min-height: calc(100vh - 65px); width: 100%; }
         
-        .sidebar ul li a.admin-menu-btn { background: #ffc107; font-weight: bold; color: #212529; display: none; }
-        .sidebar ul li a.admin-menu-btn:hover { background: #e0a800; color: #212529; }
+        /* ডাইনামিক রেসপন্সিভ সাইডবার */
+        .sidebar { width: 280px; background: #fff; border-right: 1px solid #dee2e6; height: calc(100vh - 110px); overflow-y: auto; }
+        .main-menu-item { background: #f8f9fa; border-bottom: 1px solid #dee2e6; }
+        .main-menu-btn { display: block; width: 100%; padding: 14px 15px; text-align: left; background: none; border: none; font-size: 14px; font-weight: 600; color: #333; cursor: pointer; transition: background 0.2s; position: relative; }
+        .main-menu-btn:hover { background: #e9ecef; }
+        .main-menu-btn::after { content: '▾'; position: absolute; right: 15px; top: 14px; }
+        
+        .sub-menu-list { display: none; list-style: none; background: #ffffff; padding-left: 10px; }
+        .sub-menu-list li a { display: block; padding: 12px 15px; font-size: 13px; color: #495057; text-decoration: none; cursor: pointer; border-bottom: 1px solid #f1f3f5; }
+        .sub-menu-list li a:hover { color: #0b5ed7; background: #f8f9fa; padding-left: 20px; }
+        
+        .admin-btn { background: #ffc107 !important; font-weight: bold !important; color: #000 !important; display: none; }
 
-        .content { flex: 1; padding: 25px; }
-        .box { background: #fff; padding: 25px; border: 1px solid #e3e6f0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.01); }
-        .form-control { width: 100%; padding: 12px; margin: 8px 0 15px 0; border: 1px solid #ced4da; border-radius: 6px; font-size: 15px; transition: border 0.2s; }
-        .form-control:focus { border-color: #0b5ed7; outline: none; }
-        .btn { padding: 10px 22px; background: #0b5ed7; border: none; color: white; cursor: pointer; border-radius: 6px; font-size: 15px; font-weight: 500; }
+        /* কন্টেন্ট এরিয়া */
+        .content { flex: 1; padding: 25px; height: calc(100vh - 110px); overflow-y: auto; }
+        .box { background: #fff; padding: 25px; border: 1px solid #e3e6f0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.01); margin-bottom: 20px; }
+        
+        /* ফর্ম এলিমেন্ট */
+        .form-control { width: 100%; padding: 12px; margin: 8px 0 15px 0; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px; }
+        .form-control:focus { border-color: #0b5ed7; outline: none; box-shadow: 0 0 0 3px rgba(11,94,215,0.15); }
+        .btn { padding: 12px 24px; background: #0b5ed7; border: none; color: white; cursor: pointer; border-radius: 6px; font-size: 14px; font-weight: 500; transition: background 0.2s; }
         .btn:hover { background: #0949a5; }
-        .back-btn { background: #6c757d; margin-bottom: 20px; }
-        .back-btn:hover { background: #5a6268; }
         
-        #loginContainer { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; background: #e9ecef; }
+        /* অথেন্টিকেশন স্ক্রিন */
+        #loginContainer { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #e9ecef; padding: 20px; }
         #loginForm, #registerForm, #secretForm { background: white; padding: 35px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); width: 100%; max-width: 420px; text-align: center; }
-        #message, #regMessage, #secretMessage { margin-top: 15px; font-weight: bold; min-height: 22px; }
-        .success { color: #28a745; }
-        .error { color: #dc3545; }
-        #dashboard { display: none; }
         
-        #loadingOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
-        .spinner { width: 55px; height: 55px; border: 5px solid #f3f3f3; border-top: 5px solid #0b5ed7; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .loading-text { margin-top: 15px; color: white; font-size: 16px; }
-
-        .ec-table-container { width: 100%; overflow-x: auto; margin-top: 15px; background: #fff; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .ec-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
-        .ec-table th, .ec-table td { padding: 12px 15px; border: 1px solid #dee2e6; vertical-align: middle; }
-        .ec-table th { background: #f8f9fa; color: #495057; font-weight: 600; text-align: center; }
-        .text-center { text-align: center !important; }
+        /* নোটিফিকেশন মেসেজ */
+        .msg-box { padding: 12px; margin: 15px 0; border-radius: 6px; font-weight: 500; font-size: 14px; text-align: left; }
+        .msg-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .msg-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
         
-        .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; display: inline-block; }
+        /* টেবিল স্টাইল */
+        .ec-table-container { width: 100%; overflow-x: auto; margin-top: 15px; }
+        .admin-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; min-width: 600px; }
+        .admin-table th, .admin-table td { padding: 12px; border: 1px solid #ddd; }
+        .admin-table th { background: #e9ecef; color: #495057; font-weight: 600; }
+        
+        /* স্ট্যাটাস ব্যাজ */
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+        .status-success { background: #d4edda; color: #155724; }
+        .status-failed { background: #f8d7da; color: #721c24; }
         .status-pending { background: #fff3cd; color: #856404; }
-        .status-approved { background: #d4edda; color: #155724; }
-        .status-rejected { background: #f8d7da; color: #721c24; }
-        
-        .view-icon-btn { border: none; background: transparent; cursor: pointer; font-size: 16px; color: #495057; }
-        .view-icon-btn:hover { color: #0b5ed7; }
-        
-        .app-details-box { border: 1px solid #ced4da; margin-top: 15px; border-radius: 4px; background: #fff; }
-        .app-details-header { background: #f8f9fa; padding: 10px 15px; border-bottom: 1px solid #ced4da; font-size: 13px; color: #6c757d; font-weight: bold; display: flex; justify-content: space-between; }
-        
-        .btn-approve { background: #28a745; margin-right: 5px; }
-        .btn-approve:hover { background: #218838; }
-        .btn-reject { background: #dc3545; }
-        .btn-reject:hover { background: #c82333; }
 
-        .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
-        .admin-table th, .admin-table td { padding: 10px; border: 1px solid #ddd; }
-        .admin-table th { background: #e9ecef; }
-        .admin-section { border: 1px solid #ddd; padding: 18px; margin-bottom: 25px; border-radius: 6px; background: #fafafa; }
-        
-        .result-card { background: #f8f9fa; border: 1px solid #ced4da; padding: 18px; border-radius: 6px; margin-top: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .result-item { margin-bottom: 8px; font-size: 15px; }
-        .not-found-card { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 15px; border-radius: 6px; margin-top: 15px; font-weight: 500; }
-        
-        .status-active { color: #28a745; font-weight: bold; }
-        .status-blocked { color: #dc3545; font-weight: bold; }
-        .action-btn { padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; color: white; font-size: 12px; }
-        .btn-block { background: #dc3545; }
-        .btn-unblock { background: #28a745; }
-        
-        /* ইন-লাইন নোটিফিকেশন এলার্ট স্টাইল */
-        .inline-alert { padding: 12px; margin: 15px 0; border-radius: 6px; font-weight: 500; font-size: 14px; display: none; }
-        .inline-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .inline-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .inline-info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .admin-section { border: 1px solid #ddd; padding: 20px; margin-bottom: 25px; border-radius: 8px; background: #fafafa; }
+        #loadingOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; color: white; font-size: 16px; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #0b5ed7; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* নতুন ফুল স্ক্রিন সাব-পেইজ ওভারলে স্টাইল (মোবাইল ও কম্পিউটারের জন্য শতভাগ নিখুঁত) */
+        .full-page-panel {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #f4f6f9;
+            z-index: 999;
+            overflow-y: auto;
+            padding: 15px;
+        }
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0b5ed7;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .live-price-tag {
+            background: #ffc107;
+            color: #000;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 13px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        /* রেসপন্সিভ মিডিয়া কোয়েরি (মোবাইল স্ক্রিনের জন্য লেআউট অ্যাডজাস্টমেন্ট) */
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; max-height: 300px; border-right: none; border-bottom: 1px solid #dee2e6; }
+            .content { height: auto; padding: 15px; }
+            .header { font-size: 16px; padding: 12px; }
+            .panel-header { flex-direction: row; font-size: 14px; padding: 10px; }
+            .btn { width: 100%; text-align: center; margin-top: 5px; }
+            .full-page-panel { padding: 10px; }
+        }
     </style>
 </head>
 <body>
@@ -94,631 +121,766 @@
     <div id="loginContainer">
         <div>
             <form id="loginForm">
-                <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg" alt="EC Logo">
-                <h3 style="margin-bottom:15px;">CMS - NID DATABASE পার্টনার পোর্টাল</h3>
-                <input type="text" id="userid" class="form-control" placeholder="ইউজার আইডি" required>
-                <input type="password" id="password" class="form-control" placeholder="পাসওয়ার্ড" required>
-                <button type="submit" class="btn" style="width:100%;">লগইন</button>
-                <p style="margin-top:15px; font-size:14px;">অ্যাকাউন্ট নেই? <a href="#" id="showRegister">রেজিস্টার করুন</a></p>
-                <div id="message"></div>
+               <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg" alt="EC Logo">
+                <h3 style="margin-bottom:20px;">NID Database Portal</h3>
+                <input type="text" id="userid" class="form-control" placeholder="আইডি নম্বর বা ইউজারনেম" required>
+                <input type="password" id="password" class="form-control" placeholder="সিকিউরিটি পাসওয়ার্ড" required>
+                <button type="submit" class="btn">লগইন করুন</button>
+                <p style="margin-top:15px; font-size:13px;">নতুন অ্যাকাউন্ট? <a href="#" id="showRegister">রেজিস্ট্রেশন করুন</a></p>
+                <div id="loginMsg"></div>
             </form>
 
             <form id="registerForm" style="display:none;">
-                <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg" alt="EC Logo">
-                <h3 style="margin-bottom:15px;">নতুন অ্যাকাউন্ট রেজিস্ট্রেশন</h3>
-                <input type="text" id="regUserid" class="form-control" placeholder="ইউজার আইডি" required>
-                <input type="password" id="regPassword" class="form-control" placeholder="পাসওয়ার্ড" required>
-                <button type="submit" class="btn" style="width:100%;">রেজিস্টার</button>
-                <p style="margin-top:15px; font-size:14px;"><a href="#" id="showLogin">লগইন পেজে ফিরুন</a></p>
-                <div id="regMessage"></div>
+                <h3 style="margin-bottom:20px;">নতুন রেজিস্ট্রার</h3>
+                <input type="text" id="regUserid" class="form-control" placeholder="পছন্দসই ইউজার আইডি" required>
+                <input type="password" id="regPassword" class="form-control" placeholder="অ্যাকাউন্ট পাসওয়ার্ড" required>
+                <button type="submit" class="btn">রেজিস্টার করুন</button>
+                <p style="margin-top:15px; font-size:13px;"><a href="#" id="showLogin">লগইন পেজে ফিরুন</a></p>
+                <div id="regMsg"></div>
             </form>
 
             <form id="secretForm" style="display:none;">
-                <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg" alt="EC Logo">
                 <h3>নিরাপত্তা ভেরিফিকেশন</h3>
-                <p style="font-size:13px; color:#6c757d; margin: 10px 0;">কন্ট্রোল প্যানেলে প্রবেশের সিক্রেট কী টাইপ করুন</p>
+                <p style="font-size:13px; color:#6c757d; margin: 10px 0;">সিস্টেম অ্যাক্সেস কী টাইপ করুন</p>
                 <input type="password" id="secretKeyInput" class="form-control" placeholder="••••" required>
-                <button type="submit" class="btn" style="background:#28a745; width:100%;">ভেরিফাই</button>
-                <p style="margin-top:15px; font-size:14px;"><a href="#" onclick="logout()">বাতিল করুন</a></p>
-                <div id="secretMessage"></div>
+                <button type="submit" class="btn" style="background:#28a745;">ভেরিফাই</button>
+                <div id="secretMsg"></div>
             </form>
         </div>
     </div>
 
     <div id="loadingOverlay">
-        <div class="spinner"></div>
-        <div class="loading-text" id="loadingText">অনুগ্রহ করে অপেক্ষা করুন...</div>
+        <div style="text-align: center;">
+            <div class="spinner"></div>
+            <div id="loadingText">প্রসেসিং ডাটাবেজ...</div>
+        </div>
     </div>
 
-    <div id="dashboard">
+    <div id="dashboard" style="display:none;">
         <div class="header">
-            <div style="display: flex; align-items: center;">
-                <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg" alt="EC Logo">
-                <span>CMS - NID DATABASE পার্টনার পোর্টাল <span id="adminBadge" style="color:#ffc107; display:none;">(ADMIN)</span></span>
+            <div>⚙️ NID ডাটাবেইজ পোর্টাল</div>
+            <div class="user-meta">
+                <span id="userDisplayId">ইউজার: </span>
+                <span class="balance-badge">ব্যালেন্স: ৳<span id="myBalanceDisplay">0</span></span>
+                <button class="btn" style="background:#dc3545; padding: 5px 12px; font-size:12px; width: auto;" onclick="logout()">লগআউট</button>
             </div>
-            <button class="btn" style="background:#dc3545;" onclick="logout()">লগআউট</button>
         </div>
 
         <div class="notice-container">
-            <div class="notice-text" id="liveNoticeText">ডাটা লোড হচ্ছে...</div>
+            <div class="notice-text" id="liveNoticeText">ডাটাবেজ লোড হচ্ছে...</div>
         </div>
 
         <div class="container">
             <div class="sidebar">
-                <ul>
-                    <li><a 
-onclick="showForm('NidCard')">এনআইডি কার্ড ডাউনলোড</a></li>
-                    <li><a onclick="showForm('nid_ServerCopy')">এনআইডি সার্ভার কপি</a></li>
-                    <li><a onclick="showForm('nid_SignCopy')">এনআইডি সাইন কপি</a></li>
-                    <li><a onclick="showForm('mobile')">মোবাইল সার্চ</a></li>
-                    <li><a onclick="showForm('birth')">জন্ম নিবন্ধন সার্চ</a></li>
-                    <li><a onclick="showForm('formno')">ফর্ম/ভোটার নাম্বার</a></li>
-                    <li><a onclick="showForm('correction')">সংশোধন অনুমোদন</a></li>
-                    <li><a onclick="showUserProfile()">👤 আমার প্রোফাইল</a></li>
-                    <li><a id="adminMenuOpt" class="admin-menu-btn" onclick="showAdminPanel()">🔐 অ্যাডমিন প্যানেল</a></li>
-                </ul>
+                <div class="main-menu-item">
+                    <button class="main-menu-btn" onclick="openFullCategoryPage('NID সার্ভিস', 'nidMenuOptions')">NID সার্ভিস</button>
+                    <ul class="sub-menu-list" id="nidMenuOptions" style="display:none;">
+                        <li><a onclick="loadService('NID_Copy_Download', 'এনআইডি  ডাউনলোড', 'NID নম্বর টাইপ করুন')">এনআইডি  ডাউনলোড</a></li>
+                        <li><a onclick="loadService('Sign_to_NID', 'সাইন টু এনআইডি', 'ফর্ম নম্বর অথবা স্লিপ আইডি দিন')">সাইন টু এনআইডি</a></li>
+                        <li><a onclick="loadService('Auto_NID', 'অটো এনআইডি', 'প্রয়োজনীয় ডাটা ইনপুট দিন')">অটো এনআইডি</a></li>
+                        <li><a onclick="loadService('Server_Copy', 'সার্ভার কপি', 'NID নম্বর ও জন্মতারিখ প্রদান করুন')">সার্ভার কপি</a></li>
+                        <li><a onclick="loadService('Sign_Copy', 'সাইন কপি', 'NID নম্বর দিন')">সাইন কপি</a></li>
+                        <li><a onclick="loadService('Number_to_NID', 'নাম্বার টু এনআইডি সার্ভিস', '১১ ডিজিটের মোবাইল নম্বর দিন')">নাম্বার টু এনআইডি সার্ভিস</a></li>
+                        <li><a onclick="loadService('Name_Address_NID', 'নাম ঠিকানা দিয়ে এনআইডি', 'পূর্ণাঙ্গ নাম ও ঠিকানা দিন')">নাম ঠিকানা দিয়ে এনআইডি</a></li>
+                        <li><a onclick="loadService('NID_to_All_Numbers', 'এনআইডি থেকে সকল নাম্বার', 'NID নম্বর সাবমিট করুন')">এনআইডি থেকে সকল নাম্বার</a></li>
+                        <li><a onclick="loadService('NID_Created_List', 'এনআইডি তৈরি লিস্ট', 'অফিসিয়াল ট্র্যাকিং কোড দিন')">এনআইডি তৈরি লিস্ট</a></li>
+                    </ul>
+                </div>
+
+                <div class="main-menu-item">
+                    <button class="main-menu-btn" onclick="openFullCategoryPage('জন্মনিবন্ধন ও পাসপোর্ট', 'birthMenuOptions')">জন্মনিবন্ধন ও পাসপোর্ট</button>
+                    <ul class="sub-menu-list" id="birthMenuOptions" style="display:none;">
+                        <li><a onclick="loadService('Birth_Cert_Create', 'জন্মনিবন্ধন সার্টিফিকেট তৈরি', 'নাম ও পিতা/মাতার নাম বাংলায় দিন')">জন্মনিবন্ধন সার্টিফিকেট তৈরি</a></li>
+                        <li><a onclick="loadService('Birth_Cert_List', 'জন্মনিবন্ধন তৈরি লিস্ট', 'রেজিস্ট্রেশন বই নম্বর বা আইডি দিন')">জন্মনিবন্ধন তৈরি লিস্ট</a></li>
+                        <li><a onclick="loadService('New_Birth_Reg', 'নতুন জন্মনিবন্ধন', 'আবেদন স্লিপ আইডি টাইপ করুন')">নতুন জন্মনিবন্ধন</a></li>
+                        <li><a onclick="loadService('E_Passport_Copy', 'ই-পাসপোর্ট কপি', 'পাসপোর্ট ডেলিভারি স্লিপ নম্বর দিন')">ই-পাসপোর্ট কপি</a></li>
+                    </ul>
+                </div>
+
+                <div class="main-menu-item">
+                    <button class="main-menu-btn" onclick="openFullCategoryPage('মোবাইল ট্র্যাকিং ও ইনফো', 'trackingMenuOptions')">মোবাইল ট্র্যাকিং ও ইনফো</button>
+                    <ul class="sub-menu-list" id="trackingMenuOptions" style="display:none;">
+                        <li><a onclick="loadService('Biometric', 'বায়োমেট্রিক', 'মোবাইল নম্বর টাইপ করুন')">বায়োমেট্রিক</a></li>
+                        <li><a onclick="loadService('Number_to_Location', 'নাম্বার থেকে লোকেশন', 'মোবাইল নম্বর প্রদান করুন')">নাম্বার থেকে লোকেশন</a></li>
+                        <li><a onclick="loadService('Number_Call_List', 'নাম্বার থেকে কল লিস্ট', 'টার্গেট মোবাইল নম্বর ও ডেট রেঞ্জ দিন')">নাম্বার থেকে কল লিস্ট</a></li>
+                        <li><a onclick="loadService('IMEI_Tracking', 'IMEI to Location', '১৫ ডিজিটের IMEI কোড দিন')">IMEI to Location</a></li>
+                        <li><a onclick="loadService('Active_Number', 'IMEI to এক্টিভ নাম্বার', 'মোবাইল নম্বর দিন')">IMEI to এক্টিভ নাম্বার</a></li>
+                    </ul>
+                </div>
+
+                <div class="main-menu-item">
+                    <button class="main-menu-btn" onclick="openFullCategoryPage('ফাইন্যান্স ও ব্যাংকিং', 'financeMenuOptions')">ফাইন্যান্স ও ব্যাংকিং</button>
+                    <ul class="sub-menu-list" id="financeMenuOptions" style="display:none;">
+                        <li><a onclick="loadService('Rocket_Statement', 'রকেট স্টেটমেন্ট', 'রকেট ওয়ালেট নম্বর দিন')">রকেট স্টেটমেন্ট</a></li>
+                        <li><a onclick="loadService('Nagad_Info', 'নগদ ইনফো', 'নগদ মোবাইল নম্বর দিন')">নগদ ইনফো</a></li>
+                        <li><a onclick="loadService('TIN_Extraction', 'টিন উত্তলন', '১২ ডিজিটের TIN ট্যাক্স নম্বর দিন')">টিন উত্তলন</a></li>
+                        <li><a onclick="loadService('Bkash_Information', 'বিকাশ নাম্বারের ইনফরমেশন', 'বিকাশ নম্বর দিন')">বিকাশ নাম্বারের ইনফরমেশন</a></li>
+                        <li><a onclick="loadService('Rocket_Information', 'রকেট নাম্বারের ইনফরমেশন', 'রকেট নম্বর দিন')">রকেট নাম্বারের ইনফরমেশন</a></li>
+                    </ul>
+                </div>
+
+                <div class="main-menu-item">
+                    <button class="main-menu-btn" onclick="openFullCategoryPage('অ্যাকাউন্ট', 'accountMenuOptions')">অ্যাকাউন্ট</button>
+                    <ul class="sub-menu-list" id="accountMenuOptions" style="display:none;">
+                        <li><a  onclick="loadProfile()">প্রোফাইল</a></li>
+                        <li><a onclick="loadRechargeOption()">টাকা যুক্ত করুন 💸</a></li>
+                        <li><a onclick="loadPasswordForm()">পাসওয়ার্ড পরিবর্তন</a></li>
+                        <li><a onclick="loadSupportChannel()">সাপোর্ট</a></li>
+                        <li><a id="adminMenuOpt" class="main-menu-btn admin-btn" style="display:none;" onclick="loadAdminPanel()">🔐 অ্যাডমিন প্যানেল</a></li>
+                    </ul>
+                </div>
             </div>
+            
             <div class="content">
-                <div id="globalNotification" class="inline-alert"></div>
-                
                 <div class="box" id="formArea">
-                    <h3 style="color:#495057;">CMS পোর্টাল ড্যাশবোর্ডে আপনাকে স্বাগতম।</h3>
+                    <h3>সার্ভিস ড্যাশবোর্ড</h3>
+                    <p style="color:#6c757d; margin-top:10px;">সার্ভিস নির্বাচন করুন।</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <div id="fullPageCategoryPanel" class="full-page-panel">
+        <div class="panel-header">
+            <span id="fullPagePanelTitle">সার্ভিস সমূহ</span>
+            <button class="btn" style="background:#dc3545; padding:6px 15px; width:auto; margin:0;" onclick="closeFullCategoryPage()">ফিরে যান</button>
+        </div>
+        <div class="box" id="fullPagePanelContent"></div>
+    </div>
+
+    <div id="fullPageServicePanel" class="full-page-panel" style="z-index:1000;">
+        <div class="panel-header">
+            <span id="fullPageServiceTitle">সার্ভিস প্যানেল</span>
+            <button class="btn" style="background:#dc3545; padding:6px 15px; width:auto; margin:0;" onclick="closeFullServicePage()">ফিরে যান</button>
+        </div>
+        <div class="box" id="fullPageServiceContent"></div>
+    </div>
+
     <script>
-        const FIREBASE_URL = "https://cms-portal-b020a-default-rtdb.firebaseio.com"; 
+        const DB_URL = "https://cms-portal-b020a-default-rtdb.firebaseio.com";
         const _0x4f2a = [32, 32, 32, 32]; 
 
-        // ইন-লাইন নোটিফিকেশন প্রদর্শন ইঞ্জিন (পপআপ এর পরিবর্তে)
-        function showNotification(message, type = "info") {
-            const container = document.getElementById("globalNotification");
-            container.className = `inline-alert inline-${type}`;
-            container.innerText = message;
-            container.style.display = "block";
-            setTimeout(() => { container.style.display = "none"; }, 5000);
+        function showLoader(txt) { document.getElementById("loadingText").innerText = txt; document.getElementById("loadingOverlay").style.display = "flex"; }
+        function hideLoader() { document.getElementById("loadingOverlay").style.display = "none"; }
+
+        function openFullCategoryPage(title, menuId) {
+            document.getElementById("fullPagePanelTitle").innerText = title;
+            const originalList = document.getElementById(menuId).innerHTML;
+            
+            let stylizedContent = `<ul style="list-style:none;">${originalList}</ul>`;
+            stylizedContent = stylizedContent.replaceAll('onclick="', 'style="display:block; padding:15px; margin-bottom:10px; background:#fff; border:1px solid #dee2e6; border-radius:6px; font-weight:600; text-decoration:none; color:#333; cursor:pointer;" onclick="');
+            
+            document.getElementById("fullPagePanelContent").innerHTML = stylizedContent;
+            document.getElementById("fullPageCategoryPanel").style.display = "block";
         }
 
-        function showLoading(text = "অনুগ্রহ করে অপেক্ষা করুন...") { 
-            document.getElementById("loadingText").innerText = text;
-            document.getElementById("loadingOverlay").style.display = "flex"; 
-        }
-        function hideLoading() { document.getElementById("loadingOverlay").style.display = "none"; }
+        function closeFullCategoryPage() { document.getElementById("fullPageCategoryPanel").style.display = "none"; }
+        function closeFullServicePage() { document.getElementById("fullPageServicePanel").style.display = "none"; }
 
         window.onload = function() {
-            const loggedInUser = localStorage.getItem("loggedInUser");
-            updateNoticeBar(loggedInUser);
-            if (loggedInUser) {
+            const user = localStorage.getItem("loggedInUser");
+            if(user) {
                 document.getElementById("loginContainer").style.display = "none";
                 document.getElementById("dashboard").style.display = "block";
-                if (loggedInUser === "admin") {
-                    document.getElementById("adminMenuOpt").style.display = "block";
-                    document.getElementById("adminBadge").style.display = "inline";
+                document.getElementById("userDisplayId").innerText = "আইডি: " + user;
+                syncSystemBalance(user);
+                loadLiveNotice(user);
+                
+                if(user === "admin") {
+                    document.getElementById("adminMenuOpt").style.setProperty("display", "block", "important");
+                } else {
+                    document.getElementById("adminMenuOpt").style.setProperty("display", "none", "important");
                 }
             }
         };
 
-        async function updateNoticeBar(username) {
+        async function syncSystemBalance(user) {
+            if(user === "admin") { document.getElementById("myBalanceDisplay").innerText = "999999"; return; }
             try {
-                if(username && username !== "admin") {
-                    const pRes = await fetch(`${FIREBASE_URL}/personal_notices/${username}.json`);
+                const res = await fetch(`${DB_URL}/users/${user}/balance.json`);
+                const bal = await res.json();
+                document.getElementById("myBalanceDisplay").innerText = (bal !== null) ? bal : 0;
+            } catch(e){}
+        }
+
+        async function loadLiveNotice(user) {
+            try {
+                if(user !== "admin") {
+                    const pRes = await fetch(`${DB_URL}/personal_notices/${user}.json`);
                     const pNotice = await pRes.json();
-                    if(pNotice) {
-                        document.getElementById("liveNoticeText").innerText = pNotice;
-                        return;
-                    }
+                    if(pNotice) { document.getElementById("liveNoticeText").innerText = pNotice; return; }
                 }
-                const response = await fetch(`${FIREBASE_URL}/common_notice.json`);
-                const commonNotice = await response.json();
-                document.getElementById("liveNoticeText").innerText = commonNotice || "⚠️ পোর্টাল সিস্টেম আপডেট চলছে। সাময়িক বিভ্রাটের জন্য দুঃখিত।";
-            } catch(e) { document.getElementById("liveNoticeText").innerText = "সার্ভার সংযোগ ত্রুটি!"; }
+                const res = await fetch(`${DB_URL}/common_notice.json`);
+                const notice = await res.json();
+                document.getElementById("liveNoticeText").innerText = notice || "সিস্টেম সক্রিয় রয়েছে।";
+            } catch(e){}
+        }
+
+        function dispMsg(containerId, text, isError = true) {
+            const target = document.getElementById(containerId);
+            if(!target) return;
+            const cls = isError ? "msg-box msg-error" : "msg-box msg-success";
+            target.innerHTML = `<div class="${cls}">${text}</div>`;
         }
 
         document.getElementById("showRegister").addEventListener("click", e => { e.preventDefault(); document.getElementById("loginForm").style.display = "none"; document.getElementById("registerForm").style.display = "block"; });
         document.getElementById("showLogin").addEventListener("click", e => { e.preventDefault(); document.getElementById("registerForm").style.display = "none"; document.getElementById("loginForm").style.display = "block"; });
 
-        async function fetchUsers() {
-            try {
-                const response = await fetch(`${FIREBASE_URL}/users.json`);
-                const data = await response.json();
-                return data ? Object.values(data) : [];
-            } catch (error) { return []; }
-        }
-
         document.getElementById("registerForm").addEventListener("submit", async e => {
             e.preventDefault();
-            const user = document.getElementById("regUserid").value.trim();
-            const pass = document.getElementById("regPassword").value.trim();
-            const regMsg = document.getElementById("regMessage");
-            if (!user || !pass) return;
-            if(user.toLowerCase() === 'admin') { regMsg.innerHTML = `<span class="error">'admin' ইউজার আইডি রিজার্ভড।</span>`; return; }
-            
-            showLoading();
-            let users = await fetchUsers();
-            if (users.find(u => u.userid === user)) {
-                hideLoading();
-                regMsg.innerHTML = `<span class="error">এই ইউজার আইডিটি ইতিমধ্যে নিবন্ধিত!</span>`;
-                return;
-            }
-            const newUser = { userid: user, password: pass, status: "Active" };
-            await fetch(`${FIREBASE_URL}/users/${user}.json`, { method: 'PUT', body: JSON.stringify(newUser) });
-            hideLoading();
-            regMsg.innerHTML = `<span class="success">রেজিস্ট্রেশন সফল হয়েছে। লগইন করুন...</span>`;
-            setTimeout(() => { document.getElementById("registerForm").style.display = "none"; document.getElementById("loginForm").style.display = "block"; regMsg.innerHTML = ""; }, 1500);
+            const u = document.getElementById("regUserid").value.trim();
+            const p = document.getElementById("regPassword").value.trim();
+            if(u.toLowerCase() === 'admin') return;
+            showLoader("ডাটাবেজ এন্ট্রি হচ্ছে...");
+            const chk = await (await fetch(`${DB_URL}/users/${u}.json`)).json();
+            if(chk) { hideLoader(); dispMsg("regMsg", "এই ইউজার আইডি সিস্টেমে ইতিমধ্যে বিদ্যমান রয়েছে!"); return; }
+            await fetch(`${DB_URL}/users/${u}.json`, { method: 'PUT', body: JSON.stringify({ userid: u, password: p, status: "Active", balance: 0 }) });
+            hideLoader();
+            dispMsg("regMsg", "রেজিস্ট্রেশন সম্পূর্ণ হয়েছে। লগইন ফর্ম লোড হচ্ছে...", false);
+            setTimeout(() => { document.getElementById("registerForm").style.display = "none"; document.getElementById("loginForm").style.display = "block"; document.getElementById("regMsg").innerHTML=""; }, 1500);
         });
 
         document.getElementById("loginForm").addEventListener("submit", async e => {
             e.preventDefault();
-            const user = document.getElementById("userid").value.trim();
-            const pass = document.getElementById("password").value.trim();
-            if (user === "admin" && pass === "admin123") { document.getElementById("loginForm").style.display = "none"; document.getElementById("secretForm").style.display = "block"; document.getElementById("secretKeyInput").focus(); return; }
-
-            showLoading();
-            try {
-                const response = await fetch(`${FIREBASE_URL}/users/${user}.json`);
-                const foundUser = await response.json();
-                hideLoading();
-                if (!foundUser || foundUser.password !== pass) { document.getElementById("message").innerHTML = `<span class="error">ইউজার আইডি অথবা পাসওয়ার্ড ভুল।</span>`; return; }
-                if (foundUser.status === "Blocked") { document.getElementById("message").innerHTML = `<span class="error">আপনার অ্যাকাউন্টটি সাময়িকভাবে স্থগিত রয়েছে!</span>`; return; }
-                localStorage.setItem("loggedInUser", user);
-                document.getElementById("loginContainer").style.display = "none";
-                document.getElementById("dashboard").style.display = "block";
-                updateNoticeBar(user);
-            } catch (error) { hideLoading(); document.getElementById("message").innerHTML = `<span class="error">সার্ভার ডাউন রয়েছে!</span>`; }
+            const u = document.getElementById("userid").value.trim();
+            const p = document.getElementById("password").value.trim();
+            if(u === "admin" && p === "admin123") { document.getElementById("loginForm").style.display = "none"; document.getElementById("secretForm").style.display = "block"; document.getElementById("secretKeyInput").focus(); return; }
+            showLoader("সিকিউরিটি চেক হচ্ছে...");
+            const data = await (await fetch(`${DB_URL}/users/${u}.json`)).json();
+            hideLoader();
+            if(!data || data.password !== p) { dispMsg("loginMsg", "ভুল আইডি নম্বর বা পাসওয়ার্ড প্রদান করা হয়েছে!"); return; }
+            if(data.status === "Blocked") { dispMsg("loginMsg", "আপনার অ্যাকাউন্টটি সাময়িকভাবে স্থগিত রয়েছে!"); return; }
+            localStorage.setItem("loggedInUser", u);
+            location.reload();
         });
 
         document.getElementById("secretForm").addEventListener("submit", e => {
             e.preventDefault();
-            const inputVal = document.getElementById("secretKeyInput").value;
-            let isValid = inputVal.length === _0x4f2a.length;
-            if(isValid) { for(let i=0; i<inputVal.length; i++) { if(inputVal.charCodeAt(i) !== _0x4f2a[i]) { isValid = false; break; } } }
-            if(isValid) {
-                showLoading();
-                setTimeout(() => {
-                    hideLoading();
-                    localStorage.setItem("loggedInUser", "admin");
-                    document.getElementById("loginContainer").style.display = "none";
-                    document.getElementById("dashboard").style.display = "block";
-                    document.getElementById("adminMenuOpt").style.display = "block";
-                    document.getElementById("adminBadge").style.display = "inline";
-                    document.getElementById("secretForm").style.display = "none";
-                    updateNoticeBar("admin");
-                }, 800);
-            } else {
-                document.getElementById("secretMessage").innerHTML = `<span class="error">ভুল সিক্রেট কোড! প্রবেশ নিষিদ্ধ।</span>`;
-            }
+            const val = document.getElementById("secretKeyInput").value;
+            let ok = val.length === _0x4f2a.length;
+            if(ok) { for(let i=0; i<val.length; i++) { if(val.charCodeAt(i) !== _0x4f2a[i]) { ok = false; break; } } }
+            if(ok) { localStorage.setItem("loggedInUser", "admin"); location.reload(); } 
+            else { dispMsg("secretMsg", "অ্যাক্সেস কী ভুল! সিকিউরিটি সিস্টেম লকড।"); }
         });
 
         function logout() { localStorage.removeItem("loggedInUser"); location.reload(); }
-        function backToDefault() { document.getElementById("formArea").innerHTML = "<h3>একটি অপশন নির্বাচন করুন</h3>"; }
 
-        // পাবলিক ফর্ম লেআউট জেনারেটর
-        function showForm(type) {
-            let title = "", label = "";
-            if (type === "NidCard") { title = "এনআইডি কার্ড ডাউনলোড"; label = "জাতীয় পরিচয়পত্র নম্বর দিন"; }
-            else if (type === "nid_ServerCopy") { title = "এনআইডি সার্ভার কপি সার্চ"; label = "জাতীয় পরিচয়পত্র নম্বর দিন"; }
-            else if (type === "nid_SignCopy") { title = "এনআইডি সাইন কপি সার্চ"; label = "জাতীয় পরিচয়পত্র নম্বর দিন"; }
-            else if (type === "mobile") { title = "মোবাইল সার্চ"; label = "মোবাইল নম্বর দিন"; }
-            else if (type === "birth") { title = "জন্ম নিবন্ধন সার্চ"; label = "জন্ম নিবন্ধন নম্বর দিন"; }
-            else if (type === "formno") { title = "ফর্ম/ভোটার নাম্বার"; label = "ফর্ম/ভোটার নম্বর দিন"; }
-            else if (type === "correction") { title = "সংশোধন অনুমোদন"; label = "জাতীয় পরিচয় পত্র নম্বর / আবেদন কপি নম্বর দিন"; }
+        // এডমিন প্যানেল থেকে সেট করা প্রাইস লাইভ রিড করে সার্ভিসের ভেতর প্রদর্শন
+        async function loadService(code, name, hint) {
+            showLoader("লোড হচ্ছে...");
+            let servicePrice = 0;
+            try {
+                const priceRes = await fetch(`${DB_URL}/service_prices/${code}.json`);
+                const fetchedPrice = await priceRes.json();
+                if(fetchedPrice !== null) servicePrice = Number(fetchedPrice);
+            } catch(err){}
+            hideLoader();
 
-            document.getElementById("formArea").innerHTML = `
-                <button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button>
-                <h3 style="margin-bottom:15px; color:#0b5ed7;">${title}</h3>
-                <input type="text" id="sqInput" class="form-control" placeholder="${label}">
-                <button class="btn" style="margin-top:5px;" onclick="handlePublicSearch('${type}')">অনুসন্ধান করুন</button>
-                <div id="resArea"></div>
+            const htmlContent = `
+                <h3>${name}</h3>
+                <div class="live-price-tag">সার্ভিস ফি: ৳${servicePrice}</div>
+                <div id="serviceAlertBox"></div>
+                <div style="margin-top:15px;">
+                    <label style="font-weight:600; font-size:13px;">সার্চ/ইনপুট তথ্য দিন:</label>
+                    <input type="text" id="queryInput" class="form-control" placeholder="${hint}">
+                    <button class="btn" onclick="executePublicSearch('${code}')">সার্চ করুন</button>
+                </div>
+                <div id="queryResultEngine" style="margin-top:20px;"></div>
             `;
+            document.getElementById("fullPageServiceTitle").innerText = name;
+            document.getElementById("fullPageServiceContent").innerHTML = htmlContent;
+            document.getElementById("fullPageServicePanel").style.display = "block";
         }
 
-        // 🔍 পাবলিক অটো-অ্যাসাইন এবং লাইফটাইম লকিং সার্চ ইঞ্জিন
-        async function handlePublicSearch(type) {
-            const query = document.getElementById("sqInput").value.trim();
-            const resArea = document.getElementById("resArea");
-            if (!query) { showNotification("অনুগ্রহ করে সঠিক নম্বর ইনপুট দিন!", "error"); return; }
-
-            showLoading("সার্ভার অনুসন্ধান করা হচ্ছে...");
+        async function executePublicSearch(code) {
             const user = localStorage.getItem("loggedInUser");
+            const q = document.getElementById("queryInput").value.trim();
+            const alertBox = document.getElementById("serviceAlertBox");
+            const resEngine = document.getElementById("queryResultEngine");
+            
+            alertBox.innerHTML = ""; resEngine.innerHTML = "";
+            if(!q) { dispMsg("serviceAlertBox", "অনুগ্রহ করে সার্চ বক্সে সঠিক তথ্য ইনপুট দিন!"); return; }
 
-            // ১. অ্যাক্টিভিটি ট্র্যাকিং লগ সেভ
-            try {
-                const logId = "log_" + Date.now();
-                await fetch(`${FIREBASE_URL}/search_logs/${logId}.json`, {
-                    method: 'PUT',
-                    body: JSON.stringify({ user: user, type: type, query: query, time: new Date().toLocaleString('bn-BD') })
-                });
-                await fetch(`${FIREBASE_URL}/user_history/${user}/${logId}.json`, {
-                    method: 'PUT',
-                    body: JSON.stringify({ type: type, query: query, time: new Date().toLocaleString('bn-BD') })
-                });
-            } catch(e){}
-
-            // ২. কারেকশন প্রসেসিং মডিউল
-            if (type === "correction") {
+            showLoader("অনুসন্ধান করা হচ্ছে...");
+            
+            let currentBal = 0;
+            let servicePrice = 0;
+            
+            if(user !== "admin") {
+                const balRes = await fetch(`${DB_URL}/users/${user}/balance.json`);
+                currentBal = await balRes.json() || 0;
+                
                 try {
-                    const response = await fetch(`${FIREBASE_URL}/corrections/${user}/${query}.json`);
-                    const cData = await response.json();
-                    hideLoading();
-
-                    if(cData) {
-                        let statusHtml = `<span class="status-badge status-pending">Pending</span>`;
-                        if(cData.status.includes("Approved")) statusHtml = `<span class="status-badge status-approved">${cData.status}</span>`;
-                        if(cData.status.includes("Rejected")) statusHtml = `<span class="status-badge status-rejected">${cData.status}</span>`;
-
-                        resArea.innerHTML = `
-                            <div class="ec-table-container">
-                                <table class="ec-table">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Applicant Name</th>
-                                            <th>NID</th>
-                                            <th>Status</th>
-                                            <th>Category</th>
-                                            <th>Source</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>${cData.appId}</td>
-                                            <td>${cData.name}</td>
-                                            <td>${cData.nid}</td>
-                                            <td class="text-center" id="status_cell">${statusHtml}</td>
-                                            <td class="text-center">${cData.category}</td>
-                                            <td class="text-center">${cData.source}</td>
-                                            <td class="text-center">
-                                                <button class="view-icon-btn" onclick="openVisualCorrectionEye('${user}','${query}')">👁️</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div id="eyeDetailContainer"></div>
-                        `;
-                    } else {
-                        resArea.innerHTML = `<div class="not-found-card">No data record found।</div>`;
-                    }
-                } catch(e) { hideLoading(); }
-                return;
+                    const priceRes = await fetch(`${DB_URL}/service_prices/${code}.json`);
+                    const fetchedPrice = await priceRes.json();
+                    if(fetchedPrice !== null) servicePrice = Number(fetchedPrice);
+                } catch(err){}
+                
+                if(currentBal <= 0 || currentBal < servicePrice) {
+                    hideLoader();
+                    dispMsg("serviceAlertBox", "দুঃখীত আপনার একাউন্টে ব্যানেন্স নেই। অনুগ্রহ করে রিচার্জ করুন।");
+                    return;
+                }
             }
 
-            // ৩. আজীবন অ্যাসাইনমেন্ট লকিং কোর ইঞ্জিন (অপশন ভিত্তিক আলাদা ম্যাপিং)
             try {
-                // চেক করা হচ্ছে এই ইউজার এই অপশনে এই নাম্বার দিয়ে আগে সার্চ করেছে কিনা
-                const mapRes = await fetch(`${FIREBASE_URL}/assigned_mappings/${user}/${type}/${query}.json`);
-                let assignedFileData = await mapRes.json();
+                const fileRes = await fetch(`${DB_URL}/vault/${code}/${q}.json`);
+                const fileData = await fileRes.json();
 
-                if (!assignedFileData) {
-                    // যদি আগে সার্চ না করে থাকে, তবে কিউ থেকে নতুন ফ্রেশ একটি আন-অ্যাসাইনড ফাইল খোঁজা হবে
-                    const filesRes = await fetch(`${FIREBASE_URL}/admin_uploads/${user}/${type}.json`);
-                    const allFiles = await filesRes.json();
-
-                    if (allFiles) {
-                        const fileKeys = Object.keys(allFiles);
-                        // প্রথম এভেইলেবল ফাইলটি নেওয়া হচ্ছে যা এখনো লক হয়নি
-                        let chosenKey = fileKeys.find(key => !allFiles[key].assignedTo);
-
-                        if (chosenKey) {
-                            assignedFileData = allFiles[chosenKey];
-                            
-                            // ডাটাবেজে এই ফাইলটিকে এই সার্চ কোয়েরির সাথে আজীবন লক করে দেওয়া হলো
-                            await fetch(`${FIREBASE_URL}/admin_uploads/${user}/${type}/${chosenKey}/assignedTo.json`, {
-                                method: 'PUT',
-                                body: JSON.stringify(query)
-                            });
-                            await fetch(`${FIREBASE_URL}/assigned_mappings/${user}/${type}/${query}.json`, {
-                                method: 'PUT',
-                                body: JSON.stringify(assignedFileData)
-                            });
-                        }
-                    }
-                }
-
-                hideLoading();
-
-                if (assignedFileData) {
-                    const trackingId = assignedFileData.fileId;
-                    const isDownloaded = localStorage.getItem(`lock_${trackingId}`);
-
-                    let actionBtn = "";
-                    if(isDownloaded === "true") {
-                        actionBtn = `<button class="btn" style="background:#6c757d; cursor:not-allowed;" disabled>ইতিমধ্যে ডাউনলোড সম্পন্ন হয়েছে!</button>`;
-                    } else {
-                        // ডাইনামিক নেমিং সিস্টেম: ইউজারের সার্চ টেক্সট অনুযায়ী ফাইলের নাম জেনারেট হবে
-                        const dynamicDownloadName = `${type.toUpperCase()}_${query}`;
-                        actionBtn = `<button class="btn" style="background:#28a745;" onclick="triggerDownload('${assignedFileData.fileUrl}', '${dynamicDownloadName}', '${trackingId}')">ডাউনলোড করুন (PDF)</button>`;
+                if(fileData && fileData.pdfData) {
+                    if(user !== "admin" && servicePrice > 0) {
+                        currentBal = currentBal - servicePrice;
+                        await fetch(`${DB_URL}/users/${user}/balance.json`, { method: 'PUT', body: JSON.stringify(currentBal) });
+                        document.getElementById("myBalanceDisplay").innerText = currentBal;
                     }
 
-                    resArea.innerHTML = `
-                        <div class="result-card">
-                            <div class="result-item"><b>রেকর্ড স্ট্যাটাস:</b> <span class="success">তথ্য পাওয়া গেছে</span></div>
-                            <div class="result-item"><b>অনুসন্ধিত ক্যাটাগরি:</b> ${type.replace('_', ' ').toUpperCase()} বিভাগ</div>
-                            <div class="result-item"><b>ডাটাবেজ আইডি নাম্বার:</b> ${query}</div>
-                            <div style="margin-top:15px;">${actionBtn}</div>
+                    const reqId = "req_" + Date.now();
+                    const logPayload = { id: reqId, user: user, service: code, query: q, time: new Date().toLocaleString('bn-BD'), status: "Approved" };
+                    await fetch(`${DB_URL}/all_requests/${reqId}.json`, { method: 'PUT', body: JSON.stringify(logPayload) });
+                    await fetch(`${DB_URL}/user_requests/${user}/${reqId}.json`, { method: 'PUT', body: JSON.stringify(logPayload) });
+
+                    hideLoader();
+                    resEngine.innerHTML = `
+                        <div class="msg-box msg-success">
+                            🧬 ডাটা পাওয়া গিয়েছে। (সার্ভিস ফি কর্তন করা হয়েছে: ৳${servicePrice})<br><br>
+                            <a href="${fileData.pdfData}" download="${code}_${q}.pdf" class="btn" style="background:#198754; text-decoration:none; display:inline-block; width:auto; text-align:center;">ডাউনলোড করুন (PDF)</a>
                         </div>
                     `;
                 } else {
-                    resArea.innerHTML = `<div class="not-found-card">No data record found।</div>`;
+                    hideLoader();
+                    resEngine.innerHTML = `
+                        <div class="msg-box msg-error">
+                            ⚠️ কোনো রেকর্ড খুঁজে পাওয়া যায়নি।
+                        </div>
+                    `;
                 }
-            } catch (e) { hideLoading(); }
+            } catch(err) { hideLoader(); }
         }
 
-        async function openVisualCorrectionEye(user, query) {
-            showLoading();
-            const response = await fetch(`${FIREBASE_URL}/corrections/${user}/${query}.json`);
-            const cData = await response.json();
-            hideLoading();
+        async function loadRechargeOption() {
+            showLoader("রিচার্জ বিবরণী লোড হচ্ছে...");
+            let rNotice = "সর্ব নিন্ম ৩০০ টাকা রিচার্জ করতে হবে।";
+            try {
+                const rnRes = await fetch(`${DB_URL}/recharge_scroll_notice.json`);
+                const fetchedNotice = await rnRes.json();
+                if(fetchedNotice) rNotice = fetchedNotice;
+            } catch(e){}
+            hideLoader();
 
-            if(!cData) return;
+            const htmlContent = `
+                <h3>অ্যাকাউন্ট ব্যালেন্স রিচার্জ</h3>
+                
+                <div class="notice-container" style="margin-top:10px; margin-bottom:15px; border-radius:6px; background: #fff3cd; border-bottom: 2px solid #ffc107;">
+                    <div class="notice-text" style="color: #856404; animation: text-roll 20s linear infinite;">${rNotice}</div>
+                </div>
 
-            let actionButtons = "";
-            if(cData.allowAction === "true" && cData.status === "Pending") {
-                actionButtons = `
-                    <div style="text-align:right; padding:15px;">
-                        <button class="btn btn-approve" onclick="updateClientCorrectionStatus('${user}','${query}','Approved','${cData.category}')">অনুমোদন</button>
-                        <button class="btn btn-reject" onclick="updateClientCorrectionStatus('${user}','${query}','Rejected','${cData.category}')">বাতিল</button>
+                <div id="rechargeMsgBox"></div>
+                <div class="msg-box msg-success" style="background:#fff3cd; color:#856404; border-color:#ffeeba;">
+                    📱 <b>নগদ পার্সোনাল নম্বর:</b> <span style="font-size:16px; font-weight:bold; color:#d63384;">01981597776</span><br>
+                    📌 <b>নির্দেশনা:</b> সর্ব নিন্ম ৩০০ টাকা রিচার্জ করতে হবে। উক্ত নম্বরে টাকা পাঠানোর পর ট্রানজেকশন আইডি দিয়ে ফর্মটি সাবমিট করুন।
+                </div>
+                
+                <label style="font-weight:600; font-size:13px;">প্রেরক মোবাইল নম্বর:</label>
+                <input type="text" id="senderNum" class="form-control" placeholder="01XXXXXXXXX">
+
+                <label style="font-weight:600; font-size:13px;">টাকার পরিমাণ (BDT) [সর্বনিম্ন ৩০০ টাকা]:</label>
+                <input type="number" id="rechargeAmt" class="form-control" placeholder="টাকার পরিমাণ লিখুন">
+
+                <label style="font-weight:600; font-size:13px;">ট্রানজেকশন আইডি (TrxID):</label>
+                <input type="text" id="trxId" class="form-control" placeholder="TrxID প্রদান করুন">
+
+                <label style="font-weight:600; font-size:13px;">পেমেন্ট স্ক্রিনশট সংযুক্ত করুন:</label>
+                <input type="file" id="screenshotFile" class="form-control" accept="image/*">
+
+                <button class="btn" style="background:#e65c00;" onclick="submitRechargeRequest()">রিচার্জ রিকোয়েস্ট সাবমিট করুন</button>
+            `;
+            
+            document.getElementById("fullPageServiceTitle").innerText = "টাকা যুক্ত করুন 💸";
+            document.getElementById("fullPageServiceContent").innerHTML = htmlContent;
+            document.getElementById("fullPageServicePanel").style.display = "block";
+        }
+
+        async function submitRechargeRequest() {
+            const sender = document.getElementById("senderNum").value.trim();
+            const amt = document.getElementById("rechargeAmt").value.trim();
+            const trx = document.getElementById("trxId").value.trim();
+            const fileInput = document.getElementById("screenshotFile");
+            const user = localStorage.getItem("loggedInUser");
+
+            if(!sender || !amt || !trx) { dispMsg("rechargeMsgBox", "সবগুলো তথ্য পূরণ করা বাধ্যতামূলক!"); return; }
+            if(Number(amt) < 300) { dispMsg("rechargeMsgBox", "দুঃখিত! সর্বনিম্ন ৩০০ টাকা রিচার্জ করা আবশ্যক।"); return; }
+
+            showLoader("ফাইল প্রসেসিং হচ্ছে...");
+            let base64Img = "";
+            if(fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                base64Img = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            const rechargeId = "rec_" + Date.now();
+            const payload = { id: rechargeId, user: user, sender: sender, amount: Number(amt), trx: trx, screenshot: base64Img, time: new Date().toLocaleString('bn-BD'), status: "Pending" };
+
+            try {
+                await fetch(`${DB_URL}/recharge_requests/${rechargeId}.json`, { method: 'PUT', body: JSON.stringify(payload) });
+                hideLoader();
+                dispMsg("rechargeMsgBox", "আপনার রিচার্জ রিকোয়েস্টটি সফলভাবে পাঠানো হয়েছে।", false);
+                document.getElementById("senderNum").value=""; document.getElementById("rechargeAmt").value=""; document.getElementById("trxId").value="";
+            } catch(e) { hideLoader(); }
+        }
+
+        async function loadProfile() {
+            showLoader("হিস্ট্রি লোড হচ্ছে...");
+            const user = localStorage.getItem("loggedInUser");
+            let rows = "";
+            try {
+                const res = await fetch(`${DB_URL}/user_requests/${user}.json`);
+                const data = await res.json();
+                if(data) {
+                    Object.values(data).reverse().forEach(r => {
+                        let badge = "";
+                        if(r.status === "Approved") badge = `<span class="status-badge status-success">সফল</span>`;
+                        else if(r.status === "Rejected") badge = `<span class="status-badge status-failed">ব্যর্থ</span>`;
+                        else badge = `<span class="status-badge status-pending">পেন্ডিং</span>`;
+                        
+                        rows += `<tr><td>${r.time}</td><td>${r.service}</td><td>${r.query}</td><td style="text-align:center;">${badge}</td></tr>`;
+                    });
+                }
+            } catch(e){}
+            hideLoader();
+
+            const htmlContent = `
+                <h3>প্রোফাইল ও অ্যাকাউন্ট বিবরণী</h3>
+                <div style="background:#f8f9fa; padding:12px; border-radius:6px; margin: 15px 0;">
+                    <b>ইউজার আইডি:</b> ${user}
+                </div>
+                <h4>📜 সাম্প্রতিক অ্যাক্টিভিটি লগ</h4>
+                <div class="ec-table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr><th>তারিখ ও সময়</th><th>সার্ভিস কোড</th><th>অনুসন্ধান কুয়েরি</th><th>স্ট্যাটাস</th></tr>
+                        </thead>
+                        <tbody>${rows || '<tr><td colspan="4" style="text-align:center;">কোনো রেকর্ড খুঁজে পাওয়া যায়নি।</td></tr>'}</tbody>
+                    </table>
+                </div>
+            `;
+            document.getElementById("fullPageServiceTitle").innerText = "প্রোফাইল";
+            document.getElementById("fullPageServiceContent").innerHTML = htmlContent;
+            document.getElementById("fullPageServicePanel").style.display = "block";
+        }
+
+        function loadPasswordForm() {
+            const htmlContent = `
+                <h3>পাসওয়ার্ড পরিবর্তন করুন</h3>
+                <div id="passMsgBox"></div>
+                <input type="password" id="newSystemPass" class="form-control" placeholder="নতুন পাসওয়ার্ড লিখুন">
+                <button class="btn" onclick="executePasswordChange()">আপডেট পাসওয়ার্ড</button>
+            `;
+            document.getElementById("fullPageServiceTitle").innerText = "পাসওয়ার্ড পরিবর্তন";
+            document.getElementById("fullPageServiceContent").innerHTML = htmlContent;
+            document.getElementById("fullPageServicePanel").style.display = "block";
+        }
+
+        async function executePasswordChange() {
+            const p = document.getElementById("newSystemPass").value.trim();
+            if(!p) return;
+            showLoader();
+            const user = localStorage.getItem("loggedInUser");
+            await fetch(`${DB_URL}/users/${user}/password.json`, { method: 'PUT', body: JSON.stringify(p) });
+            hideLoader();
+            dispMsg("passMsgBox", "পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে। পুনরায় লগইন করুন...", false);
+            setTimeout(() => logout(), 1500);
+        }
+
+        function loadSupportChannel() {
+            const htmlContent = `
+                <h3>হেল্পডেস্ক সাপোর্ট চ্যানেল</h3>
+                <p style="margin-top:10px; font-size:13px; color:#6c757d;">যেকোনো কারিগরি সহায়তার জন্য নিচের WhatsApp এ যোগাযোগ করুন।</p>
+                <div class="msg-box msg-success" style="margin-top:15px; border-left:4px solid #0088cc; background:#ebf7ff;">
+                    💬 <b>হোয়াটসঅ্যাপ:</b>+8801981597776
+                </div>
+            `;
+            document.getElementById("fullPageServiceTitle").innerText = "সাপোর্ট চ্যাট";
+            document.getElementById("fullPageServiceContent").innerHTML = htmlContent;
+            document.getElementById("fullPageServicePanel").style.display = "block";
+        }
+
+        // =========================================================================
+        // 🔐 সুপার অ্যাডমিন মডিউল
+        // =========================================================================
+        async function loadAdminPanel() {
+            const user = localStorage.getItem("loggedInUser");
+            if(user !== "admin") { alert("অ্যাক্সেস ডিনাইড!"); location.reload(); return; }
+
+            showLoader("অ্যাডমিন প্যানেল লোড হচ্ছে...");
+            try {
+                const users = await (await fetch(`${DB_URL}/users.json`)).json() || {};
+                const recharges = await (await fetch(`${DB_URL}/recharge_requests.json`)).json() || {};
+                const requests = await (await fetch(`${DB_URL}/all_requests.json`)).json() || {};
+                
+                let curCommonNotice = "";
+                try { curCommonNotice = await (await fetch(`${DB_URL}/common_notice.json`)).json() || ""; } catch(e){}
+                
+                let curRechargeNotice = "সর্ব নিন্ম ৩০০ টাকা রিচার্জ করতে হবে।";
+                try { curRechargeNotice = await (await fetch(`${DB_URL}/recharge_scroll_notice.json`)).json() || curRechargeNotice; } catch(e){}
+                
+                hideLoader();
+
+                let uRows = "";
+                Object.values(users).forEach(u => {
+                    if(u.userid === "admin") return;
+                    let st = u.status === "Active" ? `<span style="color:green;font-weight:bold;">Active</span>` : `<span style="color:red;font-weight:bold;">Blocked</span>`;
+                    uRows += `<tr>
+                        <td><b>${u.userid}</b></td>
+                        <td>${u.password}</td>
+                        <td>৳${u.balance || 0} <button style="font-size:10px;padding:2px;cursor:pointer;" onclick="promptInPageBal('${u.userid}', ${u.balance || 0})">সম্পাদন</button></td>
+                        <td>${st}</td>
+                        <td>
+                            <button class="btn" style="background:#ffc107;padding:4px 8px;font-size:11px;color:black;width:auto;" onclick="admToggleUser('${u.userid}','${u.status}')">ব্লক/আনব্লক</button>
+                            <button class="btn" style="background:#dc3545;padding:4px 8px;font-size:11px;width:auto;" onclick="admDeleteUser('${u.userid}')">ডিলিট</button>
+                        </td>
+                    </tr>`;
+                });
+
+                let recRows = "";
+                Object.values(recharges).reverse().forEach(r => {
+                    let act = r.status === "Pending" ? 
+                        `<button class="btn" style="background:#198754;padding:4px 8px;font-size:11px;width:auto;" onclick="admApproveRecharge('${r.id}','${r.user}',${r.amount})">Approve</button>` : r.status;
+                    let ssHtml = r.screenshot ? `<a href="${r.screenshot}" target="_blank">👁️ স্লিপ দেখুন</a>` : 'No Image';
+                    recRows += `<tr><td>${r.user}</td><td>৳${r.amount}</td><td>${r.trx}</td><td>${ssHtml}</td><td>${act}</td></tr>`;
+                });
+
+                let clientReqRows = "";
+                Object.values(requests).reverse().slice(0, 30).forEach(r => {
+                    let optAct = r.status === "Pending" ? `
+                        <button class="btn" style="background:#198754;padding:2px 5px;font-size:10px;width:auto;" onclick="admSetRequestStatus('${r.user}','${r.id}','Approved')">সফল</button>
+                        <button class="btn" style="background:#dc3545;padding:2px 5px;font-size:10px;width:auto;" onclick="admSetRequestStatus('${r.user}','${r.id}','Rejected')">ব্যর্থ</button>
+                    ` : r.status;
+                    clientReqRows += `<tr><td>${r.user}</td><td>${r.service}</td><td>${r.query}</td><td>${optAct}</td></tr>`;
+                });
+
+                const adminHtml = `
+                    <h3>🔐 অ্যাডমিন ড্যাশবোর্ড</h3>
+                    <div id="admConsoleMsg"></div>
+                    
+                    <div class="admin-section">
+                        <h4>💰 প্রতিটি সার্ভিসের মূল্য (সার্ভিস ফি) নির্ধারণ করুন</h4>
+                        <label style="font-size:12px;">সার্ভিস সিলেক্ট করুন:</label>
+                        <select id="admPriceTargetService" class="form-control">
+                            <option value="NID_Copy_Download">এনআইডি কপি ডাউনলোড</option>
+                            <option value="Sign_to_NID">সাইন টু এনআইডি</option>
+                            <option value="Auto_NID">অটো এনআইডি</option>
+                            <option value="Server_Copy">সার্ভার কপি</option>
+                            <option value="Sign_Copy">সাইন কপি</option>
+                            <option value="Number_to_NID">নাম্বার টু এনআইডি</option>
+                            <option value="Name_Address_NID">নাম ঠিকানা দিয়ে এনআইডি</option>
+                            <option value="NID_to_All_Numbers">এনআইডি থেকে সকল নাম্বার</option>
+
+                            <option value="New_Birth_Reg">নতুন জন্মনিবন্ধন</option>
+                            <option value="E_Passport_Copy">ই-পাসপোর্ট কপি</option>
+                            <option value="Biometric">বায়োমেট্রিক</option>
+                            <option value="Number_to_Location">নাম্বার থেকে লোকেশন</option>
+                            <option value="Number_Call_List">মোবাইল নাম্বার কল লিস্ট</option>
+                            <option value="IMEI_Tracking">IMEI to Live Location</option>
+                            <option value="Active_Number">IMEI to এক্টিভ নাম্বার</option>
+                            <option value="Rocket_Statement">রকেট স্টেটমেন্ট</option>
+                            <option value="Nagad_Info">নগদ ইনফো</option>
+                            <option value="TIN_Extraction">টিন উত্তলন</option>
+                            <option value="Bkash_Information">বিকাশ নাম্বারের ইনফরমেশন</option>
+                            <option value="Rocket_Information">রকেট নাম্বারের ইনফরমেশন</option>
+                            <option value="Manual_Service">ম্যানুয়াল সার্ভিস</option>
+                            <option value="NID_User_Pass_Set">এনআইডি ইউজার পাস: সেট</option>
+                        </select>
+                        <label style="font-size:12px;">নির্ধারিত সার্ভিস ফি (টাকা):</label>
+                        <input type="number" id="admServicePriceVal" class="form-control" placeholder="যেমন: ৫০">
+                        <button class="btn" style="background:#198754;" onclick="admSaveServicePrice()">মূল্য আপডেট করুন</button>
+                    </div>
+
+                    <div class="admin-section">
+                        <h4>📢 নোটিশ বোর্ড কনফিগারেশন</h4>
+                        <label style="font-size:12px;">সাধারণ নোটিশ (ড্যাশবোর্ড):</label>
+                        <input type="text" id="admCommonNotice" class="form-control" value="${curCommonNotice}">
+                        <button class="btn" style="padding:6px 15px; font-size:12px; margin-bottom:15px; width:auto;" onclick="admSaveCommonNotice()">আপডেট সাধারণ নোটিশ</button>
+                        <br><br>
+                        
+                        <label style="font-size:12px;">রিচার্জ অপশন স্ক্রোলিং নোটিশ (Recharge Page Notice):</label>
+                        <input type="text" id="admRechargeNotice" class="form-control" value="${curRechargeNotice}">
+                        <button class="btn" style="padding:6px 15px; font-size:12px; margin-bottom:15px; background:#e65c00; width:auto;" onclick="admSaveRechargeNotice()">আপডেট রিচার্জ নোটিশ</button>
+                        <br><br>
+
+                        <label style="font-size:12px;">ব্যবহারকারী ভিত্তিক নোটিশ (ইউজার আইডি নির্দিষ্ট):</label>
+                        <input type="text" id="admNoticeUser" class="form-control" placeholder="ইউজার আইডি" style="width:49%; display:inline-block;">
+                        <input type="text" id="admNoticeTxt" class="form-control" placeholder="নির্দিষ্ট নোটিশ লিখুন" style="width:49%; display:inline-block;">
+                        <button class="btn" style="padding:6px 15px; font-size:12px; width:auto;" onclick="admSavePersonalNotice()">নোটিশ সেভ করুন</button>
+                    </div>
+
+                    <div class="admin-section">
+                        <h4>📤 ফাইল মেমোরি আপলোড (ভল্ট ইঞ্জেকশন)</h4>
+                        <label style="font-size:12px;">সার্ভিস:</label>
+                        <select id="admTargetService" class="form-control">
+                            <option value="NID_Copy_Download">এনআইডি কপি ডাউনলোড</option>
+                            <option value="Sign_to_NID">সাইন টু এনআইডি</option>
+                            <option value="Auto_NID">পুরাতন এনআইডি</option>
+                            <option value="Server_Copy">সার্ভার কপি</option>
+                            <option value="Sign_Copy">সাইন কপি</option>
+                            <option value="Number_to_NID">নাম্বার টু এনআইডি</option>
+                            <option value="Birth_Cert_Create">জন্মনিবন্ধন তৈরি</option>
+                            <option value="E_Passport_Copy">ই-পাসপোর্ট কপি</option>
+                        </select>
+                        <label style="font-size:12px;">সার্চ কী (NID নম্বর বা মোবাইল নং):</label>
+                        <input type="text" id="admFileQueryKey" class="form-control" placeholder="যেমন: 123456789">
+                        <label style="font-size:12px;">পিডিএফ ফাইলটি সিলেক্ট করুন:</label>
+                        <input type="file" id="admPdfFile" class="form-control" accept="application/pdf">
+                        <button class="btn" style="background:#0b5ed7;" onclick="admUploadVaultFile()">ফাইল আপলোড করুন</button>
+                    </div>
+
+                    <div class="admin-section">
+                        <h4>👥 ব্যবহারকারী তালিকা ও ব্যালেন্স</h4>
+                        <div id="inlineBalEditForm"></div>
+                        <div class="ec-table-container">
+                            <table class="admin-table">
+                                <thead><tr><th>ইউজার আইডি</th><th>পাসওয়ার্ড</th><th>ব্যালেন্স</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th></tr></thead>
+                                <tbody>${uRows}</tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="admin-section">
+                        <h4>💸 পেন্ডিং রিচার্জ রিকোয়েস্ট সমূহ</h4>
+                        <div class="ec-table-container">
+                            <table class="admin-table">
+                                <thead><tr><th>ইউজার</th><th>পরিমাণ</th><th>TxID</th><th>পেমেন্ট স্লিপ</th><th>অ্যাকশন</th></tr></thead>
+                                <tbody>${recRows || '<tr><td colspan="5" style="text-align:center;">কোনো রিকোয়েস্ট পেন্ডিং নেই</td></tr>'}</tbody>
+                            </table>
+                        </div>
                     </div>
                 `;
-            }
+                
+                document.getElementById("fullPageServiceTitle").innerText = "অ্যাডমিন প্যানেল";
+                document.getElementById("fullPageServiceContent").innerHTML = adminHtml;
+                document.getElementById("fullPageServicePanel").style.display = "block";
+            } catch(e){ hideLoading(); }
+        }
 
-            document.getElementById("eyeDetailContainer").innerHTML = `
-                <div class="app-details-box">
-                    <div class="app-details-header">
-                        <span>Application Details</span>
-                        <span>ID: ${cData.appId} |</span>
-                    </div>
-                    <table class="ec-table" style="border:none;">
-                        <thead>
-                            <tr>
-                                <th>Field</th>
-                                <th>Old Value</th>
-                                <th>New Value</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="text-center" style="color:blue;">নাম (বাংলা)</td>
-                                <td>${cData.oldValue}</td>
-                                <td>${cData.newValue}</td>
-                            /tr>
-                        </tbody>
-                    </table>
-                    ${actionButtons}
+        async function admSaveServicePrice() {
+            const code = document.getElementById("admPriceTargetService").value;
+            const price = document.getElementById("admServicePriceVal").value.trim();
+            if(!price) return;
+            showLoader();
+            await fetch(`${DB_URL}/service_prices/${code}.json`, { method: 'PUT', body: JSON.stringify(Number(price)) });
+            hideLoader();
+            dispMsg("admConsoleMsg", "সার্ভিসের মূল্য সফলভাবে আপডেট করা হয়েছে!", false);
+            setTimeout(() => loadAdminPanel(), 1000);
+        }
+
+        async function admSaveRechargeNotice() {
+            const txt = document.getElementById("admRechargeNotice").value;
+            showLoader();
+            await fetch(`${DB_URL}/recharge_scroll_notice.json`, { method: 'PUT', body: JSON.stringify(txt) });
+            hideLoader();
+            dispMsg("admConsoleMsg", "রিচার্জ স্ক্রোলিং নোটিশ আপডেট করা হয়েছে!", false);
+            setTimeout(() => loadAdminPanel(), 1000);
+        }
+
+        function promptInPageBal(uid, currentBal) {
+            document.getElementById("inlineBalEditForm").innerHTML = `
+                <div style="background:#e2e3e5; padding:10px; border-radius:6px; margin-bottom:10px;">
+                    ইউজার <b>${uid}</b> এর নতুন ব্যালেন্স সেট করুন: 
+                    <input type="number" id="inlineNewBalVal" value="${currentBal}" style="width:120px; padding:6px; margin-left:10px;">
+                    <button class="btn" style="padding:4px 10px; font-size:12px; width:auto; margin:0;" onclick="admSaveUserBalance('${uid}')">ব্যালেন্স সেভ করুন</button>
                 </div>
             `;
         }
 
-        async function updateClientCorrectionStatus(user, query, type, cat) {
-            showLoading("অনুগ্রহ করে অপেক্ষা করুন...");
-            const finalStatus = `${type} by ${cat}`;
-            await fetch(`${FIREBASE_URL}/corrections/${user}/${query}/status.json`, { method: 'PUT', body: JSON.stringify(finalStatus) });
-            hideLoading();
-            showNotification(`আবেদনটি সফলভাবে ${type === 'Approved' ? 'অনুমোদন' : 'বাতিল'} করা হয়েছে!`, "success");
-            handlePublicSearch('correction');
+        async function admSaveUserBalance(uid) {
+            const val = document.getElementById("inlineNewBalVal").value;
+            if(!val) return;
+            showLoader();
+            await fetch(`${DB_URL}/users/${uid}/balance.json`, { method: 'PUT', body: JSON.stringify(Number(val)) });
+            hideLoader();
+            loadAdminPanel();
         }
 
-        function triggerDownload(base64, filename, tid) {
-            const link = document.createElement('a');
-            link.href = base64;
-            link.download = filename + ".pdf";
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            localStorage.setItem(`lock_${tid}`, "true");
-            showNotification("ফাইলটি ডাউনলোড হয়েছে।", "success");
-            backToDefault();
+        async function admSaveCommonNotice() {
+            const txt = document.getElementById("admCommonNotice").value;
+            showLoader();
+            await fetch(`${DB_URL}/common_notice.json`, { method: 'PUT', body: JSON.stringify(txt) });
+            hideLoader();
+            loadAdminPanel();
         }
 
-        async function showUserProfile() {
-            showLoading();
-            const user = localStorage.getItem("loggedInUser");
-            let historyRows = "";
-            try {
-                const response = await fetch(`${FIREBASE_URL}/user_history/${user}.json`);
-                const historyData = await response.json();
-                if(historyData) {
-                    Object.values(historyData).reverse().forEach(h => {
-                        historyRows += `<tr><td>${h.time}</td><td>${h.type.toUpperCase()}</td><td>${h.query}</td></tr>`;
-                    });
-                }
-            } catch(e){}
-            hideLoading();
-
-            if(!historyRows) historyRows = `<tr><td colspan="3" class="text-center">এখনো কোনো অনুসন্ধানের ইতিহাস নেই।</td></tr>`;
-
-            document.getElementById("formArea").innerHTML = `
-                <button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button>
-                <h3 style="color:#0b5ed7; margin-bottom:15px;">👤 ব্যবহারকারী প্রোফাইল ইনফো</h3>
-                <div class="result-card" style="margin-bottom:20px;">
-                    <div class="result-item"><b>ইউজার অ্যাকাউন্ট আইডি:</b> ${user}</div>
-                    <div class="result-item"><b>নিরাপত্তা স্তর:</b> ক্লায়েন্ট পার্টনার গেটওয়ে</div>
-                </div>
-                <h3>🔍 আপনার অনুসন্ধান কাজের বিবরণী (History)</h3>
-                <div class="ec-table-container">
-                    <table class="admin-table" style="width:100%;">
-                        <thead>
-                            <tr>
-                                <th>তারিখ ও সময়</th>
-                                <th>সার্চ ক্যাটাগরি</th>
-                                <th>অনুসন্ধিত নম্বর</th>
-                            </tr>
-                        </thead>
-                        <tbody>${historyRows}</tbody>
-                    </table>
-                </div>
-            `;
+        async function admSavePersonalNotice() {
+            const user = document.getElementById("admNoticeUser").value.trim();
+            const txt = document.getElementById("admNoticeTxt").value;
+            if(!user) return;
+            showLoader();
+            await fetch(`${DB_URL}/personal_notices/${user}.json`, { method: 'PUT', body: JSON.stringify(txt) });
+            hideLoader();
+            loadAdminPanel();
         }
 
-        // 🔐 অ্যাডমিন মাস্টার কন্ট্রোল প্যানেল
-        async function showAdminPanel() {
-            showLoading();
-            let users = await fetchUsers();
-            let commonNotice = "";
-            let logRows = "";
-            try {
-                commonNotice = await (await fetch(`${FIREBASE_URL}/common_notice.json`)).json() || "";
-                const logs = await (await fetch(`${FIREBASE_URL}/search_logs.json`)).json();
-                if(logs) {
-                    Object.values(logs).reverse().slice(0, 30).forEach(l => {
-                        logRows += `<tr><td>${l.time}</td><td><b style="color:blue;">${l.user}</b></td><td>${l.type.toUpperCase()}</td><td>${l.query}</td></tr>`;
-                    });
-                }
-            } catch(e){}
+        async function admUploadVaultFile() {
+            const service = document.getElementById("admTargetService").value;
+            const key = document.getElementById("admFileQueryKey").value.trim();
+            const fileInput = document.getElementById("admPdfFile");
 
-            hideLoading();
-            let userOpts = "";
-            let tableRows = "";
-            
-            users.forEach((user, index) => {
-                userOpts += `<option value="${user.userid}">${user.userid}</option>`;
-                const statusClass = user.status === "Active" ? "status-active" : "status-blocked";
-                tableRows += `<tr><td>${index + 1}</td><td>${user.userid}</td><td>${user.password}</td><td class="${statusClass}">${user.status}</td><td><button class="action-btn ${user.status === 'Active' ? 'btn-block' : 'btn-unblock'}" onclick="toggleUserStatus('${user.userid}', '${user.status}')">${user.status === 'Active' ? 'ব্লক' : 'আনব্লক'}</button></td></tr>`;
+            if(!key || fileInput.files.length === 0) { dispMsg("admConsoleMsg", "ফাইল এবং সার্চ কী নম্বর প্রদান করা আবশ্যক!"); return; }
+
+            showLoader("পিডিএফ ফাইল প্রসেস করা হচ্ছে...");
+            const file = fileInput.files[0];
+            const base64Pdf = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.readAsDataURL(file);
             });
 
-            document.getElementById("formArea").innerHTML = `
-                <button class="btn back-btn" onclick="backToDefault()">ফিরে যান</button>
-                <h2 style="color: #0b5ed7; margin-bottom: 20px;">🔐 অ্যাডমিন মাস্টার কন্ট্রোল প্যানেল</h2>
-                
-                <div class="admin-section">
-                    <h3>📢 নোটিশ পরিবর্তন করুন</h3>
-                    <select id="noticeTargetSelect" class="form-control" onchange="loadTargetNotice(this.value)"><option value="all">📢 সকল ইউজার</option>${userOpts}</select>
-                    <textarea id="newNoticeInput" class="form-control" rows="2">${commonNotice}</textarea>
-                    <button class="btn" style="background:#28a745;" onclick="saveDynamicNotice()">নোটিশ আপডেট করুন</button>
-                </div>
-
-                <div class="admin-section">
-                    <h3>📁 ফাইল আপলোড ইঞ্জিন (অটো কিউ ও ড্রপডাউন সিস্টেম)</h3>
-                    <label>প্রাপক ইউজার সিলেক্ট করুন:</label><select id="targetUserSelect" class="form-control">${userOpts}</select>
-                    
-                    <label>সার্চ অপশন টাইপ সিলেক্ট করুন:</label>
-                    <select id="targetTypeSelect" class="form-control">
-                        <option 
-value="NidCard">এনআইডি কার্ড ডাউনলোড</option>
-                        <option value="nid_ServerCopy">এনআইডি সার্ভার কপি</option>
-                        <option value="nid_SignCopy">এনআইডি সাইন কপি</option>
-                        <option value="mobile">মোবাইল সার্চ</option>
-                        <option value="birth">জন্ম নিবন্ধন সার্চ</option>
-                        <option value="formno">ফর্ম/ভোটার নাম্বার</option>
-                    </select>
-
-                    <label>ফাইল বা পিডিএফ সিলেক্ট করুন (কোনো নাম লিখতে হবে না):</label>
-                    <input type="file" id="mobileFileInput" class="form-control" accept="application/pdf,image/*">
-                    <button class="btn" style="background:#17a2b8;" onclick="uploadAdminFileToCloud()">সার্ভারে ফাইল সাবমিট করুন</button>
-                </div>
-
-                <div class="admin-section">
-                    <h3>📝 সংশোধন অনুমোদন ডাটা এন্ট্রি সিস্টেম</h3>
-                    <label>ইউজার সিলেক্ট করুন:</label><select id="corrUser" class="form-control">${userOpts}</select>
-                    <input type="text" id="corrSearchId" class="form-control" placeholder="সার্চ আইডি / এনআইডি নম্বর">
-                    <input type="text" id="corrAppId" class="form-control" placeholder="Application ID (যেমন: NIDCA5003)">
-                    <input type="text" id="corrName" class="form-control" placeholder="আবেদনকারীর নাম">
-                    <input type="text" id="corrNid" class="form-control" placeholder="এনআইডি নম্বর">
-                    <input type="text" id="corrCat" class="form-control" placeholder="Category">
-                    <input type="text" id="corrOld" class="form-control" placeholder="বর্তমান তথ্য">
-                    <input type="text" id="corrNew" class="form-control" placeholder="চাহিত তথ্য">
-                    <label>ইউজার কি অনুমোদন/বাতিল বাটন পাবে?</label><select id="corrAction" class="form-control"><option value="true">হ্যাঁ</option><option value="false">না</option></select>
-                    <button class="btn" style="background:#6f42c1;" onclick="submitCorrectionAdmin()">সংশোধন ডাটা সেভ করুন</button>
-                </div>
-
-                <div class="admin-section">
-                    <h3>🔍 লাইভ ইউজার সার্চ অ্যাক্টিভিটি লগ</h3>
-                    <div class="ec-table-container"><table class="admin-table" style="width:100%;"><thead><tr><th>সময়</th><th>ইউজার</th><th>অপশন</th><th>কি লিখে সার্চ করেছে</th></tr></thead><tbody>${logRows || '<tr><td colspan="4" class="text-center">কোনো লগ রেকর্ড নেই</td></tr>'}</tbody></table></div>
-                </div>
-
-                <div class="admin-section">
-                    <h3>👥 নিবন্ধিত ইউজার তালিকা</h3>
-                    <table class="admin-table"><thead><tr><th>ক্র: নং</th><th>ইউজার আইডি</th><th>পাসওয়ার্ড</th><th>অবস্থা</th><th>অ্যাকশন</th></tr></thead><tbody>${tableRows}</tbody></table>
-                </div>
-            `;
-        }
-
-        // অ্যাডমিন ফাইল কিউ আপলোডার
-        async function uploadAdminFileToCloud() {
-            const user = document.getElementById("targetUserSelect").value;
-            const type = document.getElementById("targetTypeSelect").value;
-            const fileInput = document.getElementById("mobileFileInput");
-
-            if(fileInput.files.length === 0) {
-                showNotification("অনুগ্রহ করে একটি ফাইল সিলেক্ট করুন!", "error");
-                return;
-            }
-
-            showLoading("ফাইলটি ডাটাবেজে প্রসেস হচ্ছে...");
-            const reader = new FileReader();
-            reader.readAsDataURL(fileInput.files[0]);
-            reader.onload = async function() {
-                const fileId = "fid_" + Date.now();
-                const fileData = { 
-                    fileId: fileId, 
-                    fileUrl: reader.result,
-                    assignedTo: false // শুরুতে কোনো ইউজারের কোয়েরির সাথে অ্যাসাইনড বা লক থাকবে না
-                };
-                
-                // ডাটাবেজের সিরিয়াল পুশ কিউ স্ট্রাকচারে ফাইল স্টোর হচ্ছে
-                await fetch(`${FIREBASE_URL}/admin_uploads/${user}/${type}/${fileId}.json`, { 
-                    method: 'PUT', 
-                    body: JSON.stringify(fileData) 
+            try {
+                await fetch(`${DB_URL}/vault/${service}/${key}.json`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ pdfData: base64Pdf, uploadedAt: new Date().toLocaleString('bn-BD') })
                 });
-                
-                hideLoading();
-                showNotification("ফাইলটি নির্দিষ্ট অপশনের কিউ (Queue) তালিকায় সফলভাবে আপলোড হয়েছে!", "success");
-                showAdminPanel();
-            };
+                hideLoader();
+                dispMsg("admConsoleMsg", `ফাইলটি সফলভাবে ডেটাবেজে যুক্ত করা হয়েছে!`, false);
+                document.getElementById("admFileQueryKey").value = "";
+            } catch(e) { hideLoader(); }
         }
 
-        async function submitCorrectionAdmin() {
-            const user = document.getElementById("corrUser").value;
-            const sId = document.getElementById("corrSearchId").value.trim();
-            const data = {
-                appId: document.getElementById("corrAppId").value.trim(),
-                name: document.getElementById("corrName").value.trim(),
-                nid: document.getElementById("corrNid").value.trim(),
-                category: document.getElementById("corrCat").value.trim(),
-                oldValue: document.getElementById("corrOld").value.trim(),
-                newValue: document.getElementById("corrNew").value.trim(),
-                allowAction: document.getElementById("corrAction").value,
-                status: "Pending",
-                source: "ONLINE"
-            };
-
-            if(!sId || !data.appId || !data.name) {
-                showNotification("অনুগ্রহ করে সব তথ্য পূরণ করুন!", "error");
-                return;
-            }
-            showLoading("কারেকশন ডাটা সেভ হচ্ছে...");
-            await fetch(`${FIREBASE_URL}/corrections/${user}/${sId}.json`, { method: 'PUT', body: JSON.stringify(data) });
-            hideLoading();
-            showNotification("সংশোধন ডাটা সফলভাবে ডাটাবেজে পুশ হয়েছে!", "success");
-            showAdminPanel();
+        async function admApproveRecharge(id, uid, amt) {
+            showLoader();
+            const currentBal = await (await fetch(`${DB_URL}/users/${uid}/balance.json`)).json() || 0;
+            const finalBal = currentBal + amt;
+            await fetch(`${DB_URL}/users/${uid}/balance.json`, { method: 'PUT', body: JSON.stringify(finalBal) });
+            await fetch(`${DB_URL}/recharge_requests/${id}/status.json`, { method: 'PUT', body: JSON.stringify("Approved") });
+            hideLoader();
+            loadAdminPanel();
         }
 
-        async function loadTargetNotice(t) {
-            const url = t === "all" ? `${FIREBASE_URL}/common_notice.json` : `${FIREBASE_URL}/personal_notices/${t}.json`;
-            document.getElementById("newNoticeInput").value = await (await fetch(url)).json() || "";
+        async function admToggleUser(uid, curStatus) {
+            const next = curStatus === "Active" ? "Blocked" : "Active";
+            showLoader();
+            await fetch(`${DB_URL}/users/${uid}/status.json`, { method: 'PUT', body: JSON.stringify(next) });
+            hideLoader();
+            loadAdminPanel();
         }
 
-        async function saveDynamicNotice() {
-            const t = document.getElementById("noticeTargetSelect").value;
-            const txt = document.getElementById("newNoticeInput").value.trim();
-            showLoading("আপডেট হচ্ছে...");
-            const url = t === "all" ? `${FIREBASE_URL}/common_notice.json` : `${FIREBASE_URL}/personal_notices/${t}.json`;
-            await fetch(url, { method: 'PUT', body: JSON.stringify(txt) });
-            hideLoading();
-            showNotification("নোটিশ আপডেট সফল হয়েছে!", "success");
-            updateNoticeBar(localStorage.getItem("loggedInUser"));
+        async function admDeleteUser(uid) {
+            showLoader("ব্যবহারকারী মুছে ফেলা হচ্ছে...");
+            await fetch(`${DB_URL}/users/${uid}.json`, { method: 'DELETE' });
+            await fetch(`${DB_URL}/user_requests/${uid}.json`, { method: 'DELETE' });
+            await fetch(`${DB_URL}/personal_notices/${uid}.json`, { method: 'DELETE' });
+            hideLoader();
+            loadAdminPanel();
         }
 
-        window.toggleUserStatus = async function(uid, stat) {
-            showLoading();
-            const next = stat === "Active" ? "Blocked" : "Active";
-            await fetch(`${FIREBASE_URL}/users/${uid}/status.json`, { method: 'PUT', body: JSON.stringify(next) });
-            hideLoading();
-            showAdminPanel();
+        async function admSetRequestStatus(uid, reqId, statusState) {
+            showLoader();
+            await fetch(`${DB_URL}/all_requests/${reqId}/status.json`, { method: 'PUT', body: JSON.stringify(statusState) });
+            await fetch(`${DB_URL}/user_requests/${uid}/${reqId}/status.json`, { method: 'PUT', body: JSON.stringify(statusState) });
+            hideLoader();
+            loadAdminPanel();
         }
     </script>
 </body>
