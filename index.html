@@ -786,7 +786,7 @@ value="NID_Copy_Download">এনআইডি কপি ডাউনলোড</op
             await fetch(`${DB_URL}/recharge_scroll_notice.json`, { method: 'PUT', body: JSON.stringify(txt) });
             hideLoader();
             dispMsg("admConsoleMsg", "রিচার্জ স্ক্রোলিং নোটিশ আপডেট করা হয়েছে!", false);
-            setTimeout(() => loadAdminPanel(), 1000);
+            setTimeout(() => loadAdminPanel(), 100);
         }
 
         function promptInPageBal(uid, currentBal) {
