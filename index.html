@@ -793,7 +793,7 @@ value="NID_Copy_Download">এনআইডি কপি ডাউনলোড</op
             document.getElementById("inlineBalEditForm").innerHTML = `
                 <div style="background:#e2e3e5; padding:10px; border-radius:6px; margin-bottom:10px;">
                     ইউজার <b>${uid}</b> এর নতুন ব্যালেন্স সেট করুন: 
-                    <input type="number" id="inlineNewBalVal" value="${currentBal}" style="width:120px; padding:6px; margin-left:10px;">
+                    <input type="text" id="inlineNewBalVal" value="${currentBal}" style="width:120px; padding:6px; margin-left:10px;">
                     <button class="btn" style="padding:4px 10px; font-size:12px; width:auto; margin:0;" onclick="admSaveUserBalance('${uid}')">ব্যালেন্স সেভ করুন</button>
                 </div>
             `;
