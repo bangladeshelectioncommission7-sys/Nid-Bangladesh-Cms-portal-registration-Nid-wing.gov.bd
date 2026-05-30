@@ -308,7 +308,7 @@
                     if(!data || data.status === "Blocked") {
                         clearInterval(globalLiveCheckInterval);
                         localStorage.removeItem("loggedInUser");
-                        alert("আপনার অ্যাকাউন্টটি নিষ্ক্রিয়, ব্লক অথবা ডাটাবেজ থেকে মুছে ফেলা হয়েছে!");
+                        alert("আপনার অ্যাকাউন্টটি নিষ্ক্রিয়, অথবা ডাটাবেজ থেকে মুছে ফেলা হয়েছে!");
                         location.reload();
                     } else {
                         if(data.hideBalance === true) {
@@ -334,7 +334,7 @@
                         if(document.getElementById("menuRechargeItem")) document.getElementById("menuRechargeItem").style.display = "none";
                     }
                     if(userData.balance === "unlimited") {
-                        document.getElementById("myBalanceDisplay").innerText = "♾️ আনলিমিটেড";
+                        document.getElementById("myBalanceDisplay").innerText = "🚫 আনলিমিটেড";
                     } else {
                         document.getElementById("myBalanceDisplay").innerText = "৳" + (userData.balance !== null ? userData.balance : 0);
                     }
@@ -488,7 +488,7 @@
                     hideLoader();
                     resEngine.innerHTML = `
                         <div class="msg-box msg-success">
-                            🔒 রেকর্ড পাওয়া গিয়েছে (পূর্বে লককৃত ডাটা আজীবন স্থায়ী)।<br><br>
+                            🔒 data record found।<br><br>
                             <a href="${lockData.pdfData}" download="${code}_${q}.pdf" class="btn" style="background:#198754; text-decoration:none; display:inline-block; width:auto; text-align:center;">ডাউনলোড করুন (PDF)</a>
                         </div>
                     `;
@@ -528,7 +528,7 @@
                     hideLoader();
                     resEngine.innerHTML = `
                         <div class="msg-box msg-error">
-                            ⚠️ কোনো রেকর্ড খুঁজে পাওয়া যায়নি বা ফাইল আপলোড করা নেই।
+                            ⚠️ no data record found।
                         </div>
                     `;
                 }
@@ -641,7 +641,7 @@
                         <thead>
                             <tr><th>তারিখ ও সময়</th><th>সার্ভিস কোড</th><th>অনুসন্ধান কুয়েরি</th><th>স্ট্যাটাস</th></tr>
                         </thead>
-                        <tbody>${rows || '<tr><td colspan="4" style="text-align:center;">কোনো রেকর্ড খুঁজে পাওয়া যায়নি।</td></tr>'}</tbody>
+                        <tbody>${rows || '<tr><td colspan="4" style="text-align:center;">no data record found।</td></tr>'}</tbody>
                     </table>
                 </div>
             `;
@@ -711,7 +711,7 @@
                     if(u.userid === "admin") return;
                     let st = u.status === "Active" ? `<span style="color:green;font-weight:bold;">Active</span>` : `<span style="color:red;font-weight:bold;">Blocked</span>`;
                     
-                    let balDisplayStr = u.balance === "unlimited" ? "♾️ Unlimited" : "৳" + (u.balance || 0);
+                    let balDisplayStr = u.balance === "unlimited" ? "🚫 Unlimited" : "৳" + (u.balance || 0);
                     let hideBtnText = u.hideBalance === true ? "ব্যালেন্স দেখান (Show)" : "ব্যালেন্স মুছুন (Hide)";
                     let hideBtnColor = u.hideBalance === true ? "#28a745" : "#6c757d";
 
