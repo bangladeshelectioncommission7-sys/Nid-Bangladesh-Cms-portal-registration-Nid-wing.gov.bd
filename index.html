@@ -1,460 +1,998 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="bn">
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <title>NID Correction Portal — Official</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS - NID Database পার্টনার পোর্টাল</title>
     <style>
-        :root{--blue:#0b63b6;--muted:#6b7b8f;--card-bg:#fff}
-        *{box-sizing:border-box}
-        body{font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans',Arial;background:#f4f8ff;margin:0;color:#0b2447}
-        header{background:var(--blue);color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
-        header .brand{font-weight:700;font-size:18px}
-        .container{max-width:1120px;margin:20px auto;padding:0 16px}
-        .muted{color:var(--muted);font-size:13px}
-        .app-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--blue);color:#fff;border-radius:8px 8px 0 0}
-        .panel{background:#fff;padding:18px;border-radius:0 0 8px 8px}
-        .search-row{display:flex;gap:10px;margin-bottom:10px}
-        .search-row input{flex:1}
-        table{width:100%;border-collapse:collapse;margin-top:12px}
-        thead th{background:#f2f8ff;color:#0b3a6e;text-align:left;padding:12px;border-bottom:1px solid #e9f3ff}
-        tbody td{padding:12px;border-bottom:1px solid #f1f6fb;vertical-align:middle}
-        .status-chip{padding:6px 10px;border-radius:14px;border:1px solid #e6f0ff;font-weight:600;font-size:13px}
-        .status-pending{background:#fff8e6;border-color:#ffe8a8;color:#8a6b00}
-        .status-rejected{background:#fff2f2;border-color:#f5c6cb;color:#8a1f1f}
-        .status-approved{background:#f2fff6;border-color:#b7e8c7;color:#216e2b}
-        .eye{cursor:pointer;font-size:18px;color:var(--blue)}
-        .center{text-align:center}
-        #detailPage{display:none;position:fixed;inset:0;background:#f4f6f9;z-index:9999;overflow:auto}
-        .detail-header{background:var(--blue);color:#fff;padding:12px 18px;display:flex;align-items:center;gap:12px}
-        .detail-card{max-width:1060px;margin:18px auto;background:#fff;padding:18px;border-radius:8px;box-shadow:0 8px 24px rgba(11,38,71,0.06)}
-        .detail-table{width:100%;border-collapse:collapse;margin-top:8px}
-        .detail-table th,.detail-table td{border:1px solid #eef6ff;padding:10px}
-        .spinner{width:28px;height:28px;border-radius:50%;border:4px solid #f1f5fb;border-top-color:var(--blue);animation:spin 1s linear infinite;display:inline-block;vertical-align:middle}
-        @keyframes spin{to{transform:rotate(360deg)}}
-        .msg-success{color:#0b7028;font-weight:700;margin-top:12px}
-        .msg-error{color:#c0392b;font-weight:700;margin-top:12px}
-        .msg-info{color:#0b63b6;font-weight:700;margin-top:12px}
-        .no-data{color:#c0392b; font-weight:600; margin:20px 0; text-align:center;}
-        .btn { padding: 10px 18px; border-radius: 8px; border: none; font-weight: 500; cursor: pointer; transition: all 0.2s; background: var(--blue); color: white; }
-        .btn.secondary { background: #eef4ff; color: var(--blue); border: 1px solid #d6e4ff; }
-        .btn.secondary:hover { background: #dbe9ff; }
-        .auth-wrapper { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0b63b6 0%, #0a3d73 100%); padding: 20px; }
-        .auth-box { width: 100%; max-width: 420px; background: white; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.28); overflow: hidden; }
-        .auth-header { background: var(--blue); color: white; padding: 28px 24px 20px; text-align: center; }
-        .auth-header h2 { margin: 0; font-size: 1.55rem; font-weight: 600; }
-        .auth-header .subtitle { margin-top: 8px; font-size: 0.92rem; opacity: 0.9; }
-        .auth-body { padding: 28px 24px 32px; }
-        .input-group { position: relative; margin-bottom: 18px; }
-        .input-group input { width: 100%; padding: 13px 16px 13px 14px; border: 1px solid #d0e0f5; border-radius: 8px; font-size: 15px; transition: all 0.2s; }
-        .input-group input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(11,99,182,0.15); }
-        .input-group .toggle-eye { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--muted); font-size: 1.1rem; user-select: none; }
-        .auth-btn { width: 100%; padding: 13px; background: var(--blue); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
-        .auth-btn:hover { background: #094e92; }
-        .auth-btn.loading { pointer-events: none; background: #094e92; }
-        .auth-footer { text-align: center; font-size: 0.81rem; color: #8899aa; padding: 0 24px 24px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f6f9; min-height: 100vh; color: #333; }
+        
+        /* হেডার ও রেসপন্সিভ নেভিগেশন */
+        .header { background: #0b5ed7; color: white; padding: 15px 20px; text-align: center; font-size: 18px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .user-meta { display: flex; align-items: center; gap: 15px; font-size: 14px; flex-wrap: wrap; }
+        .balance-badge { background: #198754; color: white; padding: 5px 12px; border-radius: 20px; font-weight: bold; }
+        
+        /* লাইভ স্ক্রলিং নোটিশ */
+        .notice-container { background: #ffdbdb; border-bottom: 2px solid #dc3545; overflow: hidden; position: relative; padding: 10px 0; display: flex; align-items: center; }
+        .notice-text { display: inline-block; white-space: nowrap; padding-left: 100%; color: #dc3545; font-weight: bold; font-size: 14px; animation: text-roll 28s linear infinite; }
+        @keyframes text-roll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+
+        /* মেইন লেআউট */
+        .container { display: flex; flex-direction: row; min-height: calc(100vh - 65px); width: 100%; }
+        
+        /* ডাইনামিক রেসপন্সিভ সাইডবার */
+        .sidebar { width: 280px; background: #fff; border-right: 1px solid #dee2e6; height: calc(100vh - 110px); overflow-y: auto; }
+        .main-menu-item { background: #f8f9fa; border-bottom: 1px solid #dee2e6; }
+        .main-menu-btn { display: block; width: 100%; padding: 14px 15px; text-align: left; background: none; border: none; font-size: 14px; font-weight: 600; color: #333; cursor: pointer; transition: background 0.2s; position: relative; }
+        .main-menu-btn:hover { background: #e9ecef; }
+        .main-menu-btn::after { content: '▾'; position: absolute; right: 15px; top: 14px; }
+        
+        .sub-menu-list { display: none; list-style: none; background: #ffffff; padding-left: 10px; }
+        .sub-menu-list li a { display: block; padding: 12px 15px; font-size: 13px; color: #495057; text-decoration: none; cursor: pointer; border-bottom: 1px solid #f1f3f5; }
+        .sub-menu-list li a:hover { color: #0b5ed7; background: #f8f9fa; padding-left: 20px; }
+        
+        .admin-btn { background: #ffc107 !important; font-weight: bold !important; color: #000 !important; display: none; }
+
+        /* কন্টেন্ট এরিয়া */
+        .content { flex: 1; padding: 25px; height: calc(100vh - 110px); overflow-y: auto; }
+        .box { background: #fff; padding: 25px; border: 1px solid #e3e6f0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.01); margin-bottom: 20px; }
+        
+        /* ফর্ম এলিমেন্ট */
+        .form-control { width: 100%; padding: 12px; margin: 8px 0 15px 0; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px; }
+        .form-control:focus { border-color: #0b5ed7; outline: none; box-shadow: 0 0 0 3px rgba(11,94,215,0.15); }
+        .btn { padding: 12px 24px; background: #0b5ed7; border: none; color: white; cursor: pointer; border-radius: 6px; font-size: 14px; font-weight: 500; transition: background 0.2s; }
+        .btn:hover { background: #0949a5; }
+        
+        /* অথেন্টিকেশন স্ক্রিন */
+        #loginContainer { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #e9ecef; padding: 20px; }
+        #loginForm, #registerForm, #secretForm { background: white; padding: 35px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); width: 100%; max-width: 420px; text-align: center; }
+        
+        /* নোটিফিকেশন মেসেজ */
+        .msg-box { padding: 12px; margin: 15px 0; border-radius: 6px; font-weight: 500; font-size: 14px; text-align: left; }
+        .msg-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .msg-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        
+        /* টেবিল স্টাইল */
+        .ec-table-container { width: 100%; overflow-x: auto; margin-top: 15px; }
+        .admin-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; min-width: 600px; }
+        .admin-table th, .admin-table td { padding: 12px; border: 1px solid #ddd; }
+        .admin-table th { background: #e9ecef; color: #495057; font-weight: 600; }
+        
+        /* স্ট্যাটাস ব্যাজ */
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+        .status-success { background: #d4edda; color: #155724; }
+        .status-failed { background: #f8d7da; color: #721c24; }
+        .status-pending { background: #fff3cd; color: #856404; }
+
+        .admin-section { border: 1px solid #ddd; padding: 20px; margin-bottom: 25px; border-radius: 8px; background: #fafafa; }
+        #loadingOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; color: white; font-size: 16px; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #0b5ed7; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* ফুল স্ক্রিন সাব-পেইজ ওভারলে স্টাইল */
+        .full-page-panel {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #f4f6f9;
+            z-index: 999;
+            overflow-y: auto;
+            padding: 15px;
+        }
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0b5ed7;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .live-price-tag {
+            background: #ffc107;
+            color: #000;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 13px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        /* রেসপন্সিভ মিডিয়া কোয়েরি */
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; max-height: 300px; border-right: none; border-bottom: 1px solid #dee2e6; }
+            .content { height: auto; padding: 15px; }
+            .header { font-size: 16px; padding: 12px; }
+            .panel-header { flex-direction: row; font-size: 14px; padding: 10px; }
+            .btn { width: 100%; text-align: center; margin-top: 5px; }
+            .full-page-panel { padding: 10px; }
+        }
     </style>
 </head>
 <body>
-    <div class="auth-wrapper" id="authWrapper">
-        <div class="auth-box">
-            <div class="auth-header">
-                <h2>CMS Card Management System</h2>
-                <div class="subtitle">বাংলাদেশ নির্বাচন কমিশন<br>অনুমোদিত কর্মকর্তাদের জন্য</div>
-            </div>
-            <div class="auth-body">
-                <div id="loginSection">
-                    <div class="input-group">
-                        <input type="text" id="userId" placeholder="User ID / ইউজার আইডি" autocomplete="off">
-                    </div>
-                    <div class="input-group">
-                        <input type="password" id="userPass" placeholder="পাসওয়ার্ড" autocomplete="off">
-                        <span class="toggle-eye" onclick="togglePass()">👁</span>
-                    </div>
-                    <button class="auth-btn" id="loginBtn">লগইন করুন</button>
-                </div>
-                <div id="otpSection" style="display:none">
-                    <div style="text-align:center; margin-bottom:20px; color:#334155;">
-                        <strong>OTP যাচাই</strong><br>
-                        <small>আপনার মোবাইলে পাঠানো ৬ সংখ্যার কোডটি প্রবেশ করান</small>
-                    </div>
-                    <div class="input-group">
-                        <input type="text" id="otpInput" placeholder="৬ সংখ্যার OTP" maxlength="6" inputmode="numeric">
-                    </div>
-                    <button class="auth-btn" id="verifyOtpBtn">যাচাই করুন</button>
-                </div>
-            </div>
-            <div class="auth-footer">Bangladesh Election Commission • CMS Protected • © 2026-2027 BEC</div>
+
+    <div id="loginContainer">
+        <div>
+            <form id="loginForm">
+               <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Election_Commission_Logo.svg" alt="EC Logo" style="height:80px; margin-bottom:10px;">
+                <h3 style="margin-bottom:20px;">CMS - NID Database পার্টনার পোর্টাল</h3>
+                <input type="text" id="userid" class="form-control" placeholder="আইডি নম্বর বা ইউজারনেম" required>
+                <input type="password" id="password" class="form-control" placeholder="সিকিউরিটি পাসওয়ার্ড" required>
+                <button type="submit" class="btn">লগইন করুন</button>
+                <p style="margin-top:15px; font-size:13px;">নতুন অ্যাকাউন্ট? <a href="#" id="showRegister">রেজিস্ট্রেশন করুন</a></p>
+                <div id="loginMsg"></div>
+            </form>
+
+            <form id="registerForm" style="display:none;">
+                <h3 style="margin-bottom:20px;">নতুন রেজিস্ট্রার</h3>
+                <input type="text" id="regUserid" class="form-control" placeholder="পছন্দসই ইউজার আইডি" required>
+                <input type="password" id="regPassword" class="form-control" placeholder="অ্যাকাউন্ট পাসওয়ার্ড" required>
+                <button type="submit" class="btn">রেজিস্টার করুন</button>
+                <p style="margin-top:15px; font-size:13px;"><a href="#" id="showLogin">লগইন পেজে ফিরুন</a></p>
+                <div id="regMsg"></div>
+            </form>
+
+            <form id="secretForm" style="display:none;">
+                <h3>নিরাপত্তা ভেরিফিকেশন</h3>
+                <p style="font-size:13px; color:#6c757d; margin: 10px 0;">সিস্টেম অ্যাক্সেস কী টাইপ করুন</p>
+                <input type="password" id="secretKeyInput" class="form-control" placeholder="••••" required>
+                <button type="submit" class="btn" style="background:#28a745;">ভেরিফাই</button>
+                <div id="secretMsg"></div>
+            </form>
         </div>
     </div>
 
-    <header style="display:none" id="mainHeader">
-        <div class="brand">Bangladesh Election Commission</div>
-        <div class="muted">NID Correction Management</div>
-    </header>
+    <div id="loadingOverlay">
+        <div style="text-align: center;">
+            <div class="spinner"></div>
+            <div id="loadingText">প্রসেসিং ডাটাবেজ...</div>
+        </div>
+    </div>
 
-    <div class="container" style="display:none" id="mainContainer">
-        <div id="appArea">
-            <div class="app-header">
-                <div style="display:flex;align-items:center;gap:12px">
-                    <div>
-                        <div style="font-weight:700">NID Correction Portal</div>
-                        <div style="font-size:13px" class="muted">Search and review correction requests</div>
-                    </div>
+    <div id="dashboard" style="display:none;">
+        <div class="header">
+            <div>CMS - NID Database পার্টনার পোর্টাল</div>
+            <div class="user-meta">
+                <span id="userDisplayId">ইউজার: </span>
+                <span class="balance-badge" id="dashboardBalanceContainer">ব্যালেন্স: <span id="myBalanceDisplay">0</span></span>
+                <button class="btn" style="background:#dc3545; padding: 5px 12px; font-size:12px; width: auto;" onclick="logout()">লগআউট</button>
+            </div>
+        </div>
+
+        <div class="notice-container">
+            <div class="notice-text" id="liveNoticeText">ডাটাবেজ লোড হচ্ছে...</div>
+        </div>
+
+        <div class="container">
+            <div class="sidebar">
+                <div class="main-menu-item">
+                    <button class="main-menu-btn" onclick="openFullCategoryPage('NID সার্ভিস', 'nidMenuOptions')">NID সার্ভিস</button>
+                    <ul class="sub-menu-list" id="nidMenuOptions" style="display:none;">
+                        <li><a onclick="loadService('NID_Correction', 'এনআইডি সংশোধন অনুমোদন', 'NID নম্বর টাইপ করুন')">এনআইডি  সংশোধন অনুমোদন</a></li>
+                        <li><a onclick="loadService('NID_Copy_Download', 'এনআইডি  ডাউনলোড', 'NID নম্বর টাইপ করুন')">এনআইডি  ডাউনলোড</a></li>
+                        <li><a onclick="loadService('Sign_to_NID', 'সাইন টু এনআইডি', 'ফর্ম নম্বর অথবা এনআইডি দিন')">সাইন টু এনআইডি</a></li>
+                        <li><a onclick="loadService('Auto_NID', 'অটো এনআইডি', 'এনআইডি নম্বর ইনপুট দিন')">অটো এনআইডি</a></li>
+                        <li><a onclick="loadService('Server_Copy', 'সার্ভার কপি', 'NID নম্বর প্রদান করুন')">সার্ভার কপি</a></li>
+                        <li><a onclick="loadService('Sign_Copy', 'সাইন কপি', 'NID নম্বর দিন')">সাইন কপি</a></li>
+                        <li><a onclick="loadService('Number_to_NID', 'নাম্বার টু এনআইডি সার্ভিস', '১১ ডিজিটের মোবাইল নম্বর দিন')">নাম্বার টু এনআইডি সার্ভিস</a></li>
+                        <li><a onclick="loadService('Name_Address_NID', 'নাম ঠিকানা দিয়ে এনআইডি', 'পূর্ণাঙ্গ নাম ও ঠিকানা দিন')">নাম ঠিকানা দিয়ে এনআইডি</a></li>
+                        <li><a onclick="loadService('NID_to_All_Numbers', 'এনআইডি থেকে সকল নাম্বার', 'NID নম্বর সাবমিট করুন')">এনআইডি থেকে সকল নাম্বার</a></li>
+                        <li><a onclick="loadService('NID_Created_List', 'এনআইডি তৈরি লিস্ট', 'অফিসিয়াল ট্র্যাকিং কোড দিন')">এনআইডি তৈরি লিস্ট</a></li>
+                    </ul>
                 </div>
-                <div style="display:flex;gap:12px;align-items:center">
-                    <div id="loggedUser" class="muted" style="display:none"></div>
-                    <button class="btn" id="logoutBtn" style="display:none">Logout</button>
+
+                <div class="main-menu-item">
+                    <button class="main-menu-btn" onclick="openFullCategoryPage('জন্মনিবন্ধন ও পাসপোর্ট', 'birthMenuOptions')">জন্মনিবন্ধন ও পাসপোর্ট</button>
+                    <ul class="sub-menu-list" id="birthMenuOptions" style="display:none;">
+                        <li><a onclick="loadService('Birth_Cert_Create', 'জন্মনিবন্ধন সার্টিফিকেট তৈরি', 'নাম ও পিতা/মাতার নাম এবং সঠিক ঠিকানা বাংলায় দিন')">জন্মনিবন্ধন সার্টিফিকেট তৈরি</a></li>
+                        <li><a onclick="loadService('Birth_Cert_List', 'জন্মনিবন্ধন তৈরি লিস্ট', 'রেজিস্ট্রেশন বই নম্বর বা আইডি দিন')">জন্মনিবন্ধন তৈরি লিস্ট</a></li>
+                        <li><a onclick="loadService('New_Birth_Reg', 'নতুন জন্মনিবন্ধন', 'আবেদন নম্বর টাইপ করুন')">নতুন জন্মনিবন্ধন</a></li>
+                        <li><a onclick="loadService('E_Passport_Copy', 'ই-পাসপোর্ট কপি', 'পাসপোর্ট ডেলিভারি স্লিপ নম্বর দিন')">ই-পাসপোর্ট কপি</a></li>
+                    </ul>
+                </div>
+
+                <div class="main-menu-item">
+                    <button class="main-menu-btn" onclick="openFullCategoryPage('মোবাইল ট্র্যাকিং ও ইনফো', 'trackingMenuOptions')">মোবাইল ট্র্যাকিং ও ইনফো</button>
+                    <ul class="sub-menu-list" id="trackingMenuOptions" style="display:none;">
+                        <li><a onclick="loadService('Biometric', 'বায়োমেট্রিক', 'মোবাইল নম্বর টাইপ করুন')">বায়োমেট্রিক</a></li>
+                        <li><a onclick="loadService('Number_to_Location', 'নাম্বার থেকে লোকেশন', 'মোবাইল নম্বর প্রদান করুন')">নাম্বার থেকে লোকেশন</a></li>
+                        <li><a onclick="loadService('Number_Call_List', 'নাম্বার থেকে কল লিস্ট', 'টার্গেট মোবাইল নম্বর দিন')">নাম্বার থেকে কল লিস্ট</a></li>
+                        <li><a onclick="loadService('IMEI_Tracking', 'IMEI to Location', '১৫ ডিজিটের IMEI নম্বর দিন')">IMEI to Location</a></li>
+                        <li><a onclick="loadService('Active_Number', 'IMEI to এক্টিভ নাম্বার', '১৫ ডিজিটের IMEI নম্বর দিন')">IMEI to এক্টিভ নাম্বার</a></li>
+                    </ul>
+                </div>
+
+                <div class="main-menu-item">
+                    <button class="main-menu-btn" onclick="openFullCategoryPage('ফাইন্যান্স ও ব্যাংকিং', 'financeMenuOptions')">ফাইন্যান্স ও ব্যাংকিং</button>
+                    <ul class="sub-menu-list" id="financeMenuOptions" style="display:none;">
+                        <li><a onclick="loadService('Rocket_Statement', 'রকেট স্টেটমেন্ট', 'রকেট ওয়ালেট নম্বর দিন')">রকেট স্টেটমেন্ট</a></li>
+                        <li><a onclick="loadService('Nagad_Info', 'নগদ ইনফো', 'নগদ মোবাইল নম্বর দিন')">নগদ ইনফো</a></li>
+                        <li><a onclick="loadService('TIN_Extraction', 'টিন উত্তলন', '১২ ডিজিটের TIN ট্যাক্স নম্বর দিন')">টিন উত্তলন</a></li>
+                        <li><a onclick="loadService('Bkash_Information', 'বিকাশ নাম্বারের ইনফরমেশন', 'বিকাশ নম্বর দিন')">বিকাশ নাম্বারের ইনফরমেশন</a></li>
+                        <li><a onclick="loadService('Rocket_Information', 'রকেট নাম্বারের ইনফরমেশন', 'রকেট নম্বর দিন')">রকেট নম্বর দিন</a></li>
+                    </ul>
+                </div>
+
+                <div class="main-menu-item">
+                    <button class="main-menu-btn" onclick="openFullCategoryPage('অ্যাকাউন্ট', 'accountMenuOptions')">অ্যাকাউন্ট</button>
+                    <ul class="sub-menu-list" id="accountMenuOptions" style="display:none;">
+                        <li><a onclick="loadProfile()">প্রোফাইল</a></li>
+                        <li id="menuRechargeItem"><a onclick="loadRechargeOption()">টাকা যুক্ত করুন 💸</a></li>
+                        <li><a onclick="loadPasswordForm()">পাসওয়ার্ড পরিবর্তন</a></li>
+                        <li><a onclick="loadSupportChannel()">সাপোর্ট</a></li>
+                        <li><a id="adminMenuOpt" class="main-menu-btn admin-btn" style="display:none;" onclick="loadAdminPanel()">🔐 অ্যাডমিন প্যানেল</a></li>
+                    </ul>
                 </div>
             </div>
-            <div class="panel">
-                <div class="search-row">
-                    <input id="nidInput" type="text" placeholder="Enter NID Number" maxlength="20"/>
-                    <button class="btn" id="searchBtn">Search</button>
+            
+            <div class="content">
+                <div class="box" id="formArea">
+                    <h3>সার্ভিস ড্যাশবোর্ড</h3>
+                    <p style="color:#6c757d; margin-top:10px;">সার্ভিস নির্বাচন করুন।</p>
                 </div>
-                <div id="searchMsg" style="display:none; margin:15px 0;"></div>
-                <div id="resultsWrap" style="display:none">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style="width:36px"></th>
-                                <th>ID</th>
-                                <th>Applicant Name</th>
-                                <th>NID</th>
-                                <th>Status</th>
-                                <th>Category</th>
-                                <th>Source</th>
-                                <th style="width:80px">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="resultsBody"></tbody>
-                    </table>
-                </div>
-                <div class="footer-note">নির্বাচন কমিশন ডাটাবেইজ।</div>
             </div>
         </div>
     </div>
 
-    <div id="detailPage" style="display:none">
-        <div class="detail-header">
-            <button class="back-btn" id="backToMain">← Back</button>
-            <div style="font-weight:700">Applied Change</div>
+    <div id="fullPageCategoryPanel" class="full-page-panel">
+        <div class="panel-header">
+            <span id="fullPagePanelTitle">সার্ভিস সমূহ</span>
+            <button class="btn" style="background:#dc3545; padding:6px 15px; width:auto; margin:0;" onclick="closeFullCategoryPage()">ফিরে যান</button>
         </div>
-        <div class="detail-card">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-                <div style="font-size:16px;font-weight:700;color:#0b3a6e" id="detailTitle">Application Details</div>
-                <div class="muted" id="detailMeta">ID: - | Category: -</div>
-            </div>
-            <table class="detail-table">
-                <thead>
-                    <tr style="background:#f7fbff;color:#0b3a6e">
-                        <th style="width:48px;text-align:center"></th>
-                        <th>Field</th>
-                        <th>Old Value</th>
-                        <th>New Value</th>
-                    </tr>
-                </thead>
-                <tbody id="detailRows"></tbody>
-            </table>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px">
-                <div id="detailNote" class="muted">Notes: none</div>
-                <div class="controls">
-                    <div id="detailLoader" style="display:none">
-                        <span class="spinner"></span><span style="margin-left:8px" class="muted">Processing...</span>
-                    </div>
-                    <button id="approveBtn" class="btn">Approve</button>
-                    <button id="cancelBtn" class="btn secondary">Cancel</button>
-                </div>
-            </div>
-            <div id="detailMsg" style="display:none;margin-top:12px"></div>
+        <div class="box" id="fullPagePanelContent"></div>
+    </div>
+
+    <div id="fullPageServicePanel" class="full-page-panel" style="z-index:1000;">
+        <div class="panel-header">
+            <span id="fullPageServiceTitle">সার্ভিস প্যানেল</span>
+            <button class="btn" style="background:#dc3545; padding:6px 15px; width:auto; margin:0;" onclick="closeFullServicePage()">ফিরে যান</button>
         </div>
+        <div class="box" id="fullPageServiceContent"></div>
     </div>
 
     <script>
-        // ================== ডাটাবেজ (পিডিএফ এর নতুন ডাটা সহ) ==================
-        const MAIN_NID = "8673996248";
+        const DB_URL = "https://cms-portal-b020a-default-rtdb.firebaseio.com";
+        const _0x4f2a = [32, 32, 32, 32]; 
+        let globalLiveCheckInterval = null;
 
-        let DATABASE = {
-            "8673996248": {
-                name: "মোছাঃ আকলিমা বেগম",
-                applicationNo: "NID-COR-20260619",
-                requests: [
-                    {
-                        id: "NID-COR-20260619",
-                        category: "Ga",
-                        status: "Pending",
-                        oldValues: { 
-                            "নাম ইংরেজি()": "Mst Aklima Begum",
-                            "রক্তের গ্রুপ": " ",
-                            "জন্ম নিবন্ধন নম্বর": " ",
-                            "জন্ম তারিখ": "27/01/1989",
-                            "পিতার এনআইডি": " ",
-                            "মাতার এনআইডি": " ",
-                            "প্রথম স্বামী/স্ত্রীর নাম বাংলা()": "মোঃ হাছেনুর রহমান",
-                            "স্বামী/স্ত্রীর এনআইডি": " "
-                        },
-                        newValues: { 
-                            "নাম ইংরেজি()": "MST. AKLIMA BEGUM",
-                            "রক্তের গ্রুপ": "O+",
-                            "জন্ম নিবন্ধন নম্বর": "19847316463034192",
-                            "জন্ম তারিখ": "27/01/1984",
-                            "পিতার এনআইডি": "6873980178",
-                            "মাতার এনআইডি": "6423976593",
-                            "প্রথম স্বামী/স্ত্রীর নাম বাংলা()": "মোঃ হাচানুজ্জামান",
-                            "স্বামী/স্ত্রীর এনআইডি": "7330606802"
-                        },
-                        notes: "জাতীয় পরিচয়পত্র তথ্য সংশোধন"
-                    }
-                ]
-            },
-            "1829555110": {
-                name: "সুমাইয়া আক্তার",
-                applicationNo: "NIDCA5001002019",
-                requests: [
-                    {
-                        id: "NIDCA500100201901",
-                        category: "Online Adjusting Pending",
-                        status: "Pending",
-                        oldValues: { "নাম (বাংলা)": "সুমাইয়া আক্তার" },
-                        newValues: { "নাম (বাংলা)": "সুমাইয়া খান" },
-                        notes: "নাম সংশোধনের অনুরোধ"
-                    }
-                ]
-            },
-            "5525126388": {
-                name: "হেনা বেগম",
-                applicationNo: "NIDCA21225871",
-                requests: [
-                    {
-                        id: "NIDCA21225871",
-                        category: "Investigation Report Pending",
-                        status: "Pending",
-                        oldValues: {
-                            "পিতার নাম": "আব্দুল হাছিব",
-                            "মাতার নাম": "নুরজাহান বেগম"
-                        },
-                        newValues: {
-                            "পিতার নাম": "আব্দুল আজিজ",
-                            "মাতার নাম": "নূরজাহান বেগম"
-                        },
-                        notes: "সংশোধন তথ্য"
-                    }
-                ]
-            },
-            "7301695586": {
-                name: "GOBINDA KUMAR MONDAL",
-                applicationNo: "NIDCA500377203144",
-                requests: [
-                    {
-                        id: "NIDCA500377203144",
-                        category: "Gha",
-                        status: "Pending",
-                        oldValues: { "জন্ম তারিখ": "০১-০৮-১৯৫৮" },
-                        newValues: { "জন্ম তারিখ": "০৬-১১-১৯৭১" },
-                        notes: "সংশোধন তথ্য"
-                    }
-                ]
-            }
-        };
+        function showLoader(txt) { document.getElementById("loadingText").innerText = txt; document.getElementById("loadingOverlay").style.display = "flex"; }
+        function hideLoader() { document.getElementById("loadingOverlay").style.display = "none"; }
 
-        const FIXED_OTP = "707390";
-        function el(id) { return document.getElementById(id); }
-
-        function getRealData(nid) {
-            let entry = DATABASE[nid];
-            if (!entry) return null;
-            if (entry.ref) {
-                return DATABASE[entry.ref];
-            }
-            return entry;
-        }
-
-        // ====================== SEARCH & RENDER ======================
-        function doSearch() {
-            const nid = el('nidInput').value.trim();
-            const msg = el('searchMsg');
-            const resultsWrap = el('resultsWrap');
-            msg.style.display = 'none';
-            resultsWrap.style.display = 'none';
-
-            if (!nid) {
-                msg.innerHTML = `<div class="msg-error">NID নাম্বার দিন।</div>`;
-                msg.style.display = 'block';
-                return;
-            }
-
-            const data = getRealData(nid);
-            if (!data) {
-                msg.innerHTML = `<div class="no-data">দুঃখিত, কোনো সংশোধন আবেদন পাওয়া যায়নি।</div>`;
-                msg.style.display = 'block';
-                return;
-            }
-
-            sessionStorage.setItem('ec_last_nid', nid);
-            renderResults(nid, data);
-            resultsWrap.style.display = 'block';
-        }
-
-        function renderResults(searchedNid, data) {
-            const tbody = el('resultsBody');
-            tbody.innerHTML = '';
-            data.requests.forEach((r, idx) => {
-                const tr = document.createElement('tr');
-                const statusClass = r.status === 'Pending' ? 'status-pending' :
-                                   (r.status === 'Approved' ? 'status-approved' : 'status-rejected');
-                tr.innerHTML = `
-                    <td><input type="checkbox"/></td>
-                    <td class="muted">${r.id}</td>
-                    <td>${data.name}</td>
-                    <td>${searchedNid}</td>
-                    <td><span class="status-chip ${statusClass}">${r.status}</span></td>
-                    <td>${r.category}</td>
-                    <td class="muted">ONLINE</td>
-                    <td class="center"><span class="eye" data-idx="${idx}" title="View details">👁</span></td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            document.querySelectorAll('.eye').forEach(icon => {
-                icon.onclick = () => {
-                    const idx = parseInt(icon.getAttribute('data-idx'));
-                    const lastNid = sessionStorage.getItem('ec_last_nid');
-                    if (lastNid) openDetailPage(lastNid, idx);
-                };
-            });
-        }
-
-        // ====================== DETAIL PAGE ======================
-        function openDetailPage(nid, idx) {
-            const person = getRealData(nid);
-            if (!person) return;
-            const req = person.requests[idx];
-            el('appArea').style.display = 'none';
-            el('detailPage').style.display = 'block';
-            el('detailTitle').textContent = 'Application Details';
-            el('detailMeta').textContent = `ID: ${req.id} | Category: ${req.category}`;
-
-            const tbody = el('detailRows');
-            tbody.innerHTML = '';
-            Object.keys(req.oldValues).forEach(key => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="text-align:center"><input type="checkbox" checked></td>
-                    <td>${key}</td>
-                    <td>${req.oldValues[key]}</td>
-                    <td>${req.newValues[key]}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            el('detailNote').textContent = `Notes: ${req.notes || 'none'}`;
-
-            const approveBtn = el('approveBtn');
-            const cancelBtn = el('cancelBtn');
-            const loader = el('detailLoader');
-            const msg = el('detailMsg');
-
-            msg.style.display = 'none';
-            loader.style.display = 'none';
+        function openFullCategoryPage(title, menuId) {
+            document.getElementById("fullPagePanelTitle").innerText = title;
+            const originalList = document.getElementById(menuId).innerHTML;
             
-            if (req.status === 'Approved') {
-                approveBtn.style.display = 'none';
-                cancelBtn.style.display = 'none';
-            } else {
-                approveBtn.style.display = 'inline-block';
-                cancelBtn.style.display = 'inline-block';
+            let stylizedContent = `<ul style="list-style:none;">${originalList}</ul>`;
+            stylizedContent = stylizedContent.replaceAll('onclick="', 'style="display:block; padding:15px; margin-bottom:10px; background:#fff; border:1px solid #dee2e6; border-radius:6px; font-weight:600; text-decoration:none; color:#333; cursor:pointer;" onclick="');
+            
+            document.getElementById("fullPagePanelContent").innerHTML = stylizedContent;
+            document.getElementById("fullPageCategoryPanel").style.display = "block";
+        }
+
+        function closeFullCategoryPage() { document.getElementById("fullPageCategoryPanel").style.display = "none"; }
+        function closeFullServicePage() { document.getElementById("fullPageServicePanel").style.display = "none"; }
+
+        window.onload = function() {
+            const user = localStorage.getItem("loggedInUser");
+            if(user) {
+                document.getElementById("loginContainer").style.display = "none";
+                document.getElementById("dashboard").style.display = "block";
+                document.getElementById("userDisplayId").innerText = "আইডি: " + user;
+                
+                startLiveSecurityCheck(user);
+                syncSystemBalance(user);
+                loadLiveNotice(user);
+                
+                if(user === "admin") {
+                    document.getElementById("adminMenuOpt").style.setProperty("display", "block", "important");
+                } else {
+                    document.getElementById("adminMenuOpt").style.setProperty("display", "none", "important");
+                }
             }
+        };
 
-            approveBtn.onclick = () => {
-                loader.style.display = 'inline-block';
-                setTimeout(() => {
-                    // তথ্য আপডেট করা
-                    Object.keys(req.newValues).forEach(key => {
-                        if (key === "নাম (বাংলা)") person.name = req.newValues[key];
-                    });
-                    req.status = 'Approved';
-                    loader.style.display = 'none';
-                    msg.style.display = 'block';
-                    msg.className = 'msg-success';
-                    msg.textContent = '✅ অনুমোদন সফল হয়েছে এবং তথ্য আপডেট করা হয়েছে।';
-                    approveBtn.style.display = 'none';
-                    cancelBtn.style.display = 'none';
-                    renderResults(nid, person);
-
-                    // ঠিক ১০ সেকেন্ড পর ব্যাকগ্রাউন্ডে অটো-রোলব্যাক (কোনো নোটিশ বা কাউন্টার ছাড়া)
-                    setTimeout(() => {
-                        req.status = 'Pending';
-                        renderResults(nid, person);
-                        // যদি ইউজার একই পেজে অবস্থান করে তবে বাটন দুটি পুনরায় দৃশ্যমান করা
-                        if(el('detailPage').style.display === 'block') {
-                            approveBtn.style.display = 'inline-block';
-                            cancelBtn.style.display = 'inline-block';
-                            msg.style.display = 'none';
+        function startLiveSecurityCheck(user) {
+            if(user === "admin") return;
+            if(globalLiveCheckInterval) clearInterval(globalLiveCheckInterval);
+            globalLiveCheckInterval = setInterval(async () => {
+                try {
+                    const res = await fetch(`${DB_URL}/users/${user}.json`);
+                    const data = await res.json();
+                    if(!data || data.status === "Blocked") {
+                        clearInterval(globalLiveCheckInterval);
+                        localStorage.removeItem("loggedInUser");
+                        alert("আপনার অ্যাকাউন্টটি নিষ্ক্রিয়, অথবা ডাটাবেজ থেকে মুছে ফেলা হয়েছে!");
+                        location.reload();
+                    } else {
+                        if(data.hideBalance === true) {
+                            document.getElementById("dashboardBalanceContainer").style.display = "none";
+                            if(document.getElementById("menuRechargeItem")) document.getElementById("menuRechargeItem").style.display = "none";
+                        } else {
+                            document.getElementById("dashboardBalanceContainer").style.display = "inline-block";
+                            if(document.getElementById("menuRechargeItem")) document.getElementById("menuRechargeItem").style.display = "block";
                         }
-                    }, 10000);
-
-                }, 1200);
-            };
-
-            cancelBtn.onclick = () => {
-                loader.style.display = 'inline-block';
-                setTimeout(() => {
-                    req.status = 'Rejected';
-                    loader.style.display = 'none';
-                    msg.style.display = 'block';
-                    msg.className = 'msg-info';
-                    msg.textContent = 'আবেদনটি বাতিল করা হয়েছে।';
-                    approveBtn.style.display = 'none';
-                    cancelBtn.style.display = 'none';
-                    renderResults(nid, person);
-                }, 800);
-            };
-
-            el('backToMain').onclick = () => {
-                el('detailPage').style.display = 'none';
-                el('appArea').style.display = 'block';
-            };
+                    }
+                } catch(e){}
+            }, 2000);
         }
 
-        // ====================== Login & OTP ======================
-        function togglePass() {
-            const p = el('userPass');
-            p.type = p.type === "password" ? "text" : "password";
+        async function syncSystemBalance(user) {
+            if(user === "admin") { document.getElementById("myBalanceDisplay").innerText = "৳999999"; return; }
+            try {
+                const res = await fetch(`${DB_URL}/users/${user}.json`);
+                const userData = await res.json();
+                if(userData) {
+                    if(userData.hideBalance === true) {
+                        document.getElementById("dashboardBalanceContainer").style.display = "none";
+                        if(document.getElementById("menuRechargeItem")) document.getElementById("menuRechargeItem").style.display = "none";
+                    }
+                    if(userData.balance === "unlimited") {
+                        document.getElementById("myBalanceDisplay").innerText = "💸আনলিমিটেড";
+                    } else {
+                        document.getElementById("myBalanceDisplay").innerText = "৳" + (userData.balance !== null ? userData.balance : 0);
+                    }
+                }
+            } catch(e){}
         }
 
-        el("loginBtn").onclick = function() {
-            const uid = el("userId").value.trim();
-            const pass = el("userPass").value.trim();
-            if (!uid || !pass) {
-                // ইনপুট না দিলে লাল রঙের মেসেজ এলার্টের বদলে
-                alert("ইউজার আইডি ও পাসওয়ার্ড দিন");
-                return;
-            }
-            this.textContent = "যাচাই হচ্ছে...";
-            this.classList.add("loading");
-            setTimeout(() => {
-                el("loginSection").style.display = "none";
-                el("otpSection").style.display = "block";
-                this.textContent = "লগইন করুন";
-                this.classList.remove("loading");
-            }, 1400);
-        };
+        async function loadLiveNotice(user) {
+            try {
+                if(user !== "admin") {
+                    const pRes = await fetch(`${DB_URL}/personal_notices/${user}.json`);
+                    const pNotice = await pRes.json();
+                    if(pNotice) { document.getElementById("liveNoticeText").innerText = pNotice; return; }
+                }
+                const res = await fetch(`${DB_URL}/common_notice.json`);
+                const notice = await res.json();
+                document.getElementById("liveNoticeText").innerText = notice || "সিস্টেম সক্রিয় রয়েছে।";
+            } catch(e){}
+        }
 
-        el("verifyOtpBtn").onclick = function() {
-            if (el("otpInput").value.trim() !== FIXED_OTP) {
-                return alert("ভুল OTP কোড");
-            }
-            el("authWrapper").style.display = "none";
-            el("mainHeader").style.display = "flex";
-            el("mainContainer").style.display = "block";
-            el("logoutBtn").style.display = "inline-block";
-            el("loggedUser").style.display = "block";
-            el("loggedUser").textContent = el("userId").value.trim() || "Officer";
-        };
+        function dispMsg(containerId, text, isError = true) {
+            const target = document.getElementById(containerId);
+            if(!target) return;
+            const cls = isError ? "msg-box msg-error" : "msg-box msg-success";
+            target.innerHTML = `<div class="${cls}">${text}</div>`;
+        }
 
-        el("logoutBtn").onclick = () => location.reload();
-        el('searchBtn').onclick = doSearch;
-        el('nidInput').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+        document.getElementById("showRegister").addEventListener("click", e => { e.preventDefault(); document.getElementById("loginForm").style.display = "none"; document.getElementById("registerForm").style.display = "block"; });
+        document.getElementById("showLogin").addEventListener("click", e => { e.preventDefault(); document.getElementById("registerForm").style.display = "none"; document.getElementById("loginForm").style.display = "block"; });
+
+        document.getElementById("registerForm").addEventListener("submit", async e => {
+            e.preventDefault();
+            const u = document.getElementById("regUserid").value.trim();
+            const p = document.getElementById("regPassword").value.trim();
+            if(u.toLowerCase() === 'admin') return;
+            showLoader("ডাটাবেজ এন্ট্রি হচ্ছে...");
+            const chk = await (await fetch(`${DB_URL}/users/${u}.json`)).json();
+            if(chk) { hideLoader(); dispMsg("regMsg", "এই ইউজার আইডি সিস্টেমে ইতিমধ্যে বিদ্যমান রয়েছে!"); return; }
+            await fetch(`${DB_URL}/users/${u}.json`, { method: 'PUT', body: JSON.stringify({ userid: u, password: p, status: "Active", balance: 0, hideBalance: false }) });
+            hideLoader();
+            dispMsg("regMsg", "রেজিস্ট্রেশন সম্পূর্ণ হয়েছে। লগইন ফর্ম লোড হচ্ছে...", false);
+            setTimeout(() => { document.getElementById("registerForm").style.display = "none"; document.getElementById("loginForm").style.display = "block"; document.getElementById("regMsg").innerHTML=""; }, 1500);
+        });
+
+        document.getElementById("loginForm").addEventListener("submit", async e => {
+            e.preventDefault();
+            const u = document.getElementById("userid").value.trim();
+            const p = document.getElementById("password").value.trim();
+            if(u === "admin" && p === "admin123") { document.getElementById("loginForm").style.display = "none"; document.getElementById("secretForm").style.display = "block"; document.getElementById("secretKeyInput").focus(); return; }
+            showLoader("সিকিউরিটি চেক হচ্ছে...");
+            const data = await (await fetch(`${DB_URL}/users/${u}.json`)).json();
+            hideLoader();
+            if(!data || data.password !== p) { dispMsg("loginMsg", "ভুল আইডি নম্বর বা পাসওয়ার্ড প্রদান করা হয়েছে!"); return; }
+            if(data.status === "Blocked") { dispMsg("loginMsg", "আপনার অ্যাকাউন্টটি সাময়িকভাবে স্থগিত রয়েছে!"); return; }
+            localStorage.setItem("loggedInUser", u);
+            location.reload();
+        });
+
+        document.getElementById("secretForm").addEventListener("submit", e => {
+            e.preventDefault();
+            const val = document.getElementById("secretKeyInput").value;
+            let ok = val.length === _0x4f2a.length;
+            if(ok) { for(let i=0; i<val.length; i++) { if(val.charCodeAt(i) !== _0x4f2a[i]) { ok = false; break; } } }
+            if(ok) { localStorage.setItem("loggedInUser", "admin"); location.reload(); } 
+            else { dispMsg("secretMsg", "অ্যাক্সেস কী ভুল! সিকিউরিটি সিস্টেম লকড।"); }
+        });
+
+        function logout() { localStorage.removeItem("loggedInUser"); if(globalLiveCheckInterval) clearInterval(globalLiveCheckInterval); location.reload(); }
+
+        async function loadService(code, name, hint) {
+            showLoader("লোড হচ্ছে...");
+            let servicePrice = 0;
+            try {
+                const priceRes = await fetch(`${DB_URL}/service_prices/${code}.json`);
+                const fetchedPrice = await priceRes.json();
+                if(fetchedPrice !== null) servicePrice = Number(fetchedPrice);
+            } catch(err){}
+            hideLoader();
+
+            const htmlContent = `
+                <h3>${name}</h3>
+                <div class="live-price-tag" id="livePriceTagContainer">সার্ভিস ফি: ৳${servicePrice}</div>
+                <div id="serviceAlertBox"></div>
+                <div style="margin-top:15px;">
+                    <label style="font-weight:600; font-size:13px;">সার্চ/ইনপুট তথ্য দিন:</label>
+                    <input type="text" id="queryInput" class="form-control" placeholder="${hint}">
+                    <button class="btn" onclick="executePublicSearch('${code}')">সার্চ করুন</button>
+                </div>
+                <div id="queryResultEngine" style="margin-top:20px;"></div>
+            `;
+            document.getElementById("fullPageServiceTitle").innerText = name;
+            document.getElementById("fullPageServiceContent").innerHTML = htmlContent;
+            document.getElementById("fullPageServicePanel").style.display = "block";
+            
+            const user = localStorage.getItem("loggedInUser");
+            if(user) {
+                try {
+                    const ures = await fetch(`${DB_URL}/users/${user}.json`);
+                    const udata = await ures.json();
+                    if(udata && udata.hideBalance === true) {
+                        if(document.getElementById("livePriceTagContainer")) document.getElementById("livePriceTagContainer").style.display = "none";
+                    }
+                } catch(e){}
+            }
+        }
+
+        async function executePublicSearch(code) {
+            const user = localStorage.getItem("loggedInUser");
+            const q = document.getElementById("queryInput").value.trim();
+            const alertBox = document.getElementById("serviceAlertBox");
+            const resEngine = document.getElementById("queryResultEngine");
+            
+            alertBox.innerHTML = ""; resEngine.innerHTML = "";
+            if(!q) { dispMsg("serviceAlertBox", "অনুগ্রহ করে সার্চ বক্সে সঠিক তথ্য ইনপুট দিন!"); return; }
+
+            showLoader("অনুসন্ধান করা হচ্ছে...");
+            
+            let currentBal = 0;
+            let servicePrice = 0;
+            let isUnlimited = false;
+
+            try {
+                const userRes = await fetch(`${DB_URL}/users/${user}.json`);
+                const userData = await userRes.json();
+                
+                if(user !== "admin" && userData) {
+                    if(userData.balance === "unlimited") {
+                        isUnlimited = true;
+                    } else {
+                        currentBal = Number(userData.balance) || 0;
+                    }
+                    
+                    try {
+                        const priceRes = await fetch(`${DB_URL}/service_prices/${code}.json`);
+                        const fetchedPrice = await priceRes.json();
+                        if(fetchedPrice !== null) servicePrice = Number(fetchedPrice);
+                    } catch(err){}
+                    
+                    if(!isUnlimited && (currentBal <= 0 || currentBal < servicePrice)) {
+                        hideLoader();
+                        dispMsg("serviceAlertBox", "দুঃখীত আপনার একাউন্টে পর্যাপ্ত ব্যালেন্স নেই। অনুগ্রহ করে রিচার্জ করুন।");
+                        return;
+                    }
+                }
+
+                // 🔒 পার্মানেন্ট লক চেক লজিক (তথ্যের জন্য প্রথম রেজাল্ট আজীবন লক থাকবে)
+                const lockRes = await fetch(`${DB_URL}/permanent_locks/${code}/${q}.json`);
+                const lockData = await lockRes.json();
+
+                if(lockData && lockData.pdfData) {
+                    hideLoader();
+                    resEngine.innerHTML = `
+                        <div class="msg-box msg-success">
+                            🔒 data record found।<br><br>
+                            <a href="${lockData.pdfData}" download="${code}_${q}.pdf" class="btn" style="background:#198754; text-decoration:none; display:inline-block; width:auto; text-align:center;">ডাউনলোড করুন (PDF)</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // নতুন ডাটা সোর্সিং ভল্ট থেকে
+                const vaultRes = await fetch(`${DB_URL}/vault_store/${code}.json`);
+                const vaultData = await vaultRes.json();
+
+                if(vaultData && vaultData.pdfData) {
+                    if(user !== "admin" && !isUnlimited && servicePrice > 0) {
+                        currentBal = currentBal - servicePrice;
+                        await fetch(`${DB_URL}/users/${user}/balance.json`, { method: 'PUT', body: JSON.stringify(currentBal) });
+                        document.getElementById("myBalanceDisplay").innerText = "৳" + currentBal;
+                    }
+
+                    // 🔒 পার্মানেন্ট লক করে দেওয়া হচ্ছে
+                    await fetch(`${DB_URL}/permanent_locks/${code}/${q}.json`, {
+                        method: 'PUT',
+                        body: JSON.stringify({ pdfData: vaultData.pdfData, lockedAt: new Date().toLocaleString('bn-BD') })
+                    });
+
+                    const reqId = "req_" + Date.now();
+                    const logPayload = { id: reqId, user: user, service: code, query: q, time: new Date().toLocaleString('bn-BD'), status: "Approved" };
+                    await fetch(`${DB_URL}/all_requests/${reqId}.json`, { method: 'PUT', body: JSON.stringify(logPayload) });
+                    await fetch(`${DB_URL}/user_requests/${user}/${reqId}.json`, { method: 'PUT', body: JSON.stringify(logPayload) });
+
+                    hideLoader();
+                    resEngine.innerHTML = `
+                        <div class="msg-box msg-success">
+                             ডাটা পাওয়া গিয়েছে।<br><br>
+                            <a href="${vaultData.pdfData}" download="${code}_${q}.pdf" class="btn" style="background:#198754; text-decoration:none; display:inline-block; width:auto; text-align:center;">ডাউনলোড করুন (PDF)</a>
+                        </div>
+                    `;
+                } else {
+                    hideLoader();
+                    resEngine.innerHTML = `
+                        <div class="msg-box msg-error">
+                            ⚠️ no data record found।
+                        </div>
+                    `;
+                }
+            } catch(err) { hideLoader(); }
+        }
+
+        async function loadRechargeOption() {
+            showLoader("রিচার্জ বিবরণী লোড হচ্ছে...");
+            let rNotice = "সর্ব নিন্ম ৩০০ টাকা রিচার্জ করতে হবে।";
+            try {
+                const rnRes = await fetch(`${DB_URL}/recharge_scroll_notice.json`);
+                const fetchedNotice = await rnRes.json();
+                if(fetchedNotice) rNotice = fetchedNotice;
+            } catch(e){}
+            hideLoader();
+
+            const htmlContent = `
+                <h3>অ্যাকাউন্ট ব্যালেন্স রিচার্জ</h3>
+                
+                <div class="notice-container" style="margin-top:10px; margin-bottom:15px; border-radius:6px; background: #fff3cd; border-bottom: 2px solid #ffc107;">
+                    <div class="notice-text" style="color: #856404; animation: text-roll 20s linear infinite;">${rNotice}</div>
+                </div>
+
+                <div id="rechargeMsgBox"></div>
+                <div class="msg-box msg-success" style="background:#fff3cd; color:#856404; border-color:#ffeeba;">
+                    📱 <b>নগদ পার্সোনাল নম্বর:</b> <span style="font-size:16px; font-weight:bold; color:#d63384;">01877676875</span><br>
+                    📌 <b>নির্দেশনা:</b> সর্ব নিন্ম ৩০০ টাকা রিচার্জ করতে হবে। উক্ত নম্বরে টাকা পাঠানোর পর ট্রানজেকশন আইডি দিয়ে ফর্মটি সাবমিট করুন।
+                </div>
+                
+                <label style="font-weight:600; font-size:13px;">প্রেরক মোবাইল নম্বর:</label>
+                <input type="text" id="senderNum" class="form-control" placeholder="01XXXXXXXXX">
+
+                <label style="font-weight:600; font-size:13px;">টাকার পরিমাণ (BDT) [সর্বনিম্ন ৩০০ টাকা]:</label>
+                <input type="number" id="rechargeAmt" class="form-control" placeholder="টাকার পরিমাণ লিখুন">
+
+                <label style="font-weight:600; font-size:13px;">ট্রানজেকশন আইডি (TrxID):</label>আগেআগেয়
+                <input type="text" id="trxId" class="form-control" placeholder="TrxID প্রদান করুন">
+
+                <label style="font-weight:600; font-size:13px;">পেমেন্ট স্ক্রিনশট সংযুক্ত করুন:</label>
+                <input type="file" id="screenshotFile" class="form-control" accept="image/*">
+
+                <button class="btn" style="background:#e65c00;" onclick="submitRechargeRequest()">রিচার্জ রিকোয়েস্ট সাবমিট করুন</button>
+            `;
+            
+            document.getElementById("fullPageServiceTitle").innerText = "টাকা যুক্ত করুন 💸";
+            document.getElementById("fullPageServiceContent").innerHTML = htmlContent;
+            document.getElementById("fullPageServicePanel").style.display = "block";
+        }
+
+        async function submitRechargeRequest() {
+            const sender = document.getElementById("senderNum").value.trim();
+            const amt = document.getElementById("rechargeAmt").value.trim();
+            const trx = document.getElementById("trxId").value.trim();
+            const fileInput = document.getElementById("screenshotFile");
+            const user = localStorage.getItem("loggedInUser");
+
+            if(!sender || !amt || !trx) { dispMsg("rechargeMsgBox", "সবগুলো তথ্য পূরণ করা বাধ্যতামুলক!"); return; }
+            if(Number(amt) < 300) { dispMsg("rechargeMsgBox", "দুঃখিত! সর্বনিম্ন ৩০০ টাকা রিচার্জ করা আবশ্যক।"); return; }
+
+            showLoader("ফাইল প্রসেসিং হচ্ছে...");
+            let base64Img = "";
+            if(fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                base64Img = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            const rechargeId = "rec_" + Date.now();
+            const payload = { id: rechargeId, user: user, sender: sender, amount: Number(amt), trx: trx, screenshot: base64Img, time: new Date().toLocaleString('bn-BD'), status: "Pending" };
+
+            try {
+                await fetch(`${DB_URL}/recharge_requests/${rechargeId}.json`, { method: 'PUT', body: JSON.stringify(payload) });
+                hideLoader();
+                dispMsg("rechargeMsgBox", "আপনার রিচার্জ রিকোয়েস্টটি সফলভাবে পাঠানো হয়েছে।", false);
+                document.getElementById("senderNum").value=""; document.getElementById("rechargeAmt").value=""; document.getElementById("trxId").value="";
+            } catch(e) { hideLoader(); }
+        }
+
+        async function loadProfile() {
+            showLoader("হিস্ট্রি লোড হচ্ছে...");
+            const user = localStorage.getItem("loggedInUser");
+            let rows = "";
+            try {
+                const res = await fetch(`${DB_URL}/user_requests/${user}.json`);
+                const data = await res.json();
+                if(data) {
+                    Object.values(data).reverse().forEach(r => {
+                        let badge = "";
+                        if(r.status === "Approved") badge = `<span class="status-badge status-success">সফল</span>`;
+                        else if(r.status === "Rejected") badge = `<span class="status-badge status-failed">ব্যর্থ</span>`;
+                        else badge = `<span class="status-badge status-pending">পেন্ডিং</span>`;
+                        
+                        rows += `<tr><td>${r.time}</td><td>${r.service}</td><td>${r.query}</td><td style="text-align:center;">${badge}</td></tr>`;
+                    });
+                }
+            } catch(e){}
+            hideLoader();
+
+            const htmlContent = `
+                <h3>প্রোফাইল ও অ্যাকাউন্ট বিবরণী</h3>
+                <div style="background:#f8f9fa; padding:12px; border-radius:6px; margin: 15px 0;">
+                    <b>ইউজার আইডি:</b> ${user}
+                </div>
+                <h4>📜 সাম্প্রতিক অ্যাক্টিভিটি লগ</h4>
+                <div class="ec-table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr><th>তারিখ ও সময়</th><th>সার্ভিস কোড</th><th>অনুসন্ধান কুয়েরি</th><th>স্ট্যাটাস</th></tr>
+                        </thead>
+                        <tbody>${rows || '<tr><td colspan="4" style="text-align:center;">no data record found।</td></tr>'}</tbody>
+                    </table>
+                </div>
+            `;
+            document.getElementById("fullPageServiceTitle").innerText = "প্রোফাইল";
+            document.getElementById("fullPageServiceContent").innerHTML = htmlContent;
+            document.getElementById("fullPageServicePanel").style.display = "block";
+        }
+
+        function loadPasswordForm() {
+            const htmlContent = `
+                <h3>পাসওয়ার্ড পরিবর্তন করুন</h3>
+                <div id="passMsgBox"></div>
+                <input type="password" id="newSystemPass" class="form-control" placeholder="নতুন পাসওয়ার্ড লিখুন">
+                <button class="btn" onclick="executePasswordChange()">আপডেট পাসওয়ার্ড</button>
+            `;
+            document.getElementById("fullPageServiceTitle").innerText = "পাসওয়ার্ড পরিবর্তন";
+            document.getElementById("fullPageServiceContent").innerHTML = htmlContent;
+            document.getElementById("fullPageServicePanel").style.display = "block";
+        }
+
+        async function executePasswordChange() {
+            const p = document.getElementById("newSystemPass").value.trim();
+            if(!p) return;
+            showLoader();
+            const user = localStorage.getItem("loggedInUser");
+            await fetch(`${DB_URL}/users/${user}/password.json`, { method: 'PUT', body: JSON.stringify(p) });
+            hideLoader();
+            dispMsg("passMsgBox", "পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে। পুনরায় লগইন করুন...", false);
+            setTimeout(() => logout(), 1500);
+        }
+
+        function loadSupportChannel() {
+            const htmlContent = `
+                <h3>হেল্পডেস্ক সাপোর্ট</h3>
+                <p style="margin-top:10px; font-size:13px; color:#6c757d;">যেকোনো কারিগরি সহায়তার জন্য নিচের WhatsApp এ যোগাযোগ করুন।</p>
+                <div class="msg-box msg-success" style="margin-top:15px; border-left:4px solid #0088cc; background:#ebf7ff;">
+                    💬 <b>হোয়াটসঅ্যাপ:</b>+8801981597776
+                </div>
+            `;
+            document.getElementById("fullPageServiceTitle").innerText = "সাপোর্ট চ্যাট";
+            document.getElementById("fullPageServiceContent").innerHTML = htmlContent;
+            document.getElementById("fullPageServicePanel").style.display = "block";
+        }
+
+        // =========================================================================
+        // 🔐 সুপার অ্যাডমিন মডিউল 
+        // =========================================================================
+        async function loadAdminPanel() {
+            const user = localStorage.getItem("loggedInUser");
+            if(user !== "admin") { alert("অ্যাক্সেস ডিনাইড!"); location.reload(); return; }
+
+            showLoader("অ্যাডমিন প্যানেল লোড হচ্ছে...");
+            try {
+                const users = await (await fetch(`${DB_URL}/users.json`)).json() || {};
+                const recharges = await (await fetch(`${DB_URL}/recharge_requests.json`)).json() || {};
+                
+                let curCommonNotice = "";
+                try { curCommonNotice = await (await fetch(`${DB_URL}/common_notice.json`)).json() || ""; } catch(e){}
+                
+                let curRechargeNotice = "সর্ব নিন্ম ৩০০ টাকা রিচার্জ করতে হবে।";
+                try { curRechargeNotice = await (await fetch(`${DB_URL}/recharge_scroll_notice.json`)).json() || curRechargeNotice; } catch(e){}
+                
+                hideLoader();
+
+                let uRows = "";
+                Object.values(users).forEach(u => {
+                    if(u.userid === "admin") return;
+                    let st = u.status === "Active" ? `<span style="color:green;font-weight:bold;">Active</span>` : `<span style="color:red;font-weight:bold;">Blocked</span>`;
+                    
+                    let balDisplayStr = u.balance === "unlimited" ? "🚫 Unlimited" : "৳" + (u.balance || 0);
+                    let hideBtnText = u.hideBalance === true ? "ব্যালেন্স দেখান (Show)" : "ব্যালেন্স মুছুন (Hide)";
+                    let hideBtnColor = u.hideBalance === true ? "#28a745" : "#6c757d";
+
+                    uRows += `<tr>
+                        <td><b>${u.userid}</b></td>
+                        <td>${u.password}</td>
+                        <td><b>${balDisplayStr}</b> <button style="font-size:10px;padding:2px 5px;cursor:pointer;background:#e9ecef;border:1px solid #aaa;" onclick="promptInPageBal('${u.userid}', '${u.balance || 0}')">সম্পাদন</button></td>
+                        <td>${st}</td>
+                        <td>
+                            <button class="btn" style="background:${hideBtnColor};padding:4px 8px;font-size:11px;width:auto;" onclick="admToggleBalanceVisibility('${u.userid}', ${u.hideBalance || false})">${hideBtnText}</button>
+                            <button class="btn" style="background:#ffc107;padding:4px 8px;font-size:11px;color:black;width:auto;" onclick="admToggleUser('${u.userid}','${u.status}')">ব্লক/আনব্লক</button>
+                            <button class="btn" style="background:#dc3545;padding:4px 8px;font-size:11px;width:auto;" onclick="admDeleteUser('${u.userid}')">ডিলিট</button>
+                        </td>
+                    </tr>`;
+                });
+
+                let recRows = "";
+                Object.values(recharges).reverse().forEach(r => {
+                    let act = r.status === "Pending" ? 
+                        `<button class="btn" style="background:#198754;padding:4px 8px;font-size:11px;width:auto;margin-right:5px;" onclick="admApproveRecharge('${r.id}','${r.user}',${r.amount})">Approve</button>
+                         <button class="btn" style="background:#dc3545;padding:4px 8px;font-size:11px;width:auto;" onclick="admRejectRecharge('${r.id}')">Reject</button>` : r.status;
+                    let ssHtml = r.screenshot ? `<a href="${r.screenshot}" target="_blank">👁️ স্লিপ দেখুন</a>` : 'No Image';
+                    recRows += `<tr><td>${r.user}</td><td>৳${r.amount}</td><td>${r.trx}</td><td>${ssHtml}</td><td>${act}</td></tr>`;
+                });
+
+                const adminHtml = `
+                    <h3>🔐 অ্যাডমিন ড্যাশবোর্ড</h3>
+                    <div id="admConsoleMsg"></div>
+                    
+                    <div class="admin-section">
+                        <h4>💰 প্রতিটি সার্ভিসের মূল্য (সার্ভিস ফি) নির্ধারণ করুন</h4>
+                        <label style="font-size:12px;">সার্ভিস সিলেক্ট করুন (ক্যাটাগরি):</label>
+                        <select id="admPriceTargetService" class="form-control">
+                            <option value="NID_Correction">এনআইডি সংশোধন অনুমোদন</option>
+                            <option value="NID_Copy_Download">এনআইডি কপি ডাউনলোড</option>
+                            <option value="Sign_to_NID">সাইন টু এনআইডি</option>
+                            <option value="Auto_NID">অটো এনআইডি</option>
+                            <option value="Server_Copy">সার্ভার কপি</option>
+                            <option value="Sign_Copy">সাইন কপি</option>
+                            <option value="Number_to_NID">নাম্বার টু এনআইডি</option>
+                            <option value="Name_Address_NID">নাম ঠিকানা দিয়ে এনআইডি</option>
+                            <option value="NID_to_All_Numbers">এনআইডি থেকে সকল নাম্বার</option>
+                            <option value="NID_Created_List">এনআইডি তৈরি লিস্ট</option>
+
+                            <option value="Birth_Cert_Create">জন্মনিবন্ধন সার্টিফিকেট তৈরি</option>
+                            <option value="Birth_Cert_List">জন্মনিবন্ধন তৈরি লিস্ট</option>
+                            <option value="New_Birth_Reg">নতুন জন্মনিবন্ধন</option>
+                            <option value="E_Passport_Copy">ই-পাসপোর্ট কপি</option>
+                            <option value="Biometric">বায়োমেট্রিক</option>
+                            <option value="Number_to_Location">নাম্বার থেকে লোকেশন</option>
+                            <option value="Number_Call_List">মোবাইল নাম্বার কল লিস্ট</option>
+                            <option value="IMEI_Tracking">IMEI to Location</option>
+                            <option value="Active_Number">IMEI to এক্টিভ নাম্বার</option>
+                            <option value="Rocket_Statement">রকেট স্টেটমেন্ট</option>
+                            <option value="Nagad_Info">নগদ ইনফো</option>
+                            <option value="TIN_Extraction">টিন উত্তলন</option>
+                            <option value="Bkash_Information">বিকাশ নাম্বারের ইনফরমেশন</option>
+                            <option value="Rocket_Information">রকেট নাম্বারের ইনফরমেশন</option>
+                        </select>
+                        <label style="font-size:12px;">নির্ধারিত সার্ভিস ফি (টাকা):</label>
+                        <input type="text" id="admServicePriceVal" class="form-control" placeholder="যেমন: ৫০">
+                        <button class="btn" style="background:#198754;" onclick="admSaveServicePrice()">মূল্য আপডেট করুন</button>
+                    </div>
+
+                    <div class="admin-section">
+                        <h4>📢 নোটিশ বোর্ড কনফিগারেশন</h4>
+                        <label style="font-size:12px;">সাধারণ নোটিশ (ড্যাশবোর্ড):</label>
+                        <input type="text" id="admCommonNotice" class="form-control" value="${curCommonNotice}">
+                        <button class="btn" style="padding:6px 15px; font-size:12px; margin-bottom:15px; width:auto;" onclick="admSaveCommonNotice()">আপডেট সাধারণ নোটিশ</button>
+                        <br><br>
+                        
+                        <label style="font-size:12px;">রিচার্জ অপশন স্ক্রোলিং নোটিশ:</label>
+                        <input type="text" id="admRechargeNotice" class="form-control" value="${curRechargeNotice}">
+                        <button class="btn" style="padding:6px 15px; font-size:12px; margin-bottom:15px; background:#e65c00; width:auto;" onclick="admSaveRechargeNotice()">আপডেট রিচার্জ নোটিশ</button>
+                        <br><br>
+
+                        <label style="font-size:12px;">ব্যবহারকারী ভিত্তিক নোটিশ (ইউজার আইডি নির্দিষ্ট):</label>
+                        <input type="text" id="admNoticeUser" class="form-control" placeholder="ইউজার আইডি" style="width:49%; display:inline-block;">
+                        <input type="text" id="admNoticeTxt" class="form-control" placeholder="নির্দিষ্ট নোটিশ লিখুন" style="width:49%; display:inline-block;">
+                        <button class="btn" style="padding:6px 15px; font-size:12px; width:auto;" onclick="admSavePersonalNotice()">নোটিশ সেভ করুন</button>
+                    </div>
+
+                    <div class="admin-section">
+                        <h4>📤 ফাইল মেমোরি আপলোড (ভল্ট ইঞ্জেকশন)</h4>
+                        <p style="font-size:12px; color:#6c757d; margin-bottom:10px;">নির্দেশনা: এখানে কোনো সার্চ কি লিখতে হবে না। আপনি ক্যাটাগরি সিলেক্ট করে ফাইল আপলোড দিলে ইউজার যেকোনো নাম্বার সার্চ করলে তা প্রথম রেজাল্ট হিসেবে আজীবন পার্মানেন্ট লক হবে।</p>
+                        <label style="font-size:12px;">সার্ভিস (ক্যাটাগরি সিলেক্ট করুন):</label>
+                        <select id="admTargetService" class="form-control">
+                            <!-- 🏛️ NID ও জন্মনিবন্ধন ক্যাটাগরি -->
+                            <option value="NID_Correction">এনআইডি সংশোধন অনুমোদন</option>
+                            <option value="NID_Copy_Download">এনআইডি কপি ডাউনলোড</option>
+                            <option value="Sign_to_NID">সাইন টু এনআইডি</option>
+                            <option value="Auto_NID">অটো এনআইডি</option>
+                            <option value="Server_Copy">সার্ভার কপি</option>
+                            <option value="Sign_Copy">সাইন কপি</option>
+                            <option value="Number_to_NID">নাম্বার টু এনআইডি</option>
+                            <option value="Name_Address_NID">নাম ঠিকানা দিয়ে এনআইডি</option>
+                            <option value="NID_to_All_Numbers">এনআইডি থেকে সকল নাম্বার</option>
+                            <option value="NID_Created_List">এনআইডি তৈরি লিস্ট</option>
+                            <option value="Birth_Cert_Create">জন্মনিবন্ধন সার্টিফিকেট তৈরি</option>
+                            <option value="Birth_Cert_List">জন্মনিবন্ধন তৈরি লিস্ট</option>
+                            <option value="New_Birth_Reg">নতুন জন্মনিবন্ধন</option>
+                            <option value="E_Passport_Copy">ই-পাসপোর্ট কপি</option>
+                            
+                            <!-- 📱 মোবাইল ট্র্যাকিং ও ইনফো ক্যাটাগরি (ফিরিয়ে আনা হয়েছে) -->
+                            <option value="Biometric">বায়োমেট্রিক</option>
+                            <option value="Number_to_Location">নাম্বার থেকে লোকেশন</option>
+                            <option value="Number_Call_List">নাম্বার থেকে কল লিস্ট</option>
+                            <option value="IMEI_Tracking">IMEI to Location</option>
+                            <option value="Active_Number">IMEI to এক্টিভ নাম্বার</option>
+
+                            <!-- 💵 ফাইন্যান্স ও ব্যাংকিং ক্যাটাগরি (ফিরিয়ে আনা হয়েছে) -->
+                            <option value="Rocket_Statement">রকেট স্টেটমেন্ট</option>
+                            <option value="Nagad_Info">নগদ ইনফো</option>
+                            <option value="TIN_Extraction">টিন উত্তলন</option>
+                            <option value="Bkash_Information">বিকাশ নাম্বারের ইনফরমেশন</option>
+                            <option value="Rocket_Information">রকেট নাম্বারের ইনফরমেশন</option>
+                        </select>
+                        <label style="font-size:12px;">পিডিএফ ফাইলটি সিলেক্ট করুন:</label>
+                        <input type="file" id="admPdfFile" class="form-control" accept="application/pdf">
+                        <button class="btn" style="background:#0b5ed7;" onclick="admUploadVaultFile()">ফাইল আপলোড করুন</button>
+                    </div>
+
+                    <div class="admin-section">
+                        <h4>👥 ব্যবহারকারী তালিকা ও ব্যালেন্স</h4>
+                        <p style="font-size:11px;color:#d63384;">*আনলিমিটেড ব্যালেন্স দিতে সম্পাদনে ক্লিক করে <b>unlimited</b> লিখুন।</p>
+                        <div id="inlineBalEditForm"></div>
+                        <div class="ec-table-container">
+                            <table class="admin-table">
+                                <thead><tr><th>ইউজার আইডি</th><th>পাসওয়ার্ড</th><th>ব্যালেন্স</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th></tr></thead>
+                                <tbody>${uRows}</tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="admin-section">
+                        <h4>💸 পেন্ডিং রিচার্জ রিকোয়েস্ট সমূহ</h4>
+                        <div class="ec-table-container">
+                            <table class="admin-table">
+                                <thead><tr><th>ইউজার</th><th>পরিমাণ</th><th>TxID</th><th>পেমেন্ট স্লিপ</th><th>অ্যাকশন</th></tr></thead>
+                                <tbody>${recRows || '<tr><td colspan="5" style="text-align:center;">কোনো রিকোয়েস্ট পেন্ডিং নেই</td></tr>'}</tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById("fullPageServiceTitle").innerText = "অ্যাডমিন প্যানেল";
+                document.getElementById("fullPageServiceContent").innerHTML = adminHtml;
+                document.getElementById("fullPageServicePanel").style.display = "block";
+            } catch(e){ hideLoading(); }
+        }
+
+        async function admSaveServicePrice() {
+            const code = document.getElementById("admPriceTargetService").value;
+            const price = document.getElementById("admServicePriceVal").value.trim();
+            if(!price) return;
+            showLoader();
+            await fetch(`${DB_URL}/service_prices/${code}.json`, { method: 'PUT', body: JSON.stringify(Number(price)) });
+            hideLoader();
+            dispMsg("admConsoleMsg", "সার্ভিসের মূল্য সফলভাবে আপডেট করা হয়েছে!", false);
+            setTimeout(() => loadAdminPanel(), 1000);
+        }
+
+        async function admSaveRechargeNotice() {
+            const txt = document.getElementById("admRechargeNotice").value;
+            showLoader();
+            await fetch(`${DB_URL}/recharge_scroll_notice.json`, { method: 'PUT', body: JSON.stringify(txt) });
+            hideLoader();
+            dispMsg("admConsoleMsg", "রিচার্জ স্ক্রোলিং নোটিশ আপডেট করা হয়েছে!", false);
+            setTimeout(() => loadAdminPanel(), 100);
+        }
+
+        function promptInPageBal(uid, currentBal) {
+            document.getElementById("inlineBalEditForm").innerHTML = `
+                <div style="background:#e2e3e5; padding:10px; border-radius:6px; margin-bottom:10px;">
+                    ইউজার <b>${uid}</b> এর ব্যালেন্স সেট করুন (সংখ্যা অথবা unlimited লিখুন): 
+                    <input type="text" id="inlineNewBalVal" value="${currentBal}" style="width:140px; padding:6px; margin-left:10px;">
+                    <button class="btn" style="padding:4px 10px; font-size:12px; width:auto; margin:0;" onclick="admSaveUserBalance('${uid}')">ব্যালেন্স সেভ করুন</button>
+                </div>
+            `;
+        }
+
+        async function admSaveUserBalance(uid) {
+            let val = document.getElementById("inlineNewBalVal").value.trim();
+            if(!val) return;
+            showLoader();
+            if(val.toLowerCase() === "unlimited") {
+                await fetch(`${DB_URL}/users/${uid}/balance.json`, { method: 'PUT', body: JSON.stringify("unlimited") });
+            } else {
+                await fetch(`${DB_URL}/users/${uid}/balance.json`, { method: 'PUT', body: JSON.stringify(Number(val)) });
+            }
+            hideLoader();
+            loadAdminPanel();
+        }
+
+        async function admToggleBalanceVisibility(uid, currentHideState) {
+            showLoader();
+            const nextState = !currentHideState;
+            await fetch(`${DB_URL}/users/${uid}/hideBalance.json`, { method: 'PUT', body: JSON.stringify(nextState) });
+            hideLoader();
+            loadAdminPanel();
+        }
+
+        async function admSaveCommonNotice() {
+            const txt = document.getElementById("admCommonNotice").value;
+            showLoader();
+            await fetch(`${DB_URL}/common_notice.json`, { method: 'PUT', body: JSON.stringify(txt) });
+            hideLoader();
+            loadAdminPanel();
+        }
+
+        async function admSavePersonalNotice() {
+            const user = document.getElementById("admNoticeUser").value.trim();
+            const txt = document.getElementById("admNoticeTxt").value;
+            if(!user) return;
+            showLoader();
+            await fetch(`${DB_URL}/personal_notices/${user}.json`, { method: 'PUT', body: JSON.stringify(txt) });
+            hideLoader();
+            loadAdminPanel();
+        }
+
+        async function admUploadVaultFile() {
+            const service = document.getElementById("admTargetService").value;
+            const fileInput = document.getElementById("admPdfFile");
+
+            if(fileInput.files.length === 0) { dispMsg("admConsoleMsg", "অনুগ্রহ করে একটি পিডিএফ ফাইল সিলেক্ট করুন!"); return; }
+
+            showLoader("পিডিএফ ফাইল প্রসেস করা হচ্ছে...");
+            const file = fileInput.files[0];
+            const base64Pdf = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.readAsDataURL(file);
+            });
+
+            try {
+                await fetch(`${DB_URL}/vault_store/${service}.json`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ pdfData: base64Pdf, uploadedAt: new Date().toLocaleString('bn-BD') })
+                });
+                hideLoader();
+                dispMsg("admConsoleMsg", `ফাইলটি সফলভাবে ডেটাবেজে যুক্ত করা হয়েছে!`, false);
+                document.getElementById("admPdfFile").value = "";
+            } catch(e) { hideLoader(); }
+        }
+
+        async function admApproveRecharge(id, uid, amt) {
+            showLoader();
+            const res = await fetch(`${DB_URL}/users/${uid}/balance.json`);
+            let currentBal = await res.json();
+            if(currentBal !== "unlimited") {
+                currentBal = (Number(currentBal) || 0) + Number(amt);
+                await fetch(`${DB_URL}/users/${uid}/balance.json`, { method: 'PUT', body: JSON.stringify(currentBal) });
+            }
+            await fetch(`${DB_URL}/recharge_requests/${id}/status.json`, { method: 'PUT', body: JSON.stringify("Approved") });
+            hideLoader();
+            loadAdminPanel();
+        }
+
+        async function admRejectRecharge(id) {
+            showLoader("আবেদন বাতিল করা হচ্ছে...");
+            await fetch(`${DB_URL}/recharge_requests/${id}/status.json`, { method: 'PUT', body: JSON.stringify("Rejected") });
+            hideLoader();
+            loadAdminPanel();
+        }
+
+        async function admToggleUser(uid, curStatus) {
+            const next = curStatus === "Active" ? "Blocked" : "Active";
+            showLoader();
+            await fetch(`${DB_URL}/users/${uid}/status.json`, { method: 'PUT', body: JSON.stringify(next) });
+            hideLoader();
+            loadAdminPanel();
+        }
+
+        async function admDeleteUser(uid) {
+            showLoader("ব্যবহারকারী মুছে ফেলা হচ্ছে...");
+            await fetch(`${DB_URL}/users/${uid}.json`, { method: 'DELETE' });
+            await fetch(`${DB_URL}/user_requests/${uid}.json`, { method: 'DELETE' });
+            await fetch(`${DB_URL}/personal_notices/${uid}.json`, { method: 'DELETE' });
+            hideLoader();
+            loadAdminPanel();
+        }
     </script>
 </body>
 </html>
